@@ -7,16 +7,13 @@ import library.settings.SettingsRun;
 
 public class Launch_Divisas_TransferenciasInternacionales extends BaseTestNG {
 
+	// ***********************************************************************************************************************
+	// * Instancias Controllers - Implementacion Patron Singleton *
+	// ***********************************************************************************************************************
 
+	ControllerGeneralDivisas controllerGeneralDivisas = null;
 
-	//***********************************************************************************************************************
-	//*                                Instancias Controllers - Implementacion Patron Singleton                             *
-	//***********************************************************************************************************************
-		
-
-	ControllerGeneralDivisas controllerGeneralDivisas = new ControllerGeneralDivisas();
-
-	//***********************************************************************************************************************
+	// ***********************************************************************************************************************
 
 // ***********************************************************************************************************************
 
@@ -27,7 +24,6 @@ public class Launch_Divisas_TransferenciasInternacionales extends BaseTestNG {
 		Reporter.writeTitle("\n*** PRUEBAS AUTENTICACIÓN DAVICOM ***");
 		SettingsRun.DEFAULT_HEADER = 4;
 
-
 		// PARÁMETROS REQUERIDOS EN LA HOJA DE DATOS GLOBAL PARA EL LAUNCH QUE SE ESTÉ
 		// HACIENDO
 		SettingsRun.ARRAY_DATA_PARAMS = new String[] { "testConfigId" };
@@ -37,25 +33,29 @@ public class Launch_Divisas_TransferenciasInternacionales extends BaseTestNG {
 
 	@Override
 	public void initializeControllerAndConfiguration() throws Exception {
-		this.setController();
-
+		// Determina el tipo de portal desde los datos de prueba o por lógica
+		// Puedes leerlo desde Excel, aquí está hardcodeado como ejemplo:
+		// Obtén el tipo de portal desde Excel (o config)
+//		String tipoPortal = SettingsRun.getTestData().getParameter("Typo Portal");
+		String tipoPortal = "Pyme";
+		ControllerGeneralDivisas.PortalType portalType = (tipoPortal != null&& tipoPortal.equalsIgnoreCase("Empresarial")) ? ControllerGeneralDivisas.PortalType.EMPRESARIAL: ControllerGeneralDivisas.PortalType.PYME;
+		
+		Reporter.reportEvent(Reporter.MIC_HEADER, "PRUEBAS PORTA - " + tipoPortal);
+		controllerGeneralDivisas = ControllerGeneralDivisas.getInstance(portalType);
+		controllerGeneralDivisas.inicializarSesion();
 	}
 
 	@Override
 	public void doingTest() throws Exception {
-
-		controllerGeneralDivisas.getInstanciaUnicaControllerGeneralDivisas();
-		controllerGeneralDivisas.validarReferenciaODescripcionEnMovimientoFrontEmpresarial();
-
+		// Lógica principal del test: ejecuta el flujo de Divisas
+		controllerGeneralDivisas.transar();
 	}
 
-
-
-	
-
-	public void launchClose() { // CIERRE DEL LANZAMIENTO
-		
-
+	@Override
+	public void launchClose() {
+		// Limpieza si aplica
+		if (controllerGeneralDivisas != null)
+			controllerGeneralDivisas.destroy();
 	}
 
 }
