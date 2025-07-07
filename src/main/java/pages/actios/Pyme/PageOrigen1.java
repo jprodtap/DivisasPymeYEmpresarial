@@ -1603,7 +1603,7 @@ public class PageOrigen1 extends PagePortalPymes1 {
 				}
 			}
 
-//			DatosDavivienda.STRATUS.minimizarVentana();
+			DatosDavivienda.STRATUS.minimizarVentana();
 		}
 	}
 

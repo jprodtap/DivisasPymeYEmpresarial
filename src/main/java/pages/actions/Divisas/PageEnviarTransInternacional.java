@@ -155,6 +155,7 @@ public class PageEnviarTransInternacional extends PageDivisas {
 	public String seleccionarCuenta(String servicio, String tipoIdEm, String nitEmpre, String tipoCuenta,
 			String numeroCuenta) throws Exception {
 		numeroCuenta ="7777";
+//		numeroCuenta ="5743";
 		String tipoProdUpper = tipoCuenta;
 		String tipoProd = " "; // VALOR POR DEFECTO
 

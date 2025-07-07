@@ -3,8 +3,7 @@ package pages.actions.Divisas;
 import org.openqa.selenium.By;
 
 import dav.pymes.moduloCrearTx.ControllerCrearTx;
-
-
+import dxc.util.DXCUtil;
 import library.reporting.Reporter;
 import library.settings.SettingsRun;
 import library.common.Util;
@@ -15,7 +14,7 @@ public class PageAprobacionInter extends PageDivisas {
 
 	private ControllerCrearTx controller = null;
 
-// ==========================================================================================================================================================
+	// ==========================================================================================================================================================
 
 	String btnAprobarTransaccionesSeleccionadas = "//*[@id='FormAprobar']/div[3]/div/table/tbody/tr/td[1]/div/button[1]";
 
@@ -32,23 +31,23 @@ public class PageAprobacionInter extends PageDivisas {
 
 	String camposAprobaciones = "//*[@id='FormAprobar']/div[2]/div/table/tbody/tr[I]/td[J]";
 	By titulo = By.xpath("/html/body/div[2]/div[1]/div[1]/h2/string[contains(text(), 'Aprobaciones')]");;
-	By subtitulo = By.xpath("/html/body/div[2]/div[1]/div[2]/h3[contains(text(), 'Transferencias pendientes de aprobaciÃ³n')]");
-	By sesionEx = By.xpath("//b[contains(text(), 'SesiÃ³n no existe o ha expirado por inactividad.')]");
+	By subtitulo = By
+			.xpath("/html/body/div[2]/div[1]/div[2]/h3[contains(text(), 'Transferencias pendientes de aprobación')]");
+	By sesionEx = By.xpath("//b[contains(text(), 'Sesión no existe o ha expirado por inactividad.')]");
 	By mensajenotificacion = By.xpath("//*[@id='mensaje']");
 	String xpathNumDocumTxCon3 = "//td[contains(text(), 'fechayhoraconvert')]/following-sibling::td[contains(text(), 'MONEDA')]/preceding-sibling::td[4]";
-	
 
-// ==========================================================================================================================================================
+	// ==========================================================================================================================================================
 
 	private static int contador = 1;
 
-// ==========================================================================================================================================================
+	// ==========================================================================================================================================================
 
 	public PageAprobacionInter(BasePageWeb parentPage) {
 		super(parentPage);
 	}
 
-// ==========================================================================================================================================================
+	// ==========================================================================================================================================================
 
 	/**
 	 * inicioAprobaciones
@@ -57,16 +56,17 @@ public class PageAprobacionInter extends PageDivisas {
 	 * @return
 	 * @throws Exception
 	 */
-	public String inicioAprobaciones(String tipoPrueba,String servicio,String fecha,String hora,String moneda) throws Exception {
-		
+	public String inicioAprobaciones(String tipoPrueba, String servicio, String fecha, String hora, String moneda)
+			throws Exception {
+
 		String documentoTx = numAprova;
-		
+
 		String msg = null;
 
 		msg = this.seleccionarTransferencia("Aprobaciones");// Se en carga de selecionar el modulo de Divisas
-		
+
 		if (isValid(msg))
-			Reporter.reportEvent(Reporter.MIC_FAIL,msg);
+			Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 
 		msg = waitForElementToAppear(btnAprobarTransaccionesSeleccionadas);
 		if (isValid(msg)) {
@@ -75,28 +75,27 @@ public class PageAprobacionInter extends PageDivisas {
 
 		// Validaciones adicionales de campos y titulos en la ventana de aprobaciones
 		Reporter.write(" ");
-		Reporter.write("==========[TABLA INICIAL DE APROBACIONES]=======================================================================================================");
+		Reporter.write(
+				"==========[TABLA INICIAL DE APROBACIONES]=======================================================================================================");
 		Reporter.write(" ");
 
 		Evidence.saveAllScreens("Registros Encontrados", this);
 
-		msg = assertElementExists(titulo, "Se encuentra el tÃ­tulo de 'Aprobaciones'");
+		msg = assertElementExists(titulo, "Se encuentra el título de 'Aprobaciones'");
 
 		if (msg.equals("No se encuentra el elemento.")) {
 			return msg;
 		}
-		
-		msg = assertElementExists(subtitulo, "Se encuentra el subtÃ­tulo de 'Transferencias pendientes de aprobaciÃ³n'");
-		
+
+		msg = assertElementExists(subtitulo, "Se encuentra el subtítulo de 'Transferencias pendientes de aprobación'");
+
 		if (msg.equals("No se encuentra el elemento.")) {
 			return msg;
 		}
-		
-		
-		
-		if (!isValid(documentoTx)) 
-			documentoTx = obtenerNumeroTxDocumentoGeneral(tipoPrueba,servicio,"Aprobaciones", fecha, hora, moneda);
-		
+
+		if (!isValid(documentoTx))
+			documentoTx = obtenerNumeroTxDocumentoGeneral(tipoPrueba, servicio, "Aprobaciones", fecha, hora, moneda);
+
 		/*
 		 * Encuentra el registro por numero de documento Si encuentra el registro
 		 * selecicona el checkbutton
@@ -107,18 +106,18 @@ public class PageAprobacionInter extends PageDivisas {
 		String xpathbtnActualizarTasa;
 		contador = 0;
 		do {
-			Util.wait(1);
+			DXCUtil.wait(1);
 			contador++;
 			xpathfilaLocator = filaLocator.replace("I", String.valueOf(contador)).replace("documentoTx", documentoTx);
-			
+
 			if (this.element(xpathfilaLocator) != null) {
 				// Almacena el numero de Aprobacion de la tx
 				if (isValid(documentoTx)) {
 					numAprova = documentoTx;
-					SettingsRun.getTestData().setParameter("NÃºmero AprobaciÃ³n", documentoTx);
-					
+					SettingsRun.getTestData().setParameter("Número Aprobación", documentoTx);
+
 				}
-				
+
 				xpathcheckboxFila = checkboxFila.replace("I", String.valueOf(contador));
 
 				xpathtimeLimiteAprobacion = timeLimiteAprobacion.replace("I", String.valueOf(contador));
@@ -126,17 +125,20 @@ public class PageAprobacionInter extends PageDivisas {
 				xpathbtnActualizarTasa = btnActualizarTasa.replace("I", String.valueOf(contador));
 
 				for (int j = 2; j < 12; j++) {
-					
+
 					String xpathheaderCampoAprobaciones = headerCampoAprobaciones.replace("J", String.valueOf(j));
-					String xpathcamposAprobaciones = camposAprobaciones.replace("I", String.valueOf(contador)).replace("J", String.valueOf(j));
+					String xpathcamposAprobaciones = camposAprobaciones.replace("I", String.valueOf(contador))
+							.replace("J", String.valueOf(j));
 
 					String textHeader = this.element(xpathheaderCampoAprobaciones).getText();
 					String textCampos = this.element(xpathcamposAprobaciones).getText();
 
 					if (this.element(camposAprobaciones) != null) {
-						Reporter.reportEvent(Reporter.MIC_PASS, "Se encuentra campo " + textHeader+ " no es nulo y no estÃ¡ vacÃ­o, con dato: " + textCampos);
+						Reporter.reportEvent(Reporter.MIC_PASS, "Se encuentra campo " + textHeader
+								+ " no es nulo y no está vacío, con dato: " + textCampos);
 					} else {
-						Reporter.reportEvent(Reporter.MIC_FAIL,"El campo " + textHeader + ", es nulo o estÃ¡ vacÃ­o, con dato: " + textCampos);
+						Reporter.reportEvent(Reporter.MIC_FAIL,
+								"El campo " + textHeader + ", es nulo o está vacío, con dato: " + textCampos);
 					}
 				}
 
@@ -150,9 +152,11 @@ public class PageAprobacionInter extends PageDivisas {
 
 					try {
 						this.click(this.element(xpathbtnActualizarTasa));
-						Reporter.reportEvent(Reporter.MIC_PASS,"Aparece botÃ³n de actualizar tasa y permite seleccionar");
+						Reporter.reportEvent(Reporter.MIC_PASS,
+								"Aparece botón de actualizar tasa y permite seleccionar");
 					} catch (Exception e) {
-						Reporter.reportEvent(Reporter.MIC_FAIL,"No aparece botÃ³n de actualizar tasa o no permite seleccionar");
+						Reporter.reportEvent(Reporter.MIC_FAIL,
+								"No aparece botón de actualizar tasa o no permite seleccionar");
 					}
 
 					msg = waitForElementToAppear(btnAceptarActualizarTasa);
@@ -164,31 +168,34 @@ public class PageAprobacionInter extends PageDivisas {
 					if (this.element(mensajenotificacion) != null) {
 						String mensaje = this.element(mensajenotificacion).getText();
 						Reporter.reportEvent(Reporter.MIC_PASS, "Aparece el mensaje: " + mensaje);
-						
+
 					} else {
-						Reporter.reportEvent(Reporter.MIC_PASS,"No aparece el mensaje \"La tasa ha expirado. La cotizaciÃ³n debe ser actualizada.\"");
+						Reporter.reportEvent(Reporter.MIC_PASS,
+								"No aparece el mensaje \"La tasa ha expirado. La cotización debe ser actualizada.\"");
 					}
 
 					String scriptClicIngresar1 = "document.querySelector(\"#botonModalAceptar\").click()";
 					this.getJse().executeScript(scriptClicIngresar1);
-					
-					Util.wait(5);
+
+					DXCUtil.wait(5);
 				}
 
 				msg = waitForElementToAppear(xpathcheckboxFila);
-				
+
 				if (isValid(msg)) {
 					return msg;
 				}
 
 				try {
-					
+
 					this.focus(this.element(xpathcheckboxFila));
 					this.click(this.element(xpathcheckboxFila));
-					Reporter.reportEvent(Reporter.MIC_PASS,"Aparece el checkbox para seleccionar el registro y permite seleccionar");
-					
+					Reporter.reportEvent(Reporter.MIC_PASS,
+							"Aparece el checkbox para seleccionar el registro y permite seleccionar");
+
 				} catch (Exception e) {
-					Reporter.reportEvent(Reporter.MIC_FAIL,"No aparece el checkbox para seleccionar el registro o no permite seleccionar");
+					Reporter.reportEvent(Reporter.MIC_FAIL,
+							"No aparece el checkbox para seleccionar el registro o no permite seleccionar");
 				}
 			}
 
@@ -202,7 +209,5 @@ public class PageAprobacionInter extends PageDivisas {
 		return null;
 	}
 
-
-
-//==========================================================================================================================================================
+	// ==========================================================================================================================================================
 }

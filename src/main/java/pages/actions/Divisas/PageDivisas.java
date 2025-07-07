@@ -210,7 +210,7 @@ public class PageDivisas extends BasePageWeb {
 
 		// 1. Intentar por nÃºmero de aprobaciÃ³n
 		if (!isValid(numAprovaLocal)) {
-			numAprovaLocal = SettingsRun.getTestData().getParameter("NÃºmero AprobaciÃ³n");
+			numAprovaLocal = SettingsRun.getTestData().getParameter("Número Aprobación");
 		}
 
 		if (isValid(numAprovaLocal)) {
