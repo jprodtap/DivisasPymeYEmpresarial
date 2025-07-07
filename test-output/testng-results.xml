@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" ignored="0" total="1" passed="1">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Default suite" duration-ms="426932" started-at="2025-07-07T10:10:59 COT" finished-at="2025-07-07T10:18:06 COT">
+    <groups>
+    </groups>
+    <test name="Default test" duration-ms="426932" started-at="2025-07-07T10:10:59 COT" finished-at="2025-07-07T10:18:06 COT">
+      <class name="lauchTest.Launch_Divisas_TransferenciasInternacionales">
+        <test-method status="PASS" signature="beforeClass()[pri:0, instance:lauchTest.Launch_Divisas_TransferenciasInternacionales@787508ca]" name="beforeClass" is-config="true" duration-ms="1178" started-at="2025-07-07T10:10:59 COT" finished-at="2025-07-07T10:11:00 COT">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- beforeClass -->
+        <test-method status="PASS" signature="TestExec(int)[pri:0, instance:lauchTest.Launch_Divisas_TransferenciasInternacionales@787508ca]" name="TestExec" duration-ms="412028" started-at="2025-07-07T10:11:07 COT" data-provider="testData" finished-at="2025-07-07T10:17:59 COT">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[7]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- TestExec -->
+        <test-method status="PASS" signature="afterClass()[pri:0, instance:lauchTest.Launch_Divisas_TransferenciasInternacionales@787508ca]" name="afterClass" is-config="true" duration-ms="155" started-at="2025-07-07T10:18:06 COT" finished-at="2025-07-07T10:18:06 COT">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- afterClass -->
+      </class> <!-- lauchTest.Launch_Divisas_TransferenciasInternacionales -->
+    </test> <!-- Default test -->
+  </suite> <!-- Default suite -->
+</testng-results>
