@@ -23,7 +23,9 @@ import dav.c360.moduloPersonas.PagePersona;
 //import dxc.library.reporting.Reporter;
 //import dxc.library.settings.SettingsRun;
 import dav.pymes.moduloCrearTx.ControllerCrearTx;
-
+import dav.transversal.DatosDavivienda;
+import dav.transversal.MovimientoStratus;
+import dav.transversal.Stratus;
 import library.reporting.Reporter;
 import library.settings.SettingsRun;
 
@@ -1345,411 +1347,424 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 // ============================================[ValidacionesStratusConsulta]===========================================================================
 
-//	public void ValidacionesStratusConsulta() throws Exception {
-//
-//		int contador = 0;
-//
-//		if (!DatosDavivienda.IS_RISKMOTOR) {
-//
-//			// fechaInicial - Date que contiene la fecha de consulta inicial.
-//
-//			Date fechaConsulta = Util.stringToDate(DateFechaTx, "YYYY/MM/DD");
-//			Date FechaConsultaStratus = Util.dateAdd(fechaConsulta, Calendar.MINUTE, -1);
-//
-//			// Datos del titular como un array de String Stratus
-//
-//			String tipoDocumento = SettingsRun.getTestData().getParameter("Tipo Identificación");
-//			String numeroDoc = SettingsRun.getTestData().getParameter("Id usuario").trim();
-//			String tipoProduct = SettingsRun.getTestData().getParameter("Tipo producto origen / Franquicia").trim();
-//			String numeroProducto = SettingsRun.getTestData().getParameter("Número producto origen").trim();
-//
-//			// Datos usuario
-//			String[] datosTitular = { tipoDocumento, numeroDoc };
-//			// Obtiene el tipo de cuenta si es migrada o fondo o tarjeta de cradito
-//			String tipoProd = Stratus.getTipoCuenta(tipoProduct);
-//			// Ventanas en consulta de movimientos Stratus
-//			String[] arrayVents = { MovimientoStratus.VENT_UNID, MovimientoStratus.VENT_IVA,
-//					MovimientoStratus.VENT_SALDO, MovimientoStratus.VENT_EMERG };
-//
-//			// Validacion con Stratus
-//			if (DatosDavivienda.STRATUS != null) {
-//				Reporter.write(" ");
-//				Reporter.write("*** CONSULTA DE MOVIMIENTOS EN STRATUS");
-//				Reporter.write(" ");
-//				Reporter.reportEvent(Reporter.MIC_INFO, "Fecha y hora de la tx: " + FechaConsultaStratus);
-//				Reporter.write(" ");
-//				Reporter.write(
-//						"           FECHA | HORA |   TALON  | TIPO  |  OFRE | VALOR TOTAL | MTVO  |  UNIDAD  |  VALOR CHEQUE  |  VALOR IVA  |  SALDO ANTERIOR  |  GMF | IND");
-//				Reporter.write(" ");
-//				// Realiza la consulta en Stratus de todos los movimientos
-//
-//				List<MovimientoStratus> datosCtadh2 = DatosDavivienda.STRATUS.getMovimientosEnRangoStratus(tipoProd,
-//						numeroProducto, arrayVents, FechaConsultaStratus, 10, datosTitular);
-//
-//				List<String[]> movimientosStratus = new ArrayList<>();
-//
-//				String saldoinicialstra = this.saldoTotalInicial;
-//				String saldoDislstra = this.saldoDisInicial;
-//
-//				String saldofinal = this.saldoTotalFinal;
-//				String saldoDisponiblefinal = this.saldoDisponibleFinal;
-//
-//				// Saldo inicial
-//				double saldoTotalInicial1 = 0.0;
-//				double saldoDisponible = 0.0;
-//				saldoTotalInicial1 = Double.parseDouble(saldoDislstra);
-//				saldoDisponible = Double.parseDouble(saldoinicialstra);
-//				String saldoPos = String.format("%.1f", saldoDisponible);
-//
-//				// Saldo final
-//				double saldoTotalFinal = 0.0;
-//				double saldoDisponibleFinal = 0.0;
-//				saldoTotalFinal = Double.parseDouble(saldoDisponiblefinal);
-//				saldoDisponibleFinal = Double.parseDouble(saldoDisponiblefinal);
-//				String saldoPosFinal = String.format("%.2f", saldoTotalFinal);
-//
-//				// Retorna los movimientos en Stratus
-//				for (MovimientoStratus movimiento : datosCtadh2) {
-//					Util.waitMilisegundos(125);
-//					String oficinaStratus = null, tipoStratus = null, mtvoStratus = null, talon = null;
-//					double ValorTotalMov = 0.0, ValorChequeMovStartus = 0.0;
-//					double saldoAnteriorStratus = 0.0;
-//					double unidad = 0.0;
-//
-//					String movToString = movimiento.toString().replace("[INDIC:", "").replace("]", "")
-//							.replace("SALDO:", "|").replace("UNID :", "|").replace("EMERG:", "|").replace("IVA  :", "|")
-//							.replace(" ", "").replace("  ", "");
-//
-//					String[] datos = movToString.split("\\|");// Extraer los datos necesarios por posiciones
-//
-//					String fecha = datos[0].trim();
-//					String hora = datos[1].trim();
-//					String term = datos[2].trim();
-//					talon = datos[3].trim();
-//					tipoStratus = datos[4].trim();
-//					oficinaStratus = datos[5].trim();
-//					String valorStratus = datos[6].trim();
-//					ValorTotalMov = Double.parseDouble(valorStratus);
-//					mtvoStratus = datos[7].trim();
-//					String FechaMovStratus = datos[8].trim();
-//					String saldoAnterior = datos[9].trim();
-//					saldoAnteriorStratus = Double.parseDouble(saldoAnterior);
-//					String saldoUnidad = datos[10].trim();
-//					unidad = Double.parseDouble(saldoUnidad);
-//					String chequeStratus = datos[11];
-//					String in = datos[12];
-//					String valorEmerg = datos[13];
-//					String indCancelado = datos[14];
-//					String ivam = datos[15];
-//
-//					String msgcancelado = " ";
-//
-//					if (indCancelado != null && indCancelado.equals("true")) {
-//						msgcancelado = "Cancelado";
-//					}
-//
-//					Reporter.write("Movimiento: " + fecha + " | " + hora + " | " + talon + " | " + tipoStratus + "  |  "
-//							+ oficinaStratus + " | " + BigDecimal.valueOf(ValorTotalMov) + " | " + mtvoStratus + "  |  "
-//							+ BigDecimal.valueOf(unidad) + "  |  " + BigDecimal.valueOf(ValorChequeMovStartus) + "  |  "
-//							+ ivam + "  |  " + BigDecimal.valueOf(saldoAnteriorStratus) + "  |  " + valorEmerg + " | "
-//							+ msgcancelado);
-//
-//					String movr = fecha + " " + hora + " " + talon + " " + tipoStratus + " " + oficinaStratus + " "
-//							+ BigDecimal.valueOf(ValorTotalMov) + " " + mtvoStratus + " " + BigDecimal.valueOf(unidad)
-//							+ " " + BigDecimal.valueOf(ValorChequeMovStartus) + " " + ivam + " " + saldoAnterior + " "
-//							+ valorEmerg + " " + indCancelado;
-//
-//					if (movr.contains("0034") || movr.contains("0055")) {
-//						movimientosStratus.add(movr.split(","));
-//					}
-//
-//				}
-//
-//				double sumaMovimientos = 0.0;
-//				double sumaunida = 0.0;
-//				double sumaCheque = 0.0;
-//				double sumaIva = 0.0;
-//				double sumaGmf = 0.0;
-//				double saldoTotalFinalEsperado = 0.0;
-//
-//				int posicionSaldoInicialpos = -1;
-//
-//				for (int i = 0; i < movimientosStratus.size(); i++) {
-//					String[] movimiento = movimientosStratus.get(i);
-//					if (movimiento[movimiento.length - 1].contains(saldoPos.substring(0, saldoPos.length() - 3))) {
-//						posicionSaldoInicialpos = i;
-//						break;
-//					}
-//				}
-//
-//				Reporter.write(" ");
-//				Reporter.write("*** Valores Cobros, IVA y GMF");
-//				Reporter.write(" ");
-//
-//				String porGmf = DatosDavivienda.STRATUS.getGMF();
-//
-//				double cobrovalorIva = 0.0;
-//				double cobrovalorGMF = 0.0;
-//				if (posicionSaldoInicialpos != -1) {
-//
-//					// Sumar todos los movimientos, IVA y GMF
-//					for (int i = posicionSaldoInicialpos; i < movimientosStratus.size(); i++) {
-//						String[] movimiento = movimientosStratus.get(i);
-//						String[] datosMov = movimiento[0].split(" ");
-//
-//						double valorMovimiento = Double.parseDouble(datosMov[5].trim().replace(",", ""));
-//						String tipoMovimiento = datosMov[6].trim();
-//						double valorunida = Double.parseDouble(datosMov[7].trim().replace(",", ""));
-//						double valorCheque = Double.parseDouble(datosMov[8].trim().replace(",", ""));
-//						double valorIva = Double.parseDouble(datosMov[9].trim().replace(",", ""));
-//						double emerg = Double.parseDouble(datosMov[11].trim().replace(",", ""));
-//						String cancelados = datosMov[12].trim();
-//
-//						sumaMovimientos += valorMovimiento;
-//						sumaunida += valorunida;
-//						sumaCheque += valorCheque;
-//						sumaIva += Math.round(valorIva);
-//						sumaGmf += emerg;
-//
-//						if (valorIva != 0) {
-//
-//							Reporter.write("Valor Cobro Iva Movimiento: " + BigDecimal.valueOf(valorIva));
-//							cobrovalorIva = (valorMovimiento * 19 / 100);
-//							Reporter.write("Compara el Valor del Iva  : " + BigDecimal.valueOf(cobrovalorIva));
-//
-//							cobrovalorIva = valorIva;
-//
-//						} else if (valorIva == 0 && valorunida != 0) {
-////								cobrovalorIva = (valorunida * 19 / 100);
-//							Reporter.write("Para los movimientos cobros o 6 No se realiza la suma del Iva");
-//							Reporter.write(" ");
-//							Reporter.write("Posible Valor Cobro Iva que podria aparecer: "
-//									+ BigDecimal.valueOf((valorunida * 19 / 100)));
-//						} else if (valorIva == 0 && valorunida == 0) {
-//							cobrovalorIva = (valorunida * 19 / 100);
-//							Reporter.write("Valor Cobro Iva: " + BigDecimal.valueOf(cobrovalorIva));
-//						}
-//
-//						if (valorunida != 0) {
-//							if (valorIva == 0) {
-//
-//								if (porGmf.contains("1.0040")) {
-//									Reporter.write("Valor Cobro  GMF 4*1000: "
-//											+ BigDecimal.valueOf((valorMovimiento / 1000 * 4)));
-//									cobrovalorGMF = (valorMovimiento / 1000 * 4);
-//								} else if (porGmf.contains("1.0020")) {
-//									Reporter.write("Valor Cobro  GMF 2*1000: "
-//											+ BigDecimal.valueOf((valorMovimiento / 1000 * 2)));
-//									cobrovalorGMF = (valorMovimiento / 1000 * 2);
-//								} else if (porGmf.contains("1.0030")) {
-//									Reporter.write("Valor Cobro  GMF 3*1000: "
-//											+ BigDecimal.valueOf((valorMovimiento / 1000 * 3)));
-//									cobrovalorGMF = (valorMovimiento / 1000 * 3);
-//								} else if (porGmf.contains("1.0035")) {
-//									Reporter.write("Valor Cobro  GMF 35*1000: "
-//											+ BigDecimal.valueOf((valorMovimiento / 1000 * 35)));
-//									cobrovalorGMF = (valorMovimiento / 1000 * 35);
-//								}
-//							} else if (valorIva != 0) {
-//								double cobrosuma = (valorMovimiento + cobrovalorIva);
-//								if (porGmf.contains("1.0040")) {
-//
-//									Reporter.write(
-//											"Valor Cobro  GMF 4*1000: " + BigDecimal.valueOf((cobrosuma / 1000 * 4)));
-//									cobrovalorGMF = (cobrosuma / 1000 * 4);
-//								} else if (porGmf.contains("1.0020")) {
-//									Reporter.write(
-//											"Valor Cobro  GMF 2*1000: " + BigDecimal.valueOf((cobrosuma / 1000 * 2)));
-//									cobrovalorGMF = (cobrosuma / 1000 * 2);
-//								} else if (porGmf.contains("1.0030")) {
-//									Reporter.write(
-//											"Valor Cobro  GMF 3*1000: " + BigDecimal.valueOf((cobrosuma / 1000 * 3)));
-//									cobrovalorGMF = (cobrosuma / 1000 * 3);
-//								} else if (porGmf.contains("1.0035")) {
-//									Reporter.write(
-//											"Valor Cobro  GMF 35*1000: " + BigDecimal.valueOf((cobrosuma / 1000 * 35)));
-//									cobrovalorGMF = (cobrosuma / 1000 * 35);
-//								}
-//							}
-//						} else if (valorunida == 0) {
-//							double cobrosuma = (valorMovimiento + cobrovalorIva);
-//							if (porGmf.contains("1.0040")) {
-//								Reporter.write(
-//										"Valor Cobro  GMF 4*1000: " + BigDecimal.valueOf((cobrosuma / 1000 * 4)));
-//								cobrovalorGMF = (cobrosuma / 1000 * 4);
-//							} else if (porGmf.contains("1.0020")) {
-//								Reporter.write(
-//										"Valor Cobro  GMF 2*1000: " + BigDecimal.valueOf((cobrosuma / 1000 * 2)));
-//								cobrovalorGMF = (cobrosuma / 1000 * 2);
-//							} else if (porGmf.contains("1.0030")) {
-//								Reporter.write(
-//										"Valor Cobro  GMF 3*1000: " + BigDecimal.valueOf((cobrosuma / 1000 * 3)));
-//								cobrovalorGMF = (cobrosuma / 1000 * 3);
-//							} else if (porGmf.contains("1.0035")) {
-//								Reporter.write(
-//										"Valor Cobro  GMF 35*1000: " + BigDecimal.valueOf((cobrosuma / 1000 * 35)));
-//								cobrovalorGMF = (cobrosuma / 1000 * 35);
-//							}
-//						}
-//
-//						if (valorIva != 0) {
-//							double cobrosuma = (valorMovimiento + cobrovalorIva);
-//
-//							Reporter.write("Valor de la Tx: " + BigDecimal.valueOf(valorMovimiento)
-//									+ " Mas el Valor IVA: " + BigDecimal.valueOf(cobrovalorIva) + " La Suma es de: "
-//									+ BigDecimal.valueOf(cobrosuma));
-//
-//							Reporter.write(" ");
-//
-//							Reporter.write("Valor Unidad: " + (cobrosuma + cobrovalorGMF));
-//						}
-//
-//						if (valorIva == 0) {
-//							double cobrosuma = (valorMovimiento + cobrovalorGMF);
-//							Reporter.write("Valor de la Tx: " + BigDecimal.valueOf(valorMovimiento)
-//									+ " Mas el Valor Gmf: " + BigDecimal.valueOf(cobrovalorGMF) + " La Suma es de: "
-//									+ BigDecimal.valueOf(cobrosuma));
-//
-//							Reporter.write(" ");
-//							Reporter.write("Valor Unidad: " + cobrosuma);
-//						}
-//
-//						Reporter.write(" ");
-//
-//					}
-//
-//					double restaMovimientos = 0.0;
-//					double restaunida = 0.0;
-//					double restaCheque = 0.0;
-//					double restaIva = 0.0;
-//					double restaGmf = 0.0;
-//					String cancelados = "false";
-//					int canNumCancelados = 0;
-//					// Restar movimientos cancelados y tipoMovimiento 307
-//					for (int i = posicionSaldoInicialpos; i < movimientosStratus.size(); i++) {
-//						String[] movimiento = movimientosStratus.get(i);
-//						String[] datosMov = movimiento[0].split(" ");
-//
-//						double valorMovimiento = Double.parseDouble(datosMov[5].trim().replace(",", ""));
-//						String tipoMovimiento = datosMov[6].trim();
-//						double valorunida = Double.parseDouble(datosMov[7].trim().replace(",", ""));
-//						double valorCheque = Double.parseDouble(datosMov[8].trim().replace(",", ""));
-//						double valorIva = Double.parseDouble(datosMov[9].trim().replace(",", ""));
-//						double emerg = Double.parseDouble(datosMov[11].trim().replace(",", ""));
-//						cancelados = datosMov[12].trim();
-//
-//						if (tipoMovimiento.equals("307") || tipoMovimiento.equals("34")
-//								|| tipoMovimiento.equals("741")) {
-//							restaMovimientos += valorMovimiento;
-//							restaunida += valorunida;
-//							restaCheque += valorCheque;
-//							restaIva += valorIva;
-//							restaGmf += emerg;
-//							canNumCancelados++;
-//						} else if (tipoMovimiento.equals("307") || tipoMovimiento.equals("34")
-//								|| tipoMovimiento.equals("741") || cancelados.equals("true")) {
-//							restaMovimientos += valorMovimiento;
-//							restaunida += valorunida;
-//							restaCheque += valorCheque;
-//							restaIva += Math.round(valorIva);
-//							restaGmf += emerg;
-//							canNumCancelados++;
-//						}
-//					}
-//
-//					double valorMov = 0.0;
-//					valorMov = (sumaMovimientos - restaMovimientos);
-//
-//					double valorUnidad = 0.0;
-//					valorUnidad = (sumaunida - restaunida);
-//
-//					double valorCheque = 0.0;
-//					valorCheque = (sumaCheque - restaCheque);
-//
-//					double valorIva = 0.0;
-//					valorIva = (sumaIva - restaIva);
-//
-//					double valorGmf = 0.0;
-//					valorGmf = (sumaGmf - restaGmf);
-//
-//					Reporter.write(" ");
-//					Reporter.write("*** VALIDACIÓN DEL MOVIMIENTO");
-//					Reporter.write(" ");
-//
-//					Reporter.write("SUMA de los Movimientos: " + BigDecimal.valueOf(sumaMovimientos));
-//					Reporter.write("SUMA de las Unidades: " + BigDecimal.valueOf(sumaunida));
-//					Reporter.write("SUMA de los Cheques: " + BigDecimal.valueOf(sumaCheque));
-//					Reporter.write("SUMA de los Iva: " + BigDecimal.valueOf(sumaIva));
-//					Reporter.write("SUMA de los GMF: " + BigDecimal.valueOf(sumaGmf));
-//					Reporter.write(" ");
-//
-//					Reporter.write("Total de Movimientos Cancelados: " + canNumCancelados);
-//
-//					if (cancelados.equals("true")) {
-//
-//						Reporter.write("SUMA de los Movimiento cancelado: " + BigDecimal.valueOf(restaMovimientos));
-//						Reporter.write("SUMA de los Unidad cancelado: " + BigDecimal.valueOf(restaunida));
-//						Reporter.write("SUMA de los Cheque cancelado: " + BigDecimal.valueOf(restaCheque));
-//						Reporter.write("SUMA de los Iva cancelado: " + BigDecimal.valueOf(restaIva));
-//						Reporter.write("SUMA de los GMF cancelado: " + BigDecimal.valueOf(restaGmf));
-//						Reporter.write(" ");
-//					}
-//
-//					double costoTx = 0.0;
-//					costoTx = (sumaMovimientos + restaMovimientos);
-//
-//					// Restar los montos al saldo inicial
-//					double saldoesperado = 0.0;
-//
-//					if (valorUnidad != 0) {
-//						saldoesperado = (saldoTotalInicial1 - valorUnidad - valorCheque);
-//					} else if (valorUnidad == 0) {
-//						saldoesperado = (saldoTotalInicial1 - valorMov - Math.round(valorIva) - valorGmf);
-//
-//					}
-//
-//					Reporter.write(" ");
-//					Reporter.write("*** HACIENDO LAS VALIDACIÓN DEL MOVIMIENTO");
-//					Reporter.write(" ");
-//					Reporter.write("Valor del Movimiento: " + BigDecimal.valueOf(valorMov));
-//					Reporter.write("Valor del Unidad: " + BigDecimal.valueOf(valorUnidad));
-//					Reporter.write("Valor del Cheque " + BigDecimal.valueOf(valorCheque));
-//
-//					Reporter.write("Valor del Iva: " + BigDecimal.valueOf(valorIva));
-//					Reporter.write("Valor del GMF " + BigDecimal.valueOf(valorGmf));
-//
-//					saldoTotalFinalEsperado = saldoesperado;
-//
-//					// Calcular la diferencia entre los saldos finales
-//					double diferencia = 0.0;
-//
-//					diferencia = (saldoTotalFinal - saldoTotalFinalEsperado);
-//					String saldoEsperado = String.format("%.1f", saldoTotalFinalEsperado);
-//					Reporter.write(" ");
-//					// Mostrar los resultados
-//					Reporter.write(" ");
-//					Reporter.reportEvent(Reporter.MIC_HEADER, "INFRORMACIÓN DE SALDO FINAL");
-//					Reporter.write(" ");
-//					Reporter.reportEvent(Reporter.MIC_INFO, "El Saldo Final Stratus : " + saldoDisponiblefinal);
-//
-//					Reporter.reportEvent(Reporter.MIC_INFO,
-//							"El Saldo Final esperado: " + BigDecimal.valueOf(saldoTotalFinalEsperado));
-//
-//					Reporter.write(" ");
-//					Reporter.reportEvent(Reporter.MIC_HEADER, "DIFERENCIAL ENTRE LOS SALDOS");
-//					Reporter.write(" ");
-//
-//					Reporter.reportEvent(Reporter.MIC_INFO,
-//							"La diferencia entre los saldos final es: " + BigDecimal.valueOf(Math.round(diferencia)));
-//
-//				} else {
-//
-//					Reporter.reportEvent(Reporter.MIC_FAIL, "No se encontró el saldo inicial en los movimientos.");
-//
-//				}
-//			}
-//
-//		}
-//	}
+	public void ValidacionesStratusConsulta() throws Exception {
+
+		int contador = 0;
+
+		if (!DatosDavivienda.IS_RISKMOTOR) {
+
+			// fechaInicial - Date que contiene la fecha de consulta inicial.
+
+			Date fechaConsulta = Util.stringToDate(DateFechaTx, "YYYY/MM/DD");
+			Date FechaConsultaStratus = Util.dateAdd(fechaConsulta, Calendar.MINUTE, -1);
+
+			// Datos del titular como un array de String Stratus
+
+			String tipoDocumento = SettingsRun.getTestData().getParameter("Tipo Identificación");
+			String numeroDoc = SettingsRun.getTestData().getParameter("Id usuario").trim();
+			String tipoProduct = SettingsRun.getTestData().getParameter("Tipo producto origen / Franquicia").trim();
+			String numeroProducto = SettingsRun.getTestData().getParameter("Número producto origen").trim();
+
+			// Datos usuario
+			String[] datosTitular = { tipoDocumento, numeroDoc };
+			// Obtiene el tipo de cuenta si es migrada o fondo o tarjeta de cradito
+			String tipoProd = Stratus.getTipoCuenta(tipoProduct);
+			// Ventanas en consulta de movimientos Stratus
+			String[] arrayVents = { MovimientoStratus.VENT_UNID, MovimientoStratus.VENT_IVA,
+					MovimientoStratus.VENT_SALDO, MovimientoStratus.VENT_EMERG };
+
+			// Validacion con Stratus
+			if (DatosDavivienda.STRATUS != null) {
+				Reporter.write(" ");
+				Reporter.write("*** CONSULTA DE MOVIMIENTOS EN STRATUS");
+				Reporter.write(" ");
+				Reporter.reportEvent(Reporter.MIC_INFO, "Fecha y hora de la tx: " + FechaConsultaStratus);
+				Reporter.write(" ");
+				Reporter.write(
+						"           FECHA | HORA |   TALON  | TIPO  |  OFRE | VALOR TOTAL | MTVO  |  UNIDAD  |  VALOR CHEQUE  |  VALOR IVA  |  SALDO ANTERIOR  |  GMF | IND");
+				Reporter.write(" ");
+				// Realiza la consulta en Stratus de todos los movimientos
+
+				List<MovimientoStratus> datosCtadh2 = DatosDavivienda.STRATUS.getMovimientosEnRangoStratus(tipoProd,
+						numeroProducto, arrayVents, FechaConsultaStratus, 10, datosTitular);
+
+				List<String[]> movimientosStratus = new ArrayList<>();
+
+				String saldoinicialstra = this.saldoTotalInicial;
+				String saldoDislstra = this.saldoDisInicial;
+
+				String saldofinal = this.saldoTotalFinal;
+				String saldoDisponiblefinal = this.saldoDisponibleFinal;
+
+				// Saldo inicial
+				double saldoTotalInicial1 = 0.0;
+				double saldoDisponible = 0.0;
+				saldoTotalInicial1 = Double.parseDouble(saldoDislstra);
+				saldoDisponible = Double.parseDouble(saldoinicialstra);
+				String saldoPos = String.format("%.1f", saldoDisponible);
+
+				// Saldo final
+				double saldoTotalFinal = 0.0;
+				double saldoDisponibleFinal = 0.0;
+				saldoTotalFinal = Double.parseDouble(saldoDisponiblefinal);
+				saldoDisponibleFinal = Double.parseDouble(saldoDisponiblefinal);
+				String saldoPosFinal = String.format("%.2f", saldoTotalFinal);
+
+				// Retorna los movimientos en Stratus
+				for (MovimientoStratus movimiento : datosCtadh2) {
+					waitMilisegundos(125);
+					String oficinaStratus = null, tipoStratus = null, mtvoStratus = null, talon = null;
+					double ValorTotalMov = 0.0, ValorChequeMovStartus = 0.0;
+					double saldoAnteriorStratus = 0.0;
+					double unidad = 0.0;
+
+					String movToString = movimiento.toString().replace("[INDIC:", "").replace("]", "")
+							.replace("SALDO:", "|").replace("UNID :", "|").replace("EMERG:", "|").replace("IVA  :", "|")
+							.replace(" ", "").replace("  ", "");
+
+					String[] datos = movToString.split("\\|");// Extraer los datos necesarios por posiciones
+
+					String fecha = datos[0].trim();
+					String hora = datos[1].trim();
+					String term = datos[2].trim();
+					talon = datos[3].trim();
+					tipoStratus = datos[4].trim();
+					oficinaStratus = datos[5].trim();
+					String valorStratus = datos[6].trim();
+					ValorTotalMov = Double.parseDouble(valorStratus);
+					mtvoStratus = datos[7].trim();
+					String FechaMovStratus = datos[8].trim();
+					String saldoAnterior = datos[9].trim();
+					saldoAnteriorStratus = Double.parseDouble(saldoAnterior);
+					String saldoUnidad = datos[10].trim();
+					unidad = Double.parseDouble(saldoUnidad);
+					String chequeStratus = datos[11];
+					String in = datos[12];
+					String valorEmerg = datos[13];
+					String indCancelado = datos[14];
+					String ivam = datos[15];
+
+					String msgcancelado = " ";
+
+					if (indCancelado != null && indCancelado.equals("true")) {
+						msgcancelado = "Cancelado";
+					}
+
+					Reporter.write("Movimiento: " + fecha + " | " + hora + " | " + talon + " | " + tipoStratus + "  |  "
+							+ oficinaStratus + " | " + BigDecimal.valueOf(ValorTotalMov) + " | " + mtvoStratus + "  |  "
+							+ BigDecimal.valueOf(unidad) + "  |  " + BigDecimal.valueOf(ValorChequeMovStartus) + "  |  "
+							+ ivam + "  |  " + BigDecimal.valueOf(saldoAnteriorStratus) + "  |  " + valorEmerg + " | "
+							+ msgcancelado);
+
+					String movr = fecha + " " + hora + " " + talon + " " + tipoStratus + " " + oficinaStratus + " "
+							+ BigDecimal.valueOf(ValorTotalMov) + " " + mtvoStratus + " " + BigDecimal.valueOf(unidad)
+							+ " " + BigDecimal.valueOf(ValorChequeMovStartus) + " " + ivam + " " + saldoAnterior + " "
+							+ valorEmerg + " " + indCancelado;
+
+					if (movr.contains("0034") || movr.contains("0055")) {
+						movimientosStratus.add(movr.split(","));
+					}
+
+				}
+
+				double sumaMovimientos = 0.0;
+				double sumaunida = 0.0;
+				double sumaCheque = 0.0;
+				double sumaIva = 0.0;
+				double sumaGmf = 0.0;
+				double saldoTotalFinalEsperado = 0.0;
+
+				int posicionSaldoInicialpos = -1;
+
+				for (int i = 0; i < movimientosStratus.size(); i++) {
+					String[] movimiento = movimientosStratus.get(i);
+					if (movimiento[movimiento.length - 1].contains(saldoPos.substring(0, saldoPos.length() - 3))) {
+						posicionSaldoInicialpos = i;
+						break;
+					}
+				}
+
+				Reporter.write(" ");
+				Reporter.write("*** Valores Cobros, IVA y GMF");
+				Reporter.write(" ");
+
+				String porGmf = DatosDavivienda.STRATUS.getGMF();
+
+				double cobrovalorIva = 0.0;
+				double cobrovalorGMF = 0.0;
+				if (posicionSaldoInicialpos != -1) {
+
+					// Sumar todos los movimientos, IVA y GMF
+					for (int i = posicionSaldoInicialpos; i < movimientosStratus.size(); i++) {
+						String[] movimiento = movimientosStratus.get(i);
+						String[] datosMov = movimiento[0].split(" ");
+
+						double valorMovimiento = Double.parseDouble(datosMov[5].trim().replace(",", ""));
+						String tipoMovimiento = datosMov[6].trim();
+						double valorunida = Double.parseDouble(datosMov[7].trim().replace(",", ""));
+						double valorCheque = Double.parseDouble(datosMov[8].trim().replace(",", ""));
+						double valorIva = Double.parseDouble(datosMov[9].trim().replace(",", ""));
+						double emerg = Double.parseDouble(datosMov[11].trim().replace(",", ""));
+						String cancelados = datosMov[12].trim();
+
+						sumaMovimientos += valorMovimiento;
+						sumaunida += valorunida;
+						sumaCheque += valorCheque;
+						sumaIva += Math.round(valorIva);
+						sumaGmf += emerg;
+
+						if (valorIva != 0) {
+
+							Reporter.write("Valor Cobro Iva Movimiento: " + BigDecimal.valueOf(valorIva));
+							cobrovalorIva = (valorMovimiento * 19 / 100);
+							Reporter.write("Compara el Valor del Iva  : " + BigDecimal.valueOf(cobrovalorIva));
+
+							cobrovalorIva = valorIva;
+
+						} else if (valorIva == 0 && valorunida != 0) {
+//								cobrovalorIva = (valorunida * 19 / 100);
+							Reporter.write("Para los movimientos cobros o 6 No se realiza la suma del Iva");
+							Reporter.write(" ");
+							Reporter.write("Posible Valor Cobro Iva que podria aparecer: "
+									+ BigDecimal.valueOf((valorunida * 19 / 100)));
+						} else if (valorIva == 0 && valorunida == 0) {
+							cobrovalorIva = (valorunida * 19 / 100);
+							Reporter.write("Valor Cobro Iva: " + BigDecimal.valueOf(cobrovalorIva));
+						}
+
+						if (valorunida != 0) {
+							if (valorIva == 0) {
+
+								if (porGmf.contains("1.0040")) {
+									Reporter.write("Valor Cobro  GMF 4*1000: "
+											+ BigDecimal.valueOf((valorMovimiento / 1000 * 4)));
+									cobrovalorGMF = (valorMovimiento / 1000 * 4);
+								} else if (porGmf.contains("1.0020")) {
+									Reporter.write("Valor Cobro  GMF 2*1000: "
+											+ BigDecimal.valueOf((valorMovimiento / 1000 * 2)));
+									cobrovalorGMF = (valorMovimiento / 1000 * 2);
+								} else if (porGmf.contains("1.0030")) {
+									Reporter.write("Valor Cobro  GMF 3*1000: "
+											+ BigDecimal.valueOf((valorMovimiento / 1000 * 3)));
+									cobrovalorGMF = (valorMovimiento / 1000 * 3);
+								} else if (porGmf.contains("1.0035")) {
+									Reporter.write("Valor Cobro  GMF 35*1000: "
+											+ BigDecimal.valueOf((valorMovimiento / 1000 * 35)));
+									cobrovalorGMF = (valorMovimiento / 1000 * 35);
+								}
+							} else if (valorIva != 0) {
+								double cobrosuma = (valorMovimiento + cobrovalorIva);
+								if (porGmf.contains("1.0040")) {
+
+									Reporter.write(
+											"Valor Cobro  GMF 4*1000: " + BigDecimal.valueOf((cobrosuma / 1000 * 4)));
+									cobrovalorGMF = (cobrosuma / 1000 * 4);
+								} else if (porGmf.contains("1.0020")) {
+									Reporter.write(
+											"Valor Cobro  GMF 2*1000: " + BigDecimal.valueOf((cobrosuma / 1000 * 2)));
+									cobrovalorGMF = (cobrosuma / 1000 * 2);
+								} else if (porGmf.contains("1.0030")) {
+									Reporter.write(
+											"Valor Cobro  GMF 3*1000: " + BigDecimal.valueOf((cobrosuma / 1000 * 3)));
+									cobrovalorGMF = (cobrosuma / 1000 * 3);
+								} else if (porGmf.contains("1.0035")) {
+									Reporter.write(
+											"Valor Cobro  GMF 35*1000: " + BigDecimal.valueOf((cobrosuma / 1000 * 35)));
+									cobrovalorGMF = (cobrosuma / 1000 * 35);
+								}
+							}
+						} else if (valorunida == 0) {
+							double cobrosuma = (valorMovimiento + cobrovalorIva);
+							if (porGmf.contains("1.0040")) {
+								Reporter.write(
+										"Valor Cobro  GMF 4*1000: " + BigDecimal.valueOf((cobrosuma / 1000 * 4)));
+								cobrovalorGMF = (cobrosuma / 1000 * 4);
+							} else if (porGmf.contains("1.0020")) {
+								Reporter.write(
+										"Valor Cobro  GMF 2*1000: " + BigDecimal.valueOf((cobrosuma / 1000 * 2)));
+								cobrovalorGMF = (cobrosuma / 1000 * 2);
+							} else if (porGmf.contains("1.0030")) {
+								Reporter.write(
+										"Valor Cobro  GMF 3*1000: " + BigDecimal.valueOf((cobrosuma / 1000 * 3)));
+								cobrovalorGMF = (cobrosuma / 1000 * 3);
+							} else if (porGmf.contains("1.0035")) {
+								Reporter.write(
+										"Valor Cobro  GMF 35*1000: " + BigDecimal.valueOf((cobrosuma / 1000 * 35)));
+								cobrovalorGMF = (cobrosuma / 1000 * 35);
+							}
+						}
+
+						if (valorIva != 0) {
+							double cobrosuma = (valorMovimiento + cobrovalorIva);
+
+							Reporter.write("Valor de la Tx: " + BigDecimal.valueOf(valorMovimiento)
+									+ " Mas el Valor IVA: " + BigDecimal.valueOf(cobrovalorIva) + " La Suma es de: "
+									+ BigDecimal.valueOf(cobrosuma));
+
+							Reporter.write(" ");
+
+							Reporter.write("Valor Unidad: " + (cobrosuma + cobrovalorGMF));
+						}
+
+						if (valorIva == 0) {
+							double cobrosuma = (valorMovimiento + cobrovalorGMF);
+							Reporter.write("Valor de la Tx: " + BigDecimal.valueOf(valorMovimiento)
+									+ " Mas el Valor Gmf: " + BigDecimal.valueOf(cobrovalorGMF) + " La Suma es de: "
+									+ BigDecimal.valueOf(cobrosuma));
+
+							Reporter.write(" ");
+							Reporter.write("Valor Unidad: " + cobrosuma);
+						}
+
+						Reporter.write(" ");
+
+					}
+
+					double restaMovimientos = 0.0;
+					double restaunida = 0.0;
+					double restaCheque = 0.0;
+					double restaIva = 0.0;
+					double restaGmf = 0.0;
+					String cancelados = "false";
+					int canNumCancelados = 0;
+					// Restar movimientos cancelados y tipoMovimiento 307
+					for (int i = posicionSaldoInicialpos; i < movimientosStratus.size(); i++) {
+						String[] movimiento = movimientosStratus.get(i);
+						String[] datosMov = movimiento[0].split(" ");
+
+						double valorMovimiento = Double.parseDouble(datosMov[5].trim().replace(",", ""));
+						String tipoMovimiento = datosMov[6].trim();
+						double valorunida = Double.parseDouble(datosMov[7].trim().replace(",", ""));
+						double valorCheque = Double.parseDouble(datosMov[8].trim().replace(",", ""));
+						double valorIva = Double.parseDouble(datosMov[9].trim().replace(",", ""));
+						double emerg = Double.parseDouble(datosMov[11].trim().replace(",", ""));
+						cancelados = datosMov[12].trim();
+
+						if (tipoMovimiento.equals("307") || tipoMovimiento.equals("34")
+								|| tipoMovimiento.equals("741")) {
+							restaMovimientos += valorMovimiento;
+							restaunida += valorunida;
+							restaCheque += valorCheque;
+							restaIva += valorIva;
+							restaGmf += emerg;
+							canNumCancelados++;
+						} else if (tipoMovimiento.equals("307") || tipoMovimiento.equals("34")
+								|| tipoMovimiento.equals("741") || cancelados.equals("true")) {
+							restaMovimientos += valorMovimiento;
+							restaunida += valorunida;
+							restaCheque += valorCheque;
+							restaIva += Math.round(valorIva);
+							restaGmf += emerg;
+							canNumCancelados++;
+						}
+					}
+
+					double valorMov = 0.0;
+					valorMov = (sumaMovimientos - restaMovimientos);
+
+					double valorUnidad = 0.0;
+					valorUnidad = (sumaunida - restaunida);
+
+					double valorCheque = 0.0;
+					valorCheque = (sumaCheque - restaCheque);
+
+					double valorIva = 0.0;
+					valorIva = (sumaIva - restaIva);
+
+					double valorGmf = 0.0;
+					valorGmf = (sumaGmf - restaGmf);
+
+					Reporter.write(" ");
+					Reporter.write("*** VALIDACIÓN DEL MOVIMIENTO");
+					Reporter.write(" ");
+
+					Reporter.write("SUMA de los Movimientos: " + BigDecimal.valueOf(sumaMovimientos));
+					Reporter.write("SUMA de las Unidades: " + BigDecimal.valueOf(sumaunida));
+					Reporter.write("SUMA de los Cheques: " + BigDecimal.valueOf(sumaCheque));
+					Reporter.write("SUMA de los Iva: " + BigDecimal.valueOf(sumaIva));
+					Reporter.write("SUMA de los GMF: " + BigDecimal.valueOf(sumaGmf));
+					Reporter.write(" ");
+
+					Reporter.write("Total de Movimientos Cancelados: " + canNumCancelados);
+
+					if (cancelados.equals("true")) {
+
+						Reporter.write("SUMA de los Movimiento cancelado: " + BigDecimal.valueOf(restaMovimientos));
+						Reporter.write("SUMA de los Unidad cancelado: " + BigDecimal.valueOf(restaunida));
+						Reporter.write("SUMA de los Cheque cancelado: " + BigDecimal.valueOf(restaCheque));
+						Reporter.write("SUMA de los Iva cancelado: " + BigDecimal.valueOf(restaIva));
+						Reporter.write("SUMA de los GMF cancelado: " + BigDecimal.valueOf(restaGmf));
+						Reporter.write(" ");
+					}
+
+					double costoTx = 0.0;
+					costoTx = (sumaMovimientos + restaMovimientos);
+
+					// Restar los montos al saldo inicial
+					double saldoesperado = 0.0;
+
+					if (valorUnidad != 0) {
+						saldoesperado = (saldoTotalInicial1 - valorUnidad - valorCheque);
+					} else if (valorUnidad == 0) {
+						saldoesperado = (saldoTotalInicial1 - valorMov - Math.round(valorIva) - valorGmf);
+
+					}
+
+					Reporter.write(" ");
+					Reporter.write("*** HACIENDO LAS VALIDACIÓN DEL MOVIMIENTO");
+					Reporter.write(" ");
+					Reporter.write("Valor del Movimiento: " + BigDecimal.valueOf(valorMov));
+					Reporter.write("Valor del Unidad: " + BigDecimal.valueOf(valorUnidad));
+					Reporter.write("Valor del Cheque " + BigDecimal.valueOf(valorCheque));
+
+					Reporter.write("Valor del Iva: " + BigDecimal.valueOf(valorIva));
+					Reporter.write("Valor del GMF " + BigDecimal.valueOf(valorGmf));
+
+					saldoTotalFinalEsperado = saldoesperado;
+
+					// Calcular la diferencia entre los saldos finales
+					double diferencia = 0.0;
+
+					diferencia = (saldoTotalFinal - saldoTotalFinalEsperado);
+					String saldoEsperado = String.format("%.1f", saldoTotalFinalEsperado);
+					Reporter.write(" ");
+					// Mostrar los resultados
+					Reporter.write(" ");
+					Reporter.reportEvent(Reporter.MIC_HEADER, "INFRORMACIÓN DE SALDO FINAL");
+					Reporter.write(" ");
+					Reporter.reportEvent(Reporter.MIC_INFO, "El Saldo Final Stratus : " + saldoDisponiblefinal);
+
+					Reporter.reportEvent(Reporter.MIC_INFO,
+							"El Saldo Final esperado: " + BigDecimal.valueOf(saldoTotalFinalEsperado));
+
+					Reporter.write(" ");
+					Reporter.reportEvent(Reporter.MIC_HEADER, "DIFERENCIAL ENTRE LOS SALDOS");
+					Reporter.write(" ");
+
+					Reporter.reportEvent(Reporter.MIC_INFO,
+							"La diferencia entre los saldos final es: " + BigDecimal.valueOf(Math.round(diferencia)));
+
+				} else {
+
+					Reporter.reportEvent(Reporter.MIC_FAIL, "No se encontró el saldo inicial en los movimientos.");
+
+				}
+			}
+
+		}
+	}
+	
+	/**
+	 * Hace una espera de los Milisegundos indicados.
+	 * 
+	 * @param segundos
+	 */
+	public static void waitMilisegundos(int milisegundos) {
+		try {
+			Thread.sleep(milisegundos);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 
 }

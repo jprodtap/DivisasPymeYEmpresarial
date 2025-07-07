@@ -31,14 +31,49 @@ import dav.transversal.MotorRiesgo;
 import dav.transversal.NotificacionSMS;
 import dxc.util.DXCUtil;
 
+/**
+ * Controlador General de Divisas para los portales PYME y Portal Empresarial.
+ * Permite ejecutar operaciones de divisas reutilizando la lógica y
+ * diferenciando la inicialización según el tipo de portal.
+ *
+ * @author
+ */
 public class ControllerGeneralDivisas implements Controller {
+
+	// Enum para distinguir el tipo de portal
+	public enum PortalType {
+		PYME, EMPRESARIAL
+	}
 
 	// ***********************************************************************************************************************
 	// * Constructor - Implementacion Patron Singleton *
 	// ***********************************************************************************************************************
 
-	private static ControllerGeneralDivisas instanciaUnicaControllerGeneralDivisas; // Variable en donde se Almacena la
-																					// Instancia Unica de la Clase.
+	private static ControllerGeneralDivisas instanciaUnicaControllerGeneralDivisas; // Variable en donde se Almacena la Instancia Unica de la Clase.
+
+	// ***********************************************************************************************************************
+	// * Instancias. *
+	// ***********************************************************************************************************************
+
+	// Pyme
+	PageLoginFrontEmpresarial loginFrontEmpresarial = null;
+	PageLoginPymes1 loginFrontPyme = null;
+	PageOrigen1 pageOrigen = null;
+	PageAdminParametros1 pageAdminParametros = null;
+	PageActualizacionDeDatos1 pageActualizacionDeDatos = null;
+	PageConfirmacion1 pageConf;
+
+	// Empresarial
+	PageFrontEmpresarial frontEmpresarial = null;
+	PageConsultaProductosFrontEmpresarial consultaProductosFrontEmpresarial = null;
+
+	// Divisas
+	PageDivisas pageDivisas = null;
+	PageEnviarTransInternacional pageEnviarTransInternacional = null;
+	PageRecibirTransferenciasInternacionales pageRecibirTransferenciasInternacionales = null;
+	PageDocumentos_Y_Formularios pageDocumentos_Y_Formularios = null;
+	PageConsultatxInternacional pageConsultatxInternacional = null;
+	PageAprobacionInter pageAprobInter = null;
 
 	// ***********************************************************************************************************************
 
@@ -84,29 +119,6 @@ public class ControllerGeneralDivisas implements Controller {
 		instanciaUnicaControllerGeneralDivisas = null;
 
 	}
-	// ***********************************************************************************************************************
-	// * Instancias. *
-	// ***********************************************************************************************************************
-
-	// Pyme
-	PageLoginFrontEmpresarial loginFrontEmpresarial = null;
-	PageLoginPymes1 loginFrontPyme = null;
-	PageOrigen1 pageOrigen = null;
-	PageAdminParametros1 pageAdminParametros = null;
-	PageActualizacionDeDatos1 pageActualizacionDeDatos = null;
-	PageConfirmacion1 pageConf;
-
-	// Empresarial
-	PageFrontEmpresarial frontEmpresarial = null;
-	PageConsultaProductosFrontEmpresarial consultaProductosFrontEmpresarial = null;
-
-	// Divisas
-	PageDivisas pageDivisas = null;
-	PageEnviarTransInternacional pageEnviarTransInternacional = null;
-	PageRecibirTransferenciasInternacionales pageRecibirTransferenciasInternacionales = null;
-	PageDocumentos_Y_Formularios pageDocumentos_Y_Formularios = null;
-	PageConsultatxInternacional pageConsultatxInternacional = null;
-	PageAprobacionInter pageAprobInter = null;
 
 	// ===========================================================================================================================================
 
@@ -287,20 +299,21 @@ public class ControllerGeneralDivisas implements Controller {
 
 		this.creacionObjetos();
 
-//		msgError = this.realizarLoginFrontEmpresarial();
-//
-//		if (msgError != null)
-//			return;
-//
-//		msgError = this.seleccionarEmpresaFrontEmpresarial();
-//
-//		if (msgError != null)
-//			return;
-//
-//		msgError = this.seleccionarTransferenciasInternacionales();
-//		if (msgError != null)
-//			return;
+		msgError = this.realizarLoginFrontEmpresarial();
 
+		if (msgError != null)
+			return;
+
+		msgError = this.seleccionarEmpresaFrontEmpresarial();
+
+		if (msgError != null)
+			return;
+
+		msgError = this.seleccionarTransferenciasInternacionales();
+		if (msgError != null)
+			return;
+
+		//Transacion
 		EnviarTransferenciasInternacionales(false);
 	}
 
@@ -489,14 +502,13 @@ public class ControllerGeneralDivisas implements Controller {
 		return msgError;
 	}
 
-	
 	// Variables para guardar los últimos valores
-		private String lastNumAprobaciones = "";
-		private String lastTipoAbono = "";
-		private String lastCtaInscrita = "";
-		private String lastIdusuario = "";
-		private String lastempresa = "";
-	
+	private String lastNumAprobaciones = "";
+	private String lastTipoAbono = "";
+	private String lastCtaInscrita = "";
+	private String lastIdusuario = "";
+	private String lastempresa = "";
+
 	private String realizarLoginFrontPyme() throws Exception {
 
 		String msgError = null;
@@ -604,20 +616,22 @@ public class ControllerGeneralDivisas implements Controller {
 //-----------------------------------------------------------------------------------------------------------------------
 
 			// Comparar con los valores anteriores
-			if (!Idusuario.equals(lastIdusuario) || !empresa.equals(lastempresa)|| !numAprobaciones.equals(lastNumAprobaciones) || !tipoAbono.equals(lastTipoAbono)|| !ctaInscrita.equals(lastCtaInscrita)) {
+			if (!Idusuario.equals(lastIdusuario) || !empresa.equals(lastempresa)
+					|| !numAprobaciones.equals(lastNumAprobaciones) || !tipoAbono.equals(lastTipoAbono)
+					|| !ctaInscrita.equals(lastCtaInscrita)) {
 
-			if (!this.servicio.equals("Divisas Documentos y Formularios")
-					&& !this.servicio.equals("Consulta Tx Internacionales Enviar al exterior Validar Estado")) {
-				// Realizar la configuraci�n si los valores son diferentes
-				this.pageAdminParametros = new PageAdminParametros1(loginFrontPyme);
-				// Este m�todo hace la configuraci�n en par�metros generales, y guarda la
-				// evidencia.
-				msgError = this.pageAdminParametros.hacerConfiguracion(numAprobaciones, tipoAbono, ctaInscrita);
-			} else {
-				msgError = "Divisas";
-			}
+				if (!this.servicio.equals("Divisas Documentos y Formularios")
+						&& !this.servicio.equals("Consulta Tx Internacionales Enviar al exterior Validar Estado")) {
+					// Realizar la configuraci�n si los valores son diferentes
+					this.pageAdminParametros = new PageAdminParametros1(loginFrontPyme);
+					// Este m�todo hace la configuraci�n en par�metros generales, y guarda la
+					// evidencia.
+					msgError = this.pageAdminParametros.hacerConfiguracion(numAprobaciones, tipoAbono, ctaInscrita);
+				} else {
+					msgError = "Divisas";
+				}
 
-			// Actualizar los valores
+				// Actualizar los valores
 				lastNumAprobaciones = numAprobaciones;
 				lastTipoAbono = tipoAbono;
 				lastCtaInscrita = ctaInscrita;
@@ -775,27 +789,27 @@ public class ControllerGeneralDivisas implements Controller {
 
 			this.accionConfirmarInternacional(soloGuardar);
 
-//			if (!DatosDavivienda.IS_RISKMOTOR) {
-//				if (DatosDavivienda.STRATUS != null) {
-//					String tipoProdUpper = this.tipoCta;
-//					String tipoProd = " "; // VALOR POR DEFECTO
-//
-//					if (tipoProdUpper.contains("AHORROS") || tipoProdUpper.contains("ahorros"))
-//						tipoProd = "AHORROS";
-//					else if (tipoProdUpper.contains("CORRIENTE") || tipoProdUpper.contains("corriente")) // CRÉDIPLUS
-//						tipoProd = "CORRIENTE";
-//
-//					this.pageEnviarTransInternacional.validacionSaldosStratus(this.servicio, this.tipoIdEm,this.nitEmpre, tipoProd, this.numCta, false);
-//					String saldoIni = this.pageEnviarTransInternacional.getSaldoTotalInicialOrigen();
-//					String saldodis = this.pageEnviarTransInternacional.getSaldoDispoInicialOrigen();
-//					String saldoFin = this.pageEnviarTransInternacional.getSaldoTotalFinalOrigen();
-//					String saldoDispoFin = this.pageEnviarTransInternacional.getSaldoTotalFinalOrigen();
-//					this.pageConsultatxInternacional.setSaldoTotalInicial(saldoIni);
-//					this.pageConsultatxInternacional.setSaldoDisInicial(saldodis);
-//					this.pageConsultatxInternacional.setSaldoTotalFinal(saldoFin);
-//					this.pageConsultatxInternacional.setSaldoDisponibleFinal(saldoDispoFin);
-//				}
-//			}
+			if (!DatosDavivienda.IS_RISKMOTOR) {
+				if (DatosDavivienda.STRATUS != null) {
+					String tipoProdUpper = this.tipoCta;
+					String tipoProd = " "; // VALOR POR DEFECTO
+
+					if (tipoProdUpper.contains("AHORROS") || tipoProdUpper.contains("ahorros"))
+						tipoProd = "AHORROS";
+					else if (tipoProdUpper.contains("CORRIENTE") || tipoProdUpper.contains("corriente")) // CRÉDIPLUS
+						tipoProd = "CORRIENTE";
+
+					this.pageEnviarTransInternacional.validacionSaldosStratus(this.servicio, this.tipoIdEm,this.nitEmpre, tipoProd, this.numCta, false);
+					String saldoIni = this.pageEnviarTransInternacional.getSaldoTotalInicialOrigen();
+					String saldodis = this.pageEnviarTransInternacional.getSaldoDispoInicialOrigen();
+					String saldoFin = this.pageEnviarTransInternacional.getSaldoTotalFinalOrigen();
+					String saldoDispoFin = this.pageEnviarTransInternacional.getSaldoTotalFinalOrigen();
+					this.pageConsultatxInternacional.setSaldoTotalInicial(saldoIni);
+					this.pageConsultatxInternacional.setSaldoDisInicial(saldodis);
+					this.pageConsultatxInternacional.setSaldoTotalFinal(saldoFin);
+					this.pageConsultatxInternacional.setSaldoDisponibleFinal(saldoDispoFin);
+				}
+			}
 
 			pageDivisas.setTime(pageConf.getFechaHoraTx());
 		}

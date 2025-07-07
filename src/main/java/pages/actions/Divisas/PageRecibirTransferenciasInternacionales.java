@@ -3,8 +3,7 @@ package pages.actions.Divisas;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-
-
+import dav.transversal.DatosDavivienda;
 import library.reporting.Reporter;
 import library.settings.SettingsRun;
 import library.common.Util;
@@ -267,7 +266,7 @@ public class PageRecibirTransferenciasInternacionales extends PageDivisas {
 					this.click(ButtonSigIn);
 					msg = this.closeActiveIntAlertConfirma();
 					Reporter.reportEvent(Reporter.MIC_FAIL, msg);
-					return "No se encontro la opción " + numCambiario2;
+					return "No se encontro la opciï¿½n " + numCambiario2;
 
 				}
 
@@ -792,7 +791,7 @@ public class PageRecibirTransferenciasInternacionales extends PageDivisas {
 			}
 		} while (this.element(titMoInformacion) == null);
 
-		Evidence.save("Confirmación",this);
+		Evidence.save("Confirmaciï¿½n",this);
 
 		if (this.isDisplayed(cmpMonto)) {
 			String monto = this.getText(cmpMonto).trim();
@@ -906,83 +905,83 @@ public class PageRecibirTransferenciasInternacionales extends PageDivisas {
 	 * @param saldoOrigen
 	 * @throws Exception
 	 */
-//	public void validacionSaldosStratus(String tipoDocumento,String numeroDoc,String tipoCta, String numCta, boolean saldoOrigen) throws Exception {
-//		if (DatosDavivienda.STRATUS != null) {
-//			String saldoDis = null;
-//			String saldoDisponible = null;
-//			if (saldoOrigen) {
-//				saldoDis = this.getText(this.element(locSaldodisponible.replace("NUMCUENTA", Util.right(numCta, 4)).replace("TIPOCUENTA", tipoCta)));
-//				saldoDisponible = saldoDis.replace("$ ", "").replace(".", "").replace(",", ".");
-//			}
-//
-//			if (!DatosDavivienda.IS_RISKMOTOR) {
-//				if (tipoCta.contains("AHORROS") || tipoCta.contains("ahorros") || tipoCta.contains("Ahorros")|| tipoCta.contains("Ahorro"))
-//					tipoCta = "AHORROS";
-//				else if (tipoCta.contains("CORRIENTE") || tipoCta.contains("corriente")|| tipoCta.contains("Corriente")) 
-//					tipoCta = "CORRIENTE";
-//				if (tipoCta.contains("DIPLUS") || tipoCta.contains("diplus")) {
-//					tipoCta = "CREDITO";
-//					String[] datosCrediplus = DatosDavivienda.STRATUS.getCtaCobroCrediplus(numCta);
-//					tipoCta = datosCrediplus[0];
-//					numCta = datosCrediplus[1];
-//				}
-//				String[] saldosDisponibles = DatosDavivienda.STRATUS.consultarDatosPantallaSaldos(tipoDocumento,
-//						numeroDoc, tipoCta, numCta);
-//				Util.BonotesTecla("ALTTAB");
-//				if (saldoOrigen) {
-//
-//					// Elimina el carater '$' y espacios de ambas cadenas antes de formatear
-//					if (tipoCta.contains("ahorro") || tipoCta.contains("AH")) {
-//						this.saldoTotalInicial = saldosDisponibles[0].replace("$ ", "");
-//						this.saldoDispoInicial = saldosDisponibles[1].replace("$ ", "");
-//					}
-//					if (tipoCta.contains("corriente") || tipoCta.contains("CC") || tipoCta.contains("CORRIENTE")) {
-//						this.saldoTotalInicial = saldosDisponibles[6].replace("$ ", "");
-//						this.saldoDispoInicial = saldosDisponibles[0].replace("$ ", "");
-//
-//					}
-//					if (tipoCta.contains("CREDITO") || tipoCta.contains("diplus")) {
-//						this.saldoTotalInicial = saldosDisponibles[0].replace("$ ", "");
-//						this.saldoDispoInicial = saldosDisponibles[6].replace("$ ", "");
-//
-//					}
-//					Reporter.reportEvent(Reporter.MIC_INFO,
-//							"El saldo stratus Total Inicial: " + this.saldoTotalInicial.replace(".", ","));
-//					Reporter.reportEvent(Reporter.MIC_INFO, "El saldo stratus Disponible Efectivo Inicial: "
-//							+ this.saldoDispoInicial.replace(".", ","));
-//				} else if (!saldoOrigen) {
-//
-//					// Elimina el carater '$' y espacios de ambas cadenas antes de formatear
-//					if (tipoCta.contains("ahorro") || tipoCta.contains("AH")) {
-//						this.saldoTotalFinal = saldosDisponibles[0].replace("$ ", "");
-//						this.saldoDispoFinal = saldosDisponibles[1].replace("$ ", "");
-//					}
-//
-//					if (tipoCta.contains("corriente") || tipoCta.contains("CC")) {
-//						this.saldoTotalFinal = saldosDisponibles[6].replace("$ ", "");
-//						this.saldoDispoFinal = saldosDisponibles[0].replace("$ ", "");
-//					}
-//
-//					Reporter.reportEvent(Reporter.MIC_INFO,
-//							"El saldo Total stratus Final: " + this.saldoTotalFinal.replace(".", ","));
-//					Reporter.reportEvent(Reporter.MIC_INFO,
-//							"El saldo Disponible Efectivo stratus Final: " + this.saldoDispoFinal.replace(".", ","));
-//				}
-//
-//				if (saldoOrigen) {
-//					if (this.saldoDispoInicial.contains(saldoDisponible)) {
-//						Reporter.reportEvent(Reporter.MIC_INFO,
-//								"El saldo total en stratus " + saldoDispoInicial.replace(".", ",")
-//										+ " corresponde al saldo disponible en el portal: " + saldoDis);
-//					} else {
-//						Reporter.reportEvent(Reporter.MIC_INFO, "El saldo total en stratus " + saldoDispoInicial
-//								+ " no corresponde al saldo disponible en el portal:" + saldoDis);
-//					}
-//					Reporter.write(" ");
-//				}
-//			}
-//		}
-//	}
+	public void validacionSaldosStratus(String tipoDocumento,String numeroDoc,String tipoCta, String numCta, boolean saldoOrigen) throws Exception {
+		if (DatosDavivienda.STRATUS != null) {
+			String saldoDis = null;
+			String saldoDisponible = null;
+			if (saldoOrigen) {
+				saldoDis = this.getText(this.element(locSaldodisponible.replace("NUMCUENTA", Util.right(numCta, 4)).replace("TIPOCUENTA", tipoCta)));
+				saldoDisponible = saldoDis.replace("$ ", "").replace(".", "").replace(",", ".");
+			}
+
+			if (!DatosDavivienda.IS_RISKMOTOR) {
+				if (tipoCta.contains("AHORROS") || tipoCta.contains("ahorros") || tipoCta.contains("Ahorros")|| tipoCta.contains("Ahorro"))
+					tipoCta = "AHORROS";
+				else if (tipoCta.contains("CORRIENTE") || tipoCta.contains("corriente")|| tipoCta.contains("Corriente")) 
+					tipoCta = "CORRIENTE";
+				if (tipoCta.contains("DIPLUS") || tipoCta.contains("diplus")) {
+					tipoCta = "CREDITO";
+					String[] datosCrediplus = DatosDavivienda.STRATUS.getCtaCobroCrediplus(numCta);
+					tipoCta = datosCrediplus[0];
+					numCta = datosCrediplus[1];
+				}
+				String[] saldosDisponibles = DatosDavivienda.STRATUS.consultarDatosPantallaSaldos(tipoDocumento,
+						numeroDoc, tipoCta, numCta);
+				BonotesTecla("ALTTAB");
+				if (saldoOrigen) {
+
+					// Elimina el carater '$' y espacios de ambas cadenas antes de formatear
+					if (tipoCta.contains("ahorro") || tipoCta.contains("AH")) {
+						this.saldoTotalInicial = saldosDisponibles[0].replace("$ ", "");
+						this.saldoDispoInicial = saldosDisponibles[1].replace("$ ", "");
+					}
+					if (tipoCta.contains("corriente") || tipoCta.contains("CC") || tipoCta.contains("CORRIENTE")) {
+						this.saldoTotalInicial = saldosDisponibles[6].replace("$ ", "");
+						this.saldoDispoInicial = saldosDisponibles[0].replace("$ ", "");
+
+					}
+					if (tipoCta.contains("CREDITO") || tipoCta.contains("diplus")) {
+						this.saldoTotalInicial = saldosDisponibles[0].replace("$ ", "");
+						this.saldoDispoInicial = saldosDisponibles[6].replace("$ ", "");
+
+					}
+					Reporter.reportEvent(Reporter.MIC_INFO,
+							"El saldo stratus Total Inicial: " + this.saldoTotalInicial.replace(".", ","));
+					Reporter.reportEvent(Reporter.MIC_INFO, "El saldo stratus Disponible Efectivo Inicial: "
+							+ this.saldoDispoInicial.replace(".", ","));
+				} else if (!saldoOrigen) {
+
+					// Elimina el carater '$' y espacios de ambas cadenas antes de formatear
+					if (tipoCta.contains("ahorro") || tipoCta.contains("AH")) {
+						this.saldoTotalFinal = saldosDisponibles[0].replace("$ ", "");
+						this.saldoDispoFinal = saldosDisponibles[1].replace("$ ", "");
+					}
+
+					if (tipoCta.contains("corriente") || tipoCta.contains("CC")) {
+						this.saldoTotalFinal = saldosDisponibles[6].replace("$ ", "");
+						this.saldoDispoFinal = saldosDisponibles[0].replace("$ ", "");
+					}
+
+					Reporter.reportEvent(Reporter.MIC_INFO,
+							"El saldo Total stratus Final: " + this.saldoTotalFinal.replace(".", ","));
+					Reporter.reportEvent(Reporter.MIC_INFO,
+							"El saldo Disponible Efectivo stratus Final: " + this.saldoDispoFinal.replace(".", ","));
+				}
+
+				if (saldoOrigen) {
+					if (this.saldoDispoInicial.contains(saldoDisponible)) {
+						Reporter.reportEvent(Reporter.MIC_INFO,
+								"El saldo total en stratus " + saldoDispoInicial.replace(".", ",")
+										+ " corresponde al saldo disponible en el portal: " + saldoDis);
+					} else {
+						Reporter.reportEvent(Reporter.MIC_INFO, "El saldo total en stratus " + saldoDispoInicial
+								+ " no corresponde al saldo disponible en el portal:" + saldoDis);
+					}
+					Reporter.write(" ");
+				}
+			}
+		}
+	}
 
 // =======================================================================================================================
 
