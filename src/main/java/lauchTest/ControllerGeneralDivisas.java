@@ -323,22 +323,22 @@ public class ControllerGeneralDivisas implements Controller {
 
 		String evidenceDir = SettingsRun.RESULT_DIR + File.separator + "Temp";
 
-//		loginFrontEmpresarial = new PageLoginFrontEmpresarial(BasePageWeb.CHROME, evidenceDir);
-//
-//		frontEmpresarial = new PageFrontEmpresarial(loginFrontEmpresarial);
-//
-//		pageDivisas = new PageDivisas(frontEmpresarial);
-//
-//		pageEnviarTransInternacional = new PageEnviarTransInternacional(frontEmpresarial);
-//
-//		pageRecibirTransferenciasInternacionales = new PageRecibirTransferenciasInternacionales(frontEmpresarial);
-//
-//		pageDocumentos_Y_Formularios = new PageDocumentos_Y_Formularios(frontEmpresarial);
-//
-//		pageConf = new PageConfirmacion1(frontEmpresarial);
-//
-//		pageConsultatxInternacional = new PageConsultatxInternacional(frontEmpresarial);
-//		pageAprobInter = new PageAprobacionInter(frontEmpresarial);
+		loginFrontEmpresarial = new PageLoginFrontEmpresarial(BasePageWeb.CHROME, evidenceDir);
+
+		frontEmpresarial = new PageFrontEmpresarial(loginFrontEmpresarial);
+
+		pageDivisas = new PageDivisas(frontEmpresarial);
+
+		pageEnviarTransInternacional = new PageEnviarTransInternacional(frontEmpresarial);
+
+		pageRecibirTransferenciasInternacionales = new PageRecibirTransferenciasInternacionales(frontEmpresarial);
+
+		pageDocumentos_Y_Formularios = new PageDocumentos_Y_Formularios(frontEmpresarial);
+
+		pageConf = new PageConfirmacion1(frontEmpresarial);
+
+		pageConsultatxInternacional = new PageConsultatxInternacional(frontEmpresarial);
+		pageAprobInter = new PageAprobacionInter(frontEmpresarial);
 
 		realizarLoginFrontPyme();
 		this.pageDivisas = new PageDivisas(loginFrontPyme);
