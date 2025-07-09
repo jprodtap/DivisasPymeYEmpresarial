@@ -26,10 +26,10 @@ import dav.pymes.moduloCrearTx.ControllerCrearTx;
 import dav.transversal.DatosDavivienda;
 import dav.transversal.MovimientoStratus;
 import dav.transversal.Stratus;
+import dxc.util.DXCUtil;
 import library.reporting.Reporter;
 import library.settings.SettingsRun;
 
-import library.common.Util;
 import library.core.BasePageWeb;
 import library.reporting.Evidence;
 
@@ -110,9 +110,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 	By cmpValorTotalTx = By.xpath("//label[contains(text(), 'Valor total descontado de la cuenta:')]/following::div[1]");
 	By cmpfechaTx = By.xpath("//label[contains(text(), 'Fecha')]/following::div[1]");
 
-	PageLogin pageLoginC360 = null;
-	PageInicioC360 pageInicioC360 = null;
-	PageEmpresas pageEmpresasC360 = null;
+	
 
 	public PageConsultatxInternacional(BasePageWeb parentPage) {
 		super(parentPage);
@@ -168,7 +166,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 		WebElement compararElementos = null;
 		contador = 0;
 		do {
-			Util.wait(1);
+			DXCUtil.wait(1);
 			contador++;
 			if (!isValid(documentoTx)) {
 				Reporter.reportEvent(Reporter.MIC_FAIL,
@@ -278,7 +276,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 			do {
 
-				Util.wait(1);
+				DXCUtil.wait(1);
 
 			} while (this.element(btnBuscarxpath) == null);
 
@@ -297,7 +295,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 			do {
 
-				Util.wait(1);
+				DXCUtil.wait(1);
 				if (this.element(arrayCampos[i]) == null) {
 					Reporter.reportEvent(Reporter.MIC_FAIL, "No se encuentra el campo -" + stringArrayCampos[i]);
 				} else {
@@ -347,7 +345,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 		} else {
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (this.element(btnBuscarxpath) == null);
 
 			Reporter.write(" ");
@@ -365,7 +363,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 			do {
 
-				Util.wait(1);
+				DXCUtil.wait(1);
 				if (this.element(arrayCampos[i]) == null) {
 					Reporter.reportEvent(Reporter.MIC_FAIL, "No se encuentra el campo -" + stringArrayCampos[i]);
 				} else {
@@ -386,30 +384,30 @@ public class PageConsultatxInternacional extends PageDivisas {
 			Date fechaActual = new Date();
 
 			if (tipoConstaTxRealizadas.equals("48 horas")) {
-				Date fechaDesde = Util.dateAdd(fechaActual, Calendar.DAY_OF_MONTH, -2);
+				Date fechaDesde = DXCUtil.dateAdd(fechaActual, Calendar.DAY_OF_MONTH, -2);
 				establecerRangoFechas(fechaDesde, fechaActual);
 
 			} else if (tipoConstaTxRealizadas.equals("7 días")) {
 
-				Date fechaDesde = Util.dateAdd(fechaActual, Calendar.DAY_OF_MONTH, -7);
+				Date fechaDesde = DXCUtil.dateAdd(fechaActual, Calendar.DAY_OF_MONTH, -7);
 				establecerRangoFechas(fechaDesde, fechaActual);
 
 			} else if (tipoConstaTxRealizadas.equals("30 días") || tipoConstaTxRealizadas.equals("más criterios")) {
 
-				Date fechaDesde = Util.dateAdd(fechaActual, Calendar.DAY_OF_MONTH, -30);
+				Date fechaDesde = DXCUtil.dateAdd(fechaActual, Calendar.DAY_OF_MONTH, -30);
 				establecerRangoFechas(fechaDesde, fechaActual);
 
 			} else if (tipoConstaTxRealizadas.equals("Rango de Fechas")) {
 
 				Date fechaDate = null;
 
-				fechaDate = Util.stringToDate(fechaDesdeStr, "YYYY-MM-DD");
+				fechaDate = DXCUtil.stringToDate(fechaDesdeStr, "YYYY-MM-DD");
 
-				fechaDesdeStr = Util.dateToString(fechaDate, "DD/MM/YYYY");
+				fechaDesdeStr = DXCUtil.dateToString(fechaDate, "DD/MM/YYYY");
 
-				fechaDate = Util.stringToDate(fechaHastaStr, "YYYY-MM-DD");
+				fechaDate = DXCUtil.stringToDate(fechaHastaStr, "YYYY-MM-DD");
 
-				fechaHastaStr = Util.dateToString(fechaDate, "DD/MM/YYYY");
+				fechaHastaStr = DXCUtil.dateToString(fechaDate, "DD/MM/YYYY");
 
 				this.element(cmpimputTipoConsulta.replace("TIPODCON", "Histórico")).click();
 
@@ -471,7 +469,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 			this.click(btnBuscarxpath);
 
-			Util.wait(12);
+			DXCUtil.wait(12);
 
 			Evidence.saveAllScreens("Parametros de búsqueda encontrados", this);
 		}
@@ -592,7 +590,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 		this.click(seleccionLinkDocumento);
 
-		Util.wait(4);
+		DXCUtil.wait(4);
 
 		int contador = 0;
 
@@ -610,7 +608,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 		do {
 
 			contador++;
-			Util.wait(1);
+			DXCUtil.wait(1);
 			getextoFecha = this.element(cmpfechaTx);
 
 			if (contador > 30) {
@@ -734,7 +732,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 		this.click(seleccionLinkDocumento);
 
-		Util.wait(4);
+		DXCUtil.wait(4);
 
 		int contador = 0;
 
@@ -750,7 +748,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 		do {
 			contador++;
-			Util.wait(1);
+			DXCUtil.wait(1);
 			getextoFecha = this.element(cmpfechaTx);
 
 			if (contador > 30) {
@@ -789,7 +787,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 			if (isElementInteractable(comprobante))
 				comprobante.click();
 
-			Util.wait(10);
+			DXCUtil.wait(10);
 
 			msg = this.closeActiveIntAlert();
 
@@ -804,7 +802,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 				if (isElementInteractable(comprobante))
 					comprobante.click();
 
-				Util.wait(10);
+				DXCUtil.wait(10);
 
 				msg = this.closeActiveIntAlert();
 
@@ -820,7 +818,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 				if (isElementInteractable(swift))
 					swift.click();
 
-				Util.wait(10);
+				DXCUtil.wait(10);
 
 				msg = this.closeActiveIntAlert();
 
@@ -839,7 +837,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 				if (isElementInteractable(notadeliquidacion))
 					notadeliquidacion.click();
 
-				Util.wait(10);
+				DXCUtil.wait(10);
 
 				msg = this.closeActiveIntAlert();
 
@@ -857,7 +855,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 				if (isElementInteractable(declaracion))
 					declaracion.click();
 
-				Util.wait(10);
+				DXCUtil.wait(10);
 
 				msg = this.closeActiveIntAlert();
 
@@ -1188,7 +1186,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 				}
 			}
 
-			Util.wait(1);
+			DXCUtil.wait(1);
 
 		}
 
@@ -1200,36 +1198,8 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 	}
 
-// ============================================[ValidarCCIU]===========================================================================
 
-	public void ValidarCCIU(String numeroIDEmpresa) throws Exception {
-
-//		String numeroIDEmpresa = SettingsRun.getTestData().getParameter("Numero ID Empresa").trim();
-		String reportMsg = null;
-
-		BonotesTecla("ALTTAB");
-
-		this.pageInicioC360.irAModulo(PageInicioC360.MOD_PAGINA_INICIAL);
-
-		reportMsg = this.pageEmpresasC360.buscarEmpresaC360(numeroIDEmpresa);
-
-		if (!reportMsg.isEmpty()
-				&& (!reportMsg.contains("El cliente no ha actualizado") && !reportMsg.contains("ACTUALIZADO")))
-			this.pageInicioC360.terminarIteracion(Reporter.MIC_NOEXEC, "[ERROR DATA] " + reportMsg);
-
-		Reporter.reportEvent(Reporter.MIC_PASS,
-				"Se ha encontrado la empresa con el número de identificación [" + numeroIDEmpresa + "]");
-
-//		String masIfEmpres[] = this.pageEmpresasC360.getMasInfoClienteEmpresa();
-//		
-//		for (String masIfEmprepos :  masIfEmpres) {
-//			System.out.println(masIfEmprepos);
-//		}
-
-		BonotesTecla("ALTTAB");
-
-		this.pageInicioC360.cerrarSesion();
-	}
+	
 
 // ============================================[SelectCalendarDate]===========================================================================
 
@@ -1272,11 +1242,11 @@ public class PageConsultatxInternacional extends PageDivisas {
 		// Espera a que el calendario sea visible
 		int cont = 0;
 		do {
-			Util.wait(1);
+			DXCUtil.wait(1);
 			cont++;
 		} while (mes == null && cont < 5);
 		if (mes == null) {
-			Util.wait(2);
+			DXCUtil.wait(2);
 			calendarButton.click();
 		}
 
@@ -1304,8 +1274,8 @@ public class PageConsultatxInternacional extends PageDivisas {
 	 * @throws Exception
 	 */
 	private void establecerRangoFechas(Date fechaDesde, Date fechaHasta) throws Exception {
-		String strFechaDesde = Util.dateToString(fechaDesde, "dd/MM/yyyy");
-		String strFechaHasta = Util.dateToString(fechaHasta, "dd/MM/yyyy");
+		String strFechaDesde = DXCUtil.dateToString(fechaDesde, "dd/MM/yyyy");
+		String strFechaHasta = DXCUtil.dateToString(fechaHasta, "dd/MM/yyyy");
 
 		this.element(cmpimputTipoConsulta.replace("TIPODCON", "Histórico")).click();
 
@@ -1332,7 +1302,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 		int time = 0;
 
 		do {
-			Util.wait(1);
+			DXCUtil.wait(1);
 			time++;
 			if (this.element(aler) != null) {
 				Evidence.saveAllScreens("No existen resultados para esta búsqueda", this);
@@ -1355,8 +1325,8 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 			// fechaInicial - Date que contiene la fecha de consulta inicial.
 
-			Date fechaConsulta = Util.stringToDate(DateFechaTx, "YYYY/MM/DD");
-			Date FechaConsultaStratus = Util.dateAdd(fechaConsulta, Calendar.MINUTE, -1);
+			Date fechaConsulta = DXCUtil.stringToDate(DateFechaTx, "YYYY/MM/DD");
+			Date FechaConsultaStratus = DXCUtil.dateAdd(fechaConsulta, Calendar.MINUTE, -1);
 
 			// Datos del titular como un array de String Stratus
 

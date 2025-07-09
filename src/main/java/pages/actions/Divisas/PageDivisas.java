@@ -22,6 +22,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.Select;
 
+import dav.c360.PageInicioC360;
 import library.reporting.Reporter;
 import library.settings.SettingsRun;
 import library.common.Util;
@@ -575,6 +576,7 @@ public class PageDivisas extends BasePageWeb {
 
 	}
 
+	
 // =========================================================================================================================================
 
 	/**

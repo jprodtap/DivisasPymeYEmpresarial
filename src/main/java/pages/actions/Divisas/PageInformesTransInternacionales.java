@@ -10,12 +10,12 @@ import org.openqa.selenium.WebElement;
 
 import java.util.Calendar;
 
-import dav.middlePymes.PageInicioMiddle;
 import dav.pymes.PageLoginPymes;
 //import dav.transversal.DatosEmpresarial;
 //import dxc.util.Util;
 import library.reporting.Reporter;
 import library.settings.SettingsRun;
+import page.middlePymes.PageInicioMiddle1;
 import library.common.Util;
 import library.core.BasePageWeb;
 import library.reporting.Evidence;

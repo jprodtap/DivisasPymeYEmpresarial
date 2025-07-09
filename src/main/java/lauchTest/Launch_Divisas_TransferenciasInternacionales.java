@@ -33,15 +33,34 @@ public class Launch_Divisas_TransferenciasInternacionales extends BaseTestNG {
 
 	@Override
 	public void initializeControllerAndConfiguration() throws Exception {
+		
+		
 		// Determina el tipo de portal desde los datos de prueba o por lógica
 		// Puedes leerlo desde Excel, aquí está hardcodeado como ejemplo:
 		// Obtén el tipo de portal desde Excel (o config)
 //		String tipoPortal = SettingsRun.getTestData().getParameter("Typo Portal");
 		String tipoPortal = "Pyme";
+//		String tipoPortal = "Empresarial";
 		ControllerGeneralDivisas.PortalType portalType = (tipoPortal != null&& tipoPortal.equalsIgnoreCase("Empresarial")) ? ControllerGeneralDivisas.PortalType.EMPRESARIAL: ControllerGeneralDivisas.PortalType.PYME;
 		
-		Reporter.reportEvent(Reporter.MIC_HEADER, "PRUEBAS PORTA - " + tipoPortal);
 		controllerGeneralDivisas = ControllerGeneralDivisas.getInstance(portalType);
+		
+		String stratus = SettingsRun.getGlobalData("data.tipoValidacionStratus");
+		
+		if (stratus.equalsIgnoreCase("True")) {
+		Reporter.reportEvent(Reporter.MIC_HEADER, "INICIO STRATUS");
+		controllerGeneralDivisas.LoginStratus();
+		}
+		
+		
+		String validarC360 = SettingsRun.getTestData().getParameter("ValidarC360");
+		String codigoCIIU = SettingsRun.getTestData().getParameter("Validar CIIU").trim();
+		if (validarC360.equalsIgnoreCase("SI")) {
+			Reporter.reportEvent(Reporter.MIC_HEADER, "INICIO SESIÓN CLIENTE 360");
+			controllerGeneralDivisas.logueoC360();
+			}
+		
+		Reporter.reportEvent(Reporter.MIC_HEADER, "PRUEBAS PORTA - " + tipoPortal);
 		controllerGeneralDivisas.inicializarSesion();
 	}
 
@@ -49,6 +68,11 @@ public class Launch_Divisas_TransferenciasInternacionales extends BaseTestNG {
 	public void doingTest() throws Exception {
 		// Lógica principal del test: ejecuta el flujo de Divisas
 		controllerGeneralDivisas.transar();
+		//Lógica Consulat de Informes de Divisas
+		String informe = SettingsRun.getTestData().getParameter("Informes").trim();
+		if (informe.equalsIgnoreCase("SI")) {			
+			controllerGeneralDivisas.ValidacionInformeInicial();
+		}
 	}
 
 	@Override

@@ -684,6 +684,7 @@ public class PageLoginPymes1 extends BasePageWeb {
 //-----------------------------------------------------------------------------------------------------------------------        
 		// SELECCIONA EL TIPO DE IDENTIFICACIï¿½N
 		String msgError = this.selectListItem(this.element(cmTipoId + cmSelect), tipoDoc);
+		if (msgError != null) 
 		if (!msgError.equals("")) {
 			this.closeAllBrowsers();
 			Reporter.writeErr("No se encuentra el tipo de documento: " + msgError, true);

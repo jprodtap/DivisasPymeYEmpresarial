@@ -7,10 +7,7 @@ import org.openqa.selenium.By;
 
 
 
-import dav.ActualizacionDeDatos.*;
-import dav.pymes.moduloCrearTx.PageConfirmacion;
-import dav.pymes.moduloCrearTx.PageOrigen;
-
+import dxc.util.DXCUtil;
 import library.core.BasePageWeb;
 import library.common.Util;
 import library.reporting.Evidence;
@@ -23,10 +20,10 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 		super(parentPage);
 	}
 
-	PageOrigen pageOrigen = null;
-	PageConfirmacion pageConfirmacion = null;
-	PageActualizacionCalendario pageCalendario;
-	PageActualizacionFileNet pageFileNet;
+	PageOrigen1 pageOrigen = null;
+	PageConfirmacion1 pageConfirmacion = null;
+	PageActualizacionCalendario1 pageCalendario;
+	PageActualizacionFileNet1 pageFileNet;
 
 	By locUbicacionYRepresentante = By.id("Item1");
 	By locInformacionFinanciera = By.id("Item2");
@@ -35,7 +32,7 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 	By locModInfoEmpresa = By.id("cphCuerpo_BtnModificarEmpresa");
 	By locModInfoRepresentante = By.id("cphCuerpo_BtnModificarRepresentante");
 
-	// Seccion de Datos de Ubicaci贸n y de Representante Legal
+	// Seccion de Datos de Ubicaci髇 y de Representante Legal
 	By locDireccion = By.id("cphCuerpo_dropEditarDir1");
 	By locNumDireccion = By.id("cphCuerpo_txtEditarDir2");
 	By locNumeral = By.id("cphCuerpo_txtEditarDir3");
@@ -300,44 +297,44 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 			infoNumeral = SettingsRun.getTestData().getParameter("#");
 			infGuion = SettingsRun.getTestData().getParameter("-");
 			infoMunicipio = SettingsRun.getTestData().getParameter("Municipio");
-			infoTelefonoPrefijo = SettingsRun.getTestData().getParameter("Tel茅fono Fijo - prefijo");
-			infoTelFijo = SettingsRun.getTestData().getParameter("Tel茅fono Fijo");
+			infoTelefonoPrefijo = SettingsRun.getTestData().getParameter("Tel閒ono Fijo - prefijo");
+			infoTelFijo = SettingsRun.getTestData().getParameter("Tel閒ono Fijo");
 			infoExt = SettingsRun.getTestData().getParameter("ext");
-			infoCorreo = SettingsRun.getTestData().getParameter("Correo Electr贸nico");
+			infoCorreo = SettingsRun.getTestData().getParameter("Correo Electr髇ico");
 			infoAdicional = SettingsRun.getTestData().getParameter("Informacion adicional");
-			infoNumeroCelular = SettingsRun.getTestData().getParameter("N煤mero Celular");
+			infoNumeroCelular = SettingsRun.getTestData().getParameter("N鷐ero Celular");
 
 			// Informacion Socio
 			infoNITCasaMatriz = SettingsRun.getTestData().getParameter("NIT Casa Matriz");
 			infoTipoIdSocio = SettingsRun.getTestData().getParameter("Tipo de Identificacion del Socio");
-			infoNombreSocio = SettingsRun.getTestData().getParameter("Nombres o Raz贸n Social del Socio");
+			infoNombreSocio = SettingsRun.getTestData().getParameter("Nombres o Raz髇 Social del Socio");
 			infoApellidoSocio = SettingsRun.getTestData().getParameter("Apellidos del Socio");
-			infoParticipacionSocio = SettingsRun.getTestData().getParameter("Participaci贸n Accionaria del Socio");
-			infoNumeroIdSocio = SettingsRun.getTestData().getParameter("Identificaci贸n del Socio");
+			infoParticipacionSocio = SettingsRun.getTestData().getParameter("Participaci髇 Accionaria del Socio");
+			infoNumeroIdSocio = SettingsRun.getTestData().getParameter("Identificaci髇 del Socio");
 			infoNacionalidadSocio = SettingsRun.getTestData()
-					.getParameter("Nacionalidad o pa铆s de constituci贸n del Socio");
-			infoNumeroIdSocioEliminar = SettingsRun.getTestData().getParameter("Identificaci贸n del Socio a Eliminar");
+					.getParameter("Nacionalidad o pa韘 de constituci髇 del Socio");
+			infoNumeroIdSocioEliminar = SettingsRun.getTestData().getParameter("Identificaci髇 del Socio a Eliminar");
 
 			// Informacion Representante
 			infoTipoIdRepresentante = SettingsRun.getTestData().getParameter("Tipo de Identificacion del Represetante");
-			infoNombreRepresentante = SettingsRun.getTestData().getParameter("Nombres o Raz贸n Social del Represetante");
+			infoNombreRepresentante = SettingsRun.getTestData().getParameter("Nombres o Raz髇 Social del Represetante");
 			infoApellidosRepresentante = SettingsRun.getTestData().getParameter("Apellidos del Represetante");
 			infoCargoRepresentante = SettingsRun.getTestData().getParameter("Cargo del Represetante");
-			infoNumeroIdRepresentante = SettingsRun.getTestData().getParameter("Identificaci贸n del Represetante");
-			infoNumeroIdRepresentanteEliminar = SettingsRun.getTestData().getParameter("Identificaci贸n del Represetante a Eliminar");
+			infoNumeroIdRepresentante = SettingsRun.getTestData().getParameter("Identificaci髇 del Represetante");
+			infoNumeroIdRepresentanteEliminar = SettingsRun.getTestData().getParameter("Identificaci髇 del Represetante a Eliminar");
 			infoDeclaraciones = SettingsRun.getTestData().getParameter("Declaraciones");
-			infoTributacionFiscal = SettingsRun.getTestData().getParameter("驴Sujeto a tributaci贸n fiscal en USA o tiene pa铆s de residencia fiscal diferente a Colombia representante?");
-			infoPaisTributacion = SettingsRun.getTestData().getParameter("Pa铆s de residencia fiscal representante");
+			infoTributacionFiscal = SettingsRun.getTestData().getParameter("縎ujeto a tributaci髇 fiscal en USA o tiene pa韘 de residencia fiscal diferente a Colombia representante?");
+			infoPaisTributacion = SettingsRun.getTestData().getParameter("Pa韘 de residencia fiscal representante");
 			infoNumeroTIN = SettingsRun.getTestData().getParameter("Numero de TIN representante");
-			infoReconocimientoPolitico = SettingsRun.getTestData().getParameter("驴La persona goza de: reconocimiento p煤blico, pol铆ticamente expuesto, representante legal de una organizaci贸n internacional o es familiar de una persona con las anteriores caracter铆sticas representante?");
-			infoReconocimientoPublico = SettingsRun.getTestData().getParameter("驴Reconocido p煤blicamente representante?");
-			infoRepresentanteLegal = SettingsRun.getTestData().getParameter("驴Representante legal de una organizaci贸n internacional representante?");
-			infoExpuesto = SettingsRun.getTestData().getParameter("驴Expuesta pol铆ticamente representante?");
+			infoReconocimientoPolitico = SettingsRun.getTestData().getParameter("縇a persona goza de: reconocimiento p鷅lico, pol韙icamente expuesto, representante legal de una organizaci髇 internacional o es familiar de una persona con las anteriores caracter韘ticas representante?");
+			infoReconocimientoPublico = SettingsRun.getTestData().getParameter("縍econocido p鷅licamente representante?");
+			infoRepresentanteLegal = SettingsRun.getTestData().getParameter("縍epresentante legal de una organizaci髇 internacional representante?");
+			infoExpuesto = SettingsRun.getTestData().getParameter("縀xpuesta pol韙icamente representante?");
 			infoCargoPublico = SettingsRun.getTestData().getParameter("Cargo Publico representante");
 			infoFechaVinculacion = SettingsRun.getTestData().getParameter("Fecha de Vinculacion representante");
 			infoFechaDesvinculacion = SettingsRun.getTestData().getParameter("Fecha de Desvinculacion representante");
 			infoActualmenteVinculado = SettingsRun.getTestData().getParameter("Actualmente Vinculado representante");
-			infoVinculo = SettingsRun.getTestData().getParameter("驴Es usted c贸nyuge, compa帽ero permanente o tiene v铆nculo hasta segundo grado de consanguinidad, segundo grado de afinidad y/o primero civil con una persona p煤blicamente expuesta representante?");
+			infoVinculo = SettingsRun.getTestData().getParameter("縀s usted c髇yuge, compa馿ro permanente o tiene v韓culo hasta segundo grado de consanguinidad, segundo grado de afinidad y/o primero civil con una persona p鷅licamente expuesta representante?");
 			infoParentezcoVinculo = SettingsRun.getTestData().getParameter("Parentezco del Representante");
 			infoNombreVinculo = SettingsRun.getTestData().getParameter("Nombre del Representante");
 			infoPrimerApellidoVinculo = SettingsRun.getTestData().getParameter("Apellido Paterno del Representante");
@@ -355,7 +352,7 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 			infoEliminarSocio = "NO";
 			infoEliminarRepresentante = "NO";
 
-			infoTipoIdRepresentante = SettingsRun.getTestData().getParameter("Tipo Identificaci贸n");
+			infoTipoIdRepresentante = SettingsRun.getTestData().getParameter("Tipo Identificaci髇");
 			infoNombreRepresentante = "PRUEBAS";
 			infoApellidosRepresentante = "AUTOMATIZACION";
 			infoCargoRepresentante = "GERENTE";
@@ -376,8 +373,8 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 	public String InicioActualizacionDatos() throws Exception {
 		String msgError = null;
 
-//		this.pageOrigen = new PageOrigen(this);
-		msgError = this.pageOrigen.irAOpcion(null, "Administraci贸n", "Administraci贸n Portal", "Actualizaci贸n de datos");
+		this.pageOrigen = new PageOrigen1(this);
+		msgError = this.pageOrigen.irAOpcion(null, "Administraci髇", "Administraci髇 Portal", "Actualizaci髇 de datos");
 
 		if (msgError == null) {
 
@@ -388,7 +385,7 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 			if (informacionFinanciera.equals("SI")) {
 
 				do {
-					Util.wait(1);
+					DXCUtil.wait(1);
 				} while (!this.isDisplayed(locInformacionFinanciera));
 
 				this.click(locInformacionFinanciera);
@@ -401,7 +398,7 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 					|| infoAgregarRepresentante.equals("INFO")) {
 
 				do {
-					Util.wait(1);
+					DXCUtil.wait(1);
 				} while (!this.isDisplayed(locInformacionSociosAccionistas));
 
 				this.click(locInformacionSociosAccionistas);
@@ -425,24 +422,26 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 	public void UbicacionRepresentanteLegal() throws Exception {
 
 		String infoTipoEmpresa = SettingsRun.getTestData().getParameter("Tipo de empresa");
-		String infoCodigoCIIU = SettingsRun.getTestData().getParameter("C贸digo CIIU");
+		String infoCodigoCIIU = SettingsRun.getTestData().getParameter("C骴igo CIIU");
 		String msg = null;
 		if (infoEmpresa.equals("SI")) {
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locModInfoEmpresa));
 
 			this.click(locModInfoEmpresa);
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(btnAceptarDatosEmpresa));
 
 			msg = this.selectListItem(locDireccion, infoDireccion);
+			if (msg != null)
 			if (!msg.isEmpty()) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 			}
+			
 			this.write(locNumDireccion, infoNumeroDireccion);
 			this.write(locNumeral, infoNumeral);
 			this.write(locGuion, infGuion);
@@ -456,6 +455,7 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 			}
 
 			msg = this.selectListItem(locMunicipio, infoMunicipio);
+			if (msg != null)
 			if (!msg.isEmpty()) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 			}
@@ -471,7 +471,7 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 		} else if (infoEmpresa.equals("INFO")) {
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locModInfoEmpresa));
 
 			String nombreEmpr = this.getText(By.id("cphCuerpo_txtNombreEmpresa"));
@@ -490,12 +490,12 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 			this.click(locModInfoRepresentante);
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(btnAceptarRepresentante));
 
 			String infoNumID = SettingsRun.getTestData().getParameter("Numero ID");
 			String infoNumContacto = SettingsRun.getTestData().getParameter("Numero de Contacto");
-			String infoCorreoRepresentante = SettingsRun.getTestData().getParameter("Correo Electr贸nico.");
+			String infoCorreoRepresentante = SettingsRun.getTestData().getParameter("Correo Electr髇ico.");
 
 			xPathCheckRepresentante = xPathCheckRepresentante.replace("NUM_ID", infoNumID);
 			xPathNumContactoRepresentante = xPathNumContactoRepresentante.replace("NUM_ID", infoNumID);
@@ -506,14 +506,16 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 				this.checkCheckBox(By.xpath(xPathCheckRepresentante));
 
 				do {
-					Util.wait(1);
+					DXCUtil.wait(1);
 				} while (!this.isDisplayed(btnAceptarRepresentante));
 
 				msg = this.selectListItem(By.xpath(xPathNumContactoRepresentante), infoNumContacto);
+				if (msg != null)
 				if (!msg.isEmpty()) {
 					Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 				}
 				msg = this.selectListItem(By.xpath(xPathCorreoRepresentante), infoCorreoRepresentante);
+				if (msg != null)
 				if (!msg.isEmpty()) {
 					Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 				}
@@ -530,7 +532,7 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 		} else if (infoEmpresa.equals("INFO")) {
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locModInfoRepresentante));
 
 			String representante = this.getText(By.id("cphCuerpo_TxtTipoIDRepresentante"));
@@ -547,10 +549,11 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 		if (infoActividadEconomica.equals("SI")) {
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locTipoEmpresa));
 
 			msg = this.selectListItem(locTipoEmpresa, infoTipoEmpresa);
+			if (msg != null)
 			if (!msg.isEmpty()) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 			}
@@ -563,7 +566,7 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 		} else if (infoEmpresa.equals("INFO")) {
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locTipoEmpresa));
 
 			String tipoEmpresaSelecio = this.getItemSelected(locTipoEmpresa);
@@ -578,6 +581,7 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 			if ((tipoEmpresaSelecio != null && !tipoEmpresaSelecio.isEmpty())
 					|| (codigoCIIUSelecinado != null && !codigoCIIUSelecinado.isEmpty())) {
 				msg = this.selectListItem(locTipoEmpresa, infoTipoEmpresa);
+				if (msg != null)
 				if (!msg.isEmpty()) {
 					Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 				}
@@ -599,7 +603,7 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 	public void InformacionFinaciera() throws Exception {
 		String msg = null;
 		String infoSocio5Porciento = SettingsRun.getTestData()
-				.getParameter("Tiene socios con m谩s del 5% del capital social");
+				.getParameter("Tiene socios con m醩 del 5% del capital social");
 		String infoTotalIngresosOpera = SettingsRun.getTestData().getParameter("Ingresos operacionales");
 		String infoOtrosIngresos = SettingsRun.getTestData().getParameter("Otros ingresos mensuales");
 		String infoEgresos = SettingsRun.getTestData().getParameter("Egresos mensuales");
@@ -612,12 +616,12 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 
 		// Operaciones Internacionales
 		String infoTieneOperaciones = SettingsRun.getTestData().getParameter("Tiene Operaciones Internacionales?");
-		String infoTipoOperacion = SettingsRun.getTestData().getParameter("Tipo de Operaci贸n");
+		String infoTipoOperacion = SettingsRun.getTestData().getParameter("Tipo de Operaci髇");
 		String infoMontoMensualUSD = SettingsRun.getTestData().getParameter("Monto Estimado Mensual (USD)");
 		String infoOtrosCual = SettingsRun.getTestData().getParameter("Otros/Cual");
-		String infoPais = SettingsRun.getTestData().getParameter("Pa铆s Destino/Origen");
+		String infoPais = SettingsRun.getTestData().getParameter("Pa韘 Destino/Origen");
 		String infoNombreRemitente = SettingsRun.getTestData().getParameter("Nombre del remitente");
-		String infoNumeroCuenta = SettingsRun.getTestData().getParameter("N煤mero de Cuenta");
+		String infoNumeroCuenta = SettingsRun.getTestData().getParameter("N鷐ero de Cuenta");
 		String infoCiudad = SettingsRun.getTestData().getParameter("Ciudad");
 		String infoBanco = SettingsRun.getTestData().getParameter("Banco");
 		String infoMoneda = SettingsRun.getTestData().getParameter("Moneda");
@@ -636,18 +640,18 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 		int intTotalPasivos;
 
 		do {
-			Util.wait(1);
+			DXCUtil.wait(1);
 		} while (!this.isDisplayed(locCheckSocios5Porciento));
 
 		if (infoSocio5Porciento.equals("SI")) {
-			Util.wait(1);
+			DXCUtil.wait(1);
 
 			if (infoAgregarSocio.equals("NO"))
 				Reporter.reportEvent(Reporter.MIC_FAIL, "Es necesario Agregar Socio, posible fallo en la transaccion");
 
 			this.checkCheckBox(locCheckSocios5Porciento);
 		} else {
-			Util.wait(1);
+			DXCUtil.wait(1);
 			this.uncheckCheckBox(locCheckSocios5Porciento);
 		}
 
@@ -667,7 +671,7 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 				+ Integer.parseInt(infoActivoFijo);
 		intTotalPasivos = Integer.parseInt(infoPasivoLargoPlazo) + Integer.parseInt(infoPasivoCorriente);
 
-		Util.wait(1);
+		DXCUtil.wait(1);
 
 		infoTotalIngresos = this.element(locTotalIngresos).getAttribute("value");
 		infoTotalActivos = this.element(locTotalActivos).getAttribute("value");
@@ -709,7 +713,7 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 			this.checkCheckBox(locRadioOperacionInternacionalSI);
 
 		do {
-			Util.wait(1);
+			DXCUtil.wait(1);
 		} while (!this.isDisplayed(locRadioOperacionInternacionalSI));
 
 		if (infoTieneOperaciones.equals("SI")) {
@@ -731,17 +735,20 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 				this.write(locOtroCual, infoOtrosCual);
 
 			msg = this.selectListItem(locPaisDestinoOrigen, infoPais);
+			if (msg != null)
 			if (!msg.isEmpty()) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 			}
 			this.write(locNombreRemitente, infoNombreRemitente);
 			this.write(locNumeroCuenta, infoNumeroCuenta);
 			msg = this.selectListItem(locCiudad, infoCiudad);
+			if (msg != null)
 			if (!msg.isEmpty()) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 			}
 			this.write(locBanco, infoBanco);
 			msg = this.selectListItem(locMoneda, infoMoneda);
+			if (msg != null)
 			if (!msg.isEmpty()) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 			}
@@ -761,47 +768,48 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 		if (infoAgregarSocio.equals("SI")) {
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locAgregarSocio));
 
 			if (this.isDisplayed(locNITCasaMatriz))
 				this.write(locNITCasaMatriz, infoNITCasaMatriz);
 
-			Util.wait(1);
+			DXCUtil.wait(1);
 			this.click(locAgregarSocio);
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locTipoIdSocio));
 
 			msg = this.selectListItem(locTipoIdSocio, infoTipoIdSocio);
+			if (msg != null)
 			if (!msg.isEmpty()) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 			}
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locTipoIdSocio));
 
 			this.write(locNumeroIdSocio, infoNumeroIdSocio);
 			this.click(locNombreSocio);
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locNombreSocio));
 
-//			if (this.findElement(locNombreSocio).getAttribute("disabled") == null)
-//				this.write(locNombreSocio, infoNombreSocio);
-//
-//			if (this.findElement(locPorcentajeParticipacion).getAttribute("disabled") == null)
-//				this.write(locPorcentajeParticipacion, infoParticipacionSocio);
-//
-//			if (this.findElement(locApellidoSocio).getAttribute("disabled") == null)
-//				this.write(locApellidoSocio, infoApellidoSocio);
-//
-//			if (this.findElement(locPaisSocio).getAttribute("disabled") == null)
-//				msg = this.selectListItem(locPaisSocio, infoNacionalidadSocio);
+			if (this.element(locNombreSocio).getAttribute("disabled") == null)
+				this.write(locNombreSocio, infoNombreSocio);
 
+			if (this.element(locPorcentajeParticipacion).getAttribute("disabled") == null)
+				this.write(locPorcentajeParticipacion, infoParticipacionSocio);
+
+			if (this.element(locApellidoSocio).getAttribute("disabled") == null)
+				this.write(locApellidoSocio, infoApellidoSocio);
+
+			if (this.element(locPaisSocio).getAttribute("disabled") == null)
+				msg = this.selectListItem(locPaisSocio, infoNacionalidadSocio);
+			if (msg != null)
 			if (!msg.isEmpty()) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 			}
@@ -815,106 +823,108 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 		if (infoAgregarRepresentante.equals("SI")) {
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locAgregarRepresentante));
 
 			if (this.isDisplayed(locNITCasaMatriz))
 				this.write(locNITCasaMatriz, infoNITCasaMatriz);
 
-			Util.wait(1);
+			DXCUtil.wait(1);
 			this.click(locAgregarRepresentante);
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locTipoIdRepresentante));
 
 			msg = this.selectListItem(locTipoIdRepresentante, infoTipoIdRepresentante);
+			if (msg != null)
 			if (!msg.isEmpty()) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 			}
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locNumeroIdRepresentante));
 
 			this.write(locNumeroIdRepresentante, infoNumeroIdRepresentante);
 			this.click(locCargoRepresentante);
-			Util.wait(5);
+			DXCUtil.wait(5);
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locCargoRepresentante) && !this.isEnabled(locCargoRepresentante));
 
-//			if (this.findElement(locCargoRepresentante) != null && this.isEnabled(locCargoRepresentante))
-//				msg = this.selectListItem(locCargoRepresentante, infoCargoRepresentante);
-
+			if (this.element(locCargoRepresentante) != null && this.isEnabled(locCargoRepresentante))
+				msg = this.selectListItem(locCargoRepresentante, infoCargoRepresentante);
+			if (msg != null)
 			if (!msg.isEmpty()) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 			}
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locNombreRepresentante) && !this.isEnabled(locNombreRepresentante));
 
-//			if (this.findElement(locNombreRepresentante) != null && this.isEnabled(locNombreRepresentante))
-//				this.write(locNombreRepresentante, infoNombreRepresentante);
+			if (this.element(locNombreRepresentante) != null && this.isEnabled(locNombreRepresentante))
+				this.write(locNombreRepresentante, infoNombreRepresentante);
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locApellidosRepresentante) && !this.isEnabled(locApellidosRepresentante));
 
-//			if (this.findElement(locApellidosRepresentante) != null && this.isEnabled(locApellidosRepresentante))
-//				this.write(locApellidosRepresentante, infoApellidosRepresentante);
+			if (this.element(locApellidosRepresentante) != null && this.isEnabled(locApellidosRepresentante))
+				this.write(locApellidosRepresentante, infoApellidosRepresentante);
 
 			this.AgregarRepresentanteDatosAdicionales();
 			this.click(btnConfirmarRepresentante);
 		} else if (infoAgregarRepresentante.equals("INFO")) {
 			
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locAgregarRepresentante));
 
 			if (this.isDisplayed(locNITCasaMatriz))
 				this.write(locNITCasaMatriz, infoNITCasaMatriz);
 
-			Util.wait(1);
+			DXCUtil.wait(1);
 			this.click(locAgregarRepresentante);
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locTipoIdRepresentante));
 
 			msg = this.selectListItem(locTipoIdRepresentante, infoTipoIdRepresentante);
+			if (msg != null)
 			if (!msg.isEmpty()) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 			}
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locNumeroIdRepresentante));
 
 			this.write(locNumeroIdRepresentante, infoNumeroIdRepresentante);
 			this.click(locCargoRepresentante);
-			Util.wait(5);
+			DXCUtil.wait(5);
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locCargoRepresentante) && !this.isEnabled(locCargoRepresentante));
 
-//			if (this.findElement(locCargoRepresentante) != null && this.isEnabled(locCargoRepresentante))
-//				msg = this.selectListItem(locCargoRepresentante, infoCargoRepresentante);
-
+			if (this.element(locCargoRepresentante) != null && this.isEnabled(locCargoRepresentante))
+				msg = this.selectListItem(locCargoRepresentante, infoCargoRepresentante);
+			if (msg != null)
 			if (!msg.isEmpty()) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 			}
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locNombreRepresentante) && !this.isEnabled(locNombreRepresentante));
 
-//			if (this.findElement(locNombreRepresentante) != null && this.isEnabled(locNombreRepresentante))
-//				this.write(locNombreRepresentante, infoNombreRepresentante);
+			if (this.element(locNombreRepresentante) != null && this.isEnabled(locNombreRepresentante))
+				this.write(locNombreRepresentante, infoNombreRepresentante);
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locApellidosRepresentante) && !this.isEnabled(locApellidosRepresentante));
 
-//			if (this.findElement(locApellidosRepresentante) != null && this.isEnabled(locApellidosRepresentante))
-//				this.write(locApellidosRepresentante, infoApellidosRepresentante);
+			if (this.element(locApellidosRepresentante) != null && this.isEnabled(locApellidosRepresentante))
+				this.write(locApellidosRepresentante, infoApellidosRepresentante);
 
 			this.AgregarRepresentanteDatosAdicionales();
 			this.click(btnConfirmarRepresentante);
@@ -923,7 +933,7 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 		if (infoEliminarSocio.equals("SI")) {
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locAgregarSocio));
 
 			xpathNumIDEliminarSocio = xpathNumIDEliminarSocio.replace("NUM_ID", infoNumeroIdSocioEliminar);
@@ -932,7 +942,9 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 
 				xpathNumIDEliminarSocio = xpathNumIDEliminarSocio + xpathBtnEliminarSocio;
 				this.click(By.xpath(xpathNumIDEliminarSocio));
-//				this.existDialogAccept();
+				if (this.existDialog()) {
+					this.acceptDialog();
+				}
 
 			} else {
 				Reporter.reportEvent(Reporter.MIC_FAIL, "No se enceuntra el socio para eliminar");
@@ -942,7 +954,7 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 		if (infoEliminarRepresentante.equals("SI")) {
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locAgregarRepresentante));
 
 			xpathNumIDEliminarRepre = xpathNumIDEliminarRepre.replace("NUM_ID", infoNumeroIdRepresentanteEliminar);
@@ -951,8 +963,9 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 
 				xpathNumIDEliminarRepre = xpathNumIDEliminarRepre + xpathBtnEliminarRepre;
 				this.click(By.xpath(xpathNumIDEliminarRepre));
-//				this.existDialogAccept();
-
+				if (this.existDialog()) {
+					this.acceptDialog();
+				}
 			} else {
 				Reporter.reportEvent(Reporter.MIC_FAIL, "No se enceuntra el representante para eliminar");
 			}
@@ -966,115 +979,115 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 	public void AgregarSocioDatosAdicionales(String infoTipoIdSocio) throws Exception {
 		String msg = null;
 		String infoTributacionFiscal = SettingsRun.getTestData().getParameter(
-				"驴Sujeto a tributaci贸n fiscal en USA o tiene pa铆s de residencia fiscal diferente a Colombia?");
-		String infoPaisTributacion = SettingsRun.getTestData().getParameter("Pa铆s de residencia fiscal");
+				"縎ujeto a tributaci髇 fiscal en USA o tiene pa韘 de residencia fiscal diferente a Colombia?");
+		String infoPaisTributacion = SettingsRun.getTestData().getParameter("Pa韘 de residencia fiscal");
 		String infoNumeroTIN = SettingsRun.getTestData().getParameter("Numero de TIN");
 		String infoReconocimientoPolitico = SettingsRun.getTestData().getParameter(
-				"驴La persona goza de: reconocimiento p煤blico, pol铆ticamente expuesto, representante legal de una organizaci贸n internacional o es familiar de una persona con las anteriores caracter铆sticas?");
-		String infoReconocimientoPublico = SettingsRun.getTestData().getParameter("驴Reconocido p煤blicamente?");
+				"縇a persona goza de: reconocimiento p鷅lico, pol韙icamente expuesto, representante legal de una organizaci髇 internacional o es familiar de una persona con las anteriores caracter韘ticas?");
+		String infoReconocimientoPublico = SettingsRun.getTestData().getParameter("縍econocido p鷅licamente?");
 		String infoRepresentanteLegal = SettingsRun.getTestData()
-				.getParameter("驴Representante legal de una organizaci贸n internacional?");
-		String infoExpuesto = SettingsRun.getTestData().getParameter("驴Expuesta pol铆ticamente?");
+				.getParameter("縍epresentante legal de una organizaci髇 internacional?");
+		String infoExpuesto = SettingsRun.getTestData().getParameter("縀xpuesta pol韙icamente?");
 		String infoCargoPublico = SettingsRun.getTestData().getParameter("Cargo Publico");
 		String infoFechaVinculacion = SettingsRun.getTestData().getParameter("Fecha de Vinculacion");
 		String infoFechaDesvinculacion = SettingsRun.getTestData().getParameter("Fecha de Desvinculacion");
 		String infoActualmenteVinculado = SettingsRun.getTestData().getParameter("Actualmente Vinculado");
 		String infoVinculo = SettingsRun.getTestData().getParameter(
-				"驴Es usted c贸nyuge, compa帽ero permanente o tiene v铆nculo hasta segundo grado de consanguinidad, segundo grado de afinidad y/o primero civil con una persona p煤blicamente expuesta?");
+				"縀s usted c髇yuge, compa馿ro permanente o tiene v韓culo hasta segundo grado de consanguinidad, segundo grado de afinidad y/o primero civil con una persona p鷅licamente expuesta?");
 		String infoParentezcoVinculo = SettingsRun.getTestData().getParameter("Parentezco del Socio");
 		String infoNombreVinculo = SettingsRun.getTestData().getParameter("Nombre del Socio");
 		String infoPrimerApellidoVinculo = SettingsRun.getTestData().getParameter("Apellido Paterno del Socio");
 		String infoSegundoApellidoVinculo = SettingsRun.getTestData().getParameter("Apellido Materno del Socio");
 
 		if (infoTributacionFiscal.equals("SI")) {
-			Util.wait(1);
+			DXCUtil.wait(1);
 			this.checkCheckBox(locTributacionSi);
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locPaisTribucion));
 
 			msg = this.selectListItem(locPaisTribucion, infoPaisTributacion);
-
+			if (msg != null)
 			if (!msg.isEmpty()) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 			}
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locTin));
 
 			this.write(locTin, infoNumeroTIN);
 
 		} else {
-			Util.wait(1);
+			DXCUtil.wait(1);
 			this.checkCheckBox(locTributacionNo);
 		}
 
 		if (!infoTipoIdSocio.equals("NIT")) {
 
 			if (infoReconocimientoPolitico.equals("SI")) {
-				Util.wait(1);
+				DXCUtil.wait(1);
 				this.checkCheckBox(locPoliticoSI);
 
 				do {
-					Util.wait(1);
+					DXCUtil.wait(1);
 				} while (!this.isDisplayed(locReconocidoSi));
 
 				if (infoReconocimientoPublico.equals("SI")) {
-					Util.wait(1);
+					DXCUtil.wait(1);
 					this.checkCheckBox(locReconocidoSi);
 				} else {
-					Util.wait(1);
+					DXCUtil.wait(1);
 					this.checkCheckBox(locReconocidoNo);
 				}
 
 				if (infoRepresentanteLegal.equals("SI")) {
-					Util.wait(1);
+					DXCUtil.wait(1);
 					this.checkCheckBox(locInterncionalSi);
 				} else {
-					Util.wait(1);
+					DXCUtil.wait(1);
 					this.checkCheckBox(locInternacionalNo);
 				}
 
 				if (infoExpuesto.equals("SI")) {
-					Util.wait(1);
+					DXCUtil.wait(1);
 					this.checkCheckBox(locExpuestoSi);
 
 					do {
-						Util.wait(1);
+						DXCUtil.wait(1);
 					} while (!this.isDisplayed(locCargoSocio));
 
 					msg = this.selectListItem(locCargoSocio, infoCargoPublico);
-
+					if (msg != null)
 					if (!msg.isEmpty()) {
 						Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 					}
 
-					Util.wait(1);
-//					this.pageCalendario = new PageActualizacionCalendario(this);
+					DXCUtil.wait(1);
+					this.pageCalendario = new PageActualizacionCalendario1(this);
 					this.pageCalendario.SeleccionarCalendarioVinculacionSocio(infoFechaVinculacion);
 
 					if (infoActualmenteVinculado.equals("SI")) {
-						Util.wait(1);
+						DXCUtil.wait(1);
 						this.checkCheckBox(locActualVinculacionSocio);
 					} else {
 						pageCalendario.SeleccionarCalendarioDesVinculacionSocio(infoFechaDesvinculacion);
-						Util.wait(1);
+						DXCUtil.wait(1);
 						this.uncheckCheckBox(locActualVinculacionSocio);
 					}
 
 				} else {
-					Util.wait(1);
+					DXCUtil.wait(1);
 					this.checkCheckBox(locExpuestoNo);
 				}
 
 				if (infoVinculo.equals("SI")) {
-					Util.wait(1);
+					DXCUtil.wait(1);
 					this.checkCheckBox(locFamiiarSi);
 
 					do {
-						Util.wait(1);
+						DXCUtil.wait(1);
 					} while (!this.isDisplayed(locParentezco));
 
 					this.write(locParentezco, infoParentezcoVinculo);
@@ -1083,12 +1096,12 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 					this.write(locSegundoApellidoFamiliar, infoSegundoApellidoVinculo);
 
 				} else {
-					Util.wait(1);
+					DXCUtil.wait(1);
 					this.checkCheckBox(locFamiliarNo);
 				}
 
 			} else {
-				Util.wait(1);
+				DXCUtil.wait(1);
 				this.checkCheckBox(locPoliticoNo);
 			}
 
@@ -1109,93 +1122,93 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 		String msg = null;
 
 		if (infoTributacionFiscal.equals("SI")) {
-			Util.wait(1);
+			DXCUtil.wait(1);
 			this.checkCheckBox(locTributacionSiContol);
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locPaisTribucionContol));
 
 			msg = this.selectListItem(locPaisTribucionContol, infoPaisTributacion);
-
+			if (msg != null)
 			if (!msg.isEmpty()) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 			}
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locTinContol));
 
 			this.write(locTinContol, infoNumeroTIN);
 
 		} else {
-			Util.wait(1);
+			DXCUtil.wait(1);
 			this.checkCheckBox(locTributacionNoContol);
 		}
 
 		if (infoReconocimientoPolitico.equals("SI")) {
-			Util.wait(1);
+			DXCUtil.wait(1);
 			this.checkCheckBox(locPoliticoSIContol);
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locReconocidoSiContol));
 
 			if (infoReconocimientoPublico.equals("SI")) {
-				Util.wait(1);
+				DXCUtil.wait(1);
 				this.checkCheckBox(locReconocidoSiContol);
 			} else {
-				Util.wait(1);
+				DXCUtil.wait(1);
 				this.checkCheckBox(locReconocidoNoContol);
 			}
 
 			if (infoRepresentanteLegal.equals("SI")) {
-				Util.wait(1);
+				DXCUtil.wait(1);
 				this.checkCheckBox(locInterncionalSiContol);
 			} else {
-				Util.wait(1);
+				DXCUtil.wait(1);
 				this.checkCheckBox(locInternacionalNoContol);
 			}
 
 			if (infoExpuesto.equals("SI")) {
-				Util.wait(1);
+				DXCUtil.wait(1);
 				this.checkCheckBox(locExpuestoSiContol);
 
 				do {
-					Util.wait(1);
+					DXCUtil.wait(1);
 				} while (!this.isDisplayed(locCargoSocioContol));
 
 				msg = this.selectListItem(locCargoSocioContol, infoCargoPublico);
-
+				if (msg != null)
 				if (!msg.isEmpty()) {
 					Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 				}
 
-//				this.pageCalendario = new PageActualizacionCalendario(this);
+				this.pageCalendario = new PageActualizacionCalendario1(this);
 				pageCalendario.SeleccionarCalendarioVinculacionRepresentante(infoFechaVinculacion);
 
 				if (infoActualmenteVinculado.equals("SI")) {
-					Util.wait(1);
+					DXCUtil.wait(1);
 					this.checkCheckBox(locActualVinculacionSocioContol);
 				} else {
 					pageCalendario.SeleccionarCalendarioDesVinculacionRepresentante(infoFechaDesvinculacion);
-					Util.wait(1);
+					DXCUtil.wait(1);
 					this.uncheckCheckBox(locActualVinculacionSocioContol);
 				}
 
-//				Evidence.save("Representante Legal medio");
+				Evidence.save("Representante Legal medio",this);
 
 			} else {
-				Util.wait(1);
+				DXCUtil.wait(1);
 				this.checkCheckBox(locExpuestoNoContol);
 			}
 
 			if (infoVinculo.equals("SI")) {
-				Util.wait(1);
+				DXCUtil.wait(1);
 				this.checkCheckBox(locFamiiarSiContol);
 
 				do {
-					Util.wait(1);
+					DXCUtil.wait(1);
 				} while (!this.isDisplayed(locParentezcoContol));
 
 				this.write(locParentezcoContol, infoParentezcoVinculo);
@@ -1203,14 +1216,14 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 				this.write(locPrimerApellidofamiliarContol, infoPrimerApellidoVinculo);
 				this.write(locSegundoApellidoFamiliarContol, infoSegundoApellidoVinculo);
 
-//				Evidence.save("Representante Legal total");
+				Evidence.save("Representante Legal total",this);
 			} else {
-				Util.wait(1);
+				DXCUtil.wait(1);
 				this.checkCheckBox(locFamiliarNoContol);
 			}
 
 		} else {
-			Util.wait(1);
+			DXCUtil.wait(1);
 			this.checkCheckBox(locPoliticoNoContol);
 		}
 
@@ -1225,20 +1238,20 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 		String msg = null;
 		// Informacion Socio NIT
 		String infoTipoIdSocio = SettingsRun.getTestData().getParameter("Tipo de Identificacion del Socio");
-		String infoNombreSocio = SettingsRun.getTestData().getParameter("Nombres o Raz贸n Social del Socio");
+		String infoNombreSocio = SettingsRun.getTestData().getParameter("Nombres o Raz髇 Social del Socio");
 		String infoApellidoSocio = SettingsRun.getTestData().getParameter("Apellidos del Socio");
-		String infoParticipacionSocio = SettingsRun.getTestData().getParameter("Participaci贸n Accionaria del Socio");
-		String infoNumeroIdSocio = SettingsRun.getTestData().getParameter("Identificaci贸n del Socio");
+		String infoParticipacionSocio = SettingsRun.getTestData().getParameter("Participaci髇 Accionaria del Socio");
+		String infoNumeroIdSocio = SettingsRun.getTestData().getParameter("Identificaci髇 del Socio");
 		String infoNacionalidadSocio = SettingsRun.getTestData()
-				.getParameter("Nacionalidad o pa铆s de constituci贸n del Socio");
+				.getParameter("Nacionalidad o pa韘 de constituci髇 del Socio");
 
 		// Informacion Adicional Socio NIT
 		String infoTributacionFiscal = SettingsRun.getTestData().getParameter(
-				"驴Sujeto a tributaci贸n fiscal en USA o tiene pa铆s de residencia fiscal diferente a Colombia?");
-		String infoPaisTributacion = SettingsRun.getTestData().getParameter("Pa铆s de residencia fiscal");
+				"縎ujeto a tributaci髇 fiscal en USA o tiene pa韘 de residencia fiscal diferente a Colombia?");
+		String infoPaisTributacion = SettingsRun.getTestData().getParameter("Pa韘 de residencia fiscal");
 		String infoNumeroTIN = SettingsRun.getTestData().getParameter("Numero de TIN");
 
-		Util.wait(4);
+		DXCUtil.wait(4);
 
 		if (!this.isDisplayed(locPoliticoSI)) {
 			Reporter.reportEvent(Reporter.MIC_PASS, "Identificacion NIT correcto, No se presenten campos PEP");
@@ -1249,87 +1262,87 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 		this.click(btnConfirmarSocio);
 
 		do {
-			Util.wait(1);
+			DXCUtil.wait(1);
 		} while (!this.isDisplayed(locDetallarNIT));
 
 		this.click(locDetallarNIT);
 
 		do {
-			Util.wait(1);
+			DXCUtil.wait(1);
 		} while (!this.isDisplayed(locTipoIdSocioNIT));
 
 		msg = this.selectListItem(locTipoIdSocioNIT, infoTipoIdSocio);
-
+		if (msg != null)
 		if (!msg.isEmpty()) {
 			Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 		}
 
 		do {
-			Util.wait(1);
+			DXCUtil.wait(1);
 		} while (!this.isDisplayed(locNumeroIdSocioNIT));
 
 		this.write(locNumeroIdSocioNIT, infoNumeroIdSocio);
 		this.click(locNombreSocioNIT);
 
 		do {
-			Util.wait(1);
+			DXCUtil.wait(1);
 		} while (!this.isDisplayed(locNombreSocioNIT));
 
-//		if (this.findElement(locNombreSocioNIT).getAttribute("disabled") == null)
-//			this.write(locNombreSocioNIT, infoNombreSocio);
-//
-//		if (this.findElement(locPorcentajeParticipacionNIT).getAttribute("disabled") == null)
-//			this.write(locPorcentajeParticipacionNIT, infoParticipacionSocio);
-//
-//		if (this.findElement(locApellidoSocioNIT).getAttribute("disabled") == null)
-//			this.write(locApellidoSocioNIT, infoApellidoSocio);
-//
-//		if (this.findElement(locPaisSocioNIT).getAttribute("disabled") == null)
-//			msg = this.selectListItem(locPaisSocioNIT, infoNacionalidadSocio);
+		if (this.element(locNombreSocioNIT).getAttribute("disabled") == null)
+			this.write(locNombreSocioNIT, infoNombreSocio);
 
+		if (this.element(locPorcentajeParticipacionNIT).getAttribute("disabled") == null)
+			this.write(locPorcentajeParticipacionNIT, infoParticipacionSocio);
+
+		if (this.element(locApellidoSocioNIT).getAttribute("disabled") == null)
+			this.write(locApellidoSocioNIT, infoApellidoSocio);
+
+		if (this.element(locPaisSocioNIT).getAttribute("disabled") == null)
+			msg = this.selectListItem(locPaisSocioNIT, infoNacionalidadSocio);
+		if (msg != null)
 		if (!msg.isEmpty()) {
 			Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 		}
 
 		if (infoTributacionFiscal.equals("SI")) {
-			Util.wait(1);
+			DXCUtil.wait(1);
 			this.checkCheckBox(locTributacionSiNIT);
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locPaisTribucionNIT));
 
 			msg = this.selectListItem(locPaisTribucionNIT, infoPaisTributacion);
-
+			if (msg != null)
 			if (!msg.isEmpty()) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 			}
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locTinNIT));
 
 			this.write(locTinNIT, infoNumeroTIN);
 
 		} else {
-			Util.wait(1);
+			DXCUtil.wait(1);
 			this.checkCheckBox(locTributacionNoNIT);
 		}
 
 		do {
-			Util.wait(1);
+			DXCUtil.wait(1);
 		} while (!this.isDisplayed(locBtnConfirmarSocioNIT));
 
 		this.click(locBtnConfirmarSocioNIT);
 
 		do {
-			Util.wait(1);
+			DXCUtil.wait(1);
 		} while (!this.isDisplayed(locBtnContinuarSocioNIT));
 
 		this.click(locBtnContinuarSocioNIT);
 
 		do {
-			Util.wait(1);
+			DXCUtil.wait(1);
 		} while (!this.isDisplayed(locBtnConfirmarPageSocioNIT));
 
 		Evidence.saveAllScreens("Datos de Agregar Socio con Documento Tipo NIT", this);
@@ -1344,7 +1357,7 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 	public String AprobarActualizacionDeDatos() throws Exception {
 
 		String msjRespuesta;
-//		this.pageConfirmacion = new PageConfirmacion(this);
+		this.pageConfirmacion = new PageConfirmacion1(this);
 		if (infoDeclaraciones != null && !infoDeclaraciones.isEmpty()) {
 
 			if (!this.isDisplayed(locDeclaraciones)) {
@@ -1352,7 +1365,7 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 			}
 
 			do {
-				Util.wait(1);
+				DXCUtil.wait(1);
 			} while (!this.isDisplayed(locDeclaraciones));
 
 			this.write(locDeclaraciones, infoDeclaraciones);
@@ -1367,15 +1380,15 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 		if (msjRespuesta.equals("Se actualizaron exitosamente los datos de su empresa")) {
 
 			Date fecha = new Date();
-			Date fechaToday = Util.dateAdd(fecha, Calendar.DAY_OF_MONTH, 0);
-			Date hora1 = Util.dateAdd(fecha, Calendar.MINUTE, 0);
+			Date fechaToday = DXCUtil.dateAdd(fecha, Calendar.DAY_OF_MONTH, 0);
+			Date hora1 = DXCUtil.dateAdd(fecha, Calendar.MINUTE, 0);
 
-			String today = Util.dateToString(fechaToday, "D-M-YY");
-			String hora = Util.hourToString(hora1, "HH:mm");
+			String today = DXCUtil.dateToString(fechaToday, "D-M-YY");
+			String hora = DXCUtil.hourToString(hora1, "HH:mm");
 			String todayHora = today + " " + hora;
 			todayHora = todayHora.replace("-", "/").replace("24 ", "2024 ");
 
-//			this.pageFileNet = new PageActualizacionFileNet(this);
+			this.pageFileNet = new PageActualizacionFileNet1(this);
 			pageFileNet.FECHAHORA = todayHora;
 
 		}
@@ -1384,7 +1397,7 @@ public class PageActualizacionDeDatos1 extends BasePageWeb {
 	}
 
 	public String MsgAlertaActualizacionDatos() throws Exception {
-		String msgAlerta = this.pageOrigen.findElement(locMsgAlerta).getText();
+		String msgAlerta = this.pageOrigen.element(locMsgAlerta).getText();
 		Reporter.reportEvent(Reporter.MIC_FAIL, msgAlerta);
 		return msgAlerta;
 	}
