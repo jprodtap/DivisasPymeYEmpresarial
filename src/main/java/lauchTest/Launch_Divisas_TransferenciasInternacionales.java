@@ -16,7 +16,7 @@ public class Launch_Divisas_TransferenciasInternacionales extends BaseTestNG {
 
 	// ***********************************************************************************************************************
 
-// ***********************************************************************************************************************
+// ================================[launchData]=======================================================================================
 
 	@Override
 	public void launchData() {
@@ -32,6 +32,8 @@ public class Launch_Divisas_TransferenciasInternacionales extends BaseTestNG {
 //		this.loadEvidenceFileInfo(nombreTestCase,nombreTestCase + " - " + SettingsRun.getTestData().getParameter("testConfigId").trim());
 	}
 
+// ================================[initializeControllerAndConfiguration]=======================================================================================	
+	
 	@Override
 	public void initializeControllerAndConfiguration() throws Exception {
 		
@@ -57,6 +59,8 @@ public class Launch_Divisas_TransferenciasInternacionales extends BaseTestNG {
 		
 	
 	}
+	
+// ================================[doingTest]=======================================================================================	
 
 	@Override
 	public void doingTest() throws Exception {
@@ -81,12 +85,15 @@ public class Launch_Divisas_TransferenciasInternacionales extends BaseTestNG {
 			controllerGeneralDivisas.ValidacionInformeInicial();
 		}
 	}
+	
+// ================================[launchClose]=======================================================================================	
 
+	
 	@Override
 	public void launchClose() {
-		
-		if (DatosDavivienda.RISKMOTOR != null && SettingsRun.esIteracionFinal())
-			DatosDavivienda.RISKMOTOR.cerrarMotorRiesgo();
+		SettingsRun.CREATE_FINAL_EVIDENCES_WHEN_NOPDF = false;
+//		if (DatosDavivienda.RISKMOTOR != null && SettingsRun.esIteracionFinal())
+//			DatosDavivienda.RISKMOTOR.cerrarMotorRiesgo();
 
 // -----------------------------------------------------------------------------------------------------------------------
 

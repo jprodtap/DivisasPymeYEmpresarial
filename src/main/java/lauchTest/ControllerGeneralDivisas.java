@@ -35,7 +35,6 @@ import dav.transversal.DatosEmpresarial;
 import dav.transversal.MotorRiesgo;
 import dav.transversal.NotificacionSMS;
 import dav.transversal.Stratus;
-//import dxc.util.Util;
 import dxc.util.DXCUtil;
 
 import pages.actions.MiddleEmpresarial.PageLoginMiddleEmpresarial;
@@ -68,6 +67,8 @@ public class ControllerGeneralDivisas implements Controller {
 	private static ControllerGeneralDivisas instanciaUnica;
 	private PortalType portalType;
 
+// =============================[Page & Crontroller]==========================================================================================
+
 	// Instancias de páginas Cliente360
 	PageLogin pageLoginC360 = null;
 	PageInicioC360 pageInicioC360 = null;
@@ -97,6 +98,8 @@ public class ControllerGeneralDivisas implements Controller {
 	private PageConfirmacion1 pageConf;
 	private PageInformesTransInternacionales pageInfoTransInter;
 
+// =======================================================================================================================
+
 	// Variables de contexto y flujo
 	private String usuario, servicio, tipoPrueba, navegador, nombreEmpre, nitEmpre, tipoIdEm, numCta, tipoCta,
 			referencia1, referencia2, uuid;
@@ -108,10 +111,14 @@ public class ControllerGeneralDivisas implements Controller {
 	private String nombreBene, paisDestino, ciudadDestino, direccionBene, cuentaBene, infoPago, referenciaPago;
 	private String tipoCodigo, numeroCodigo, intermediario, tipoCodigoInter, numeroCodigoInter;
 
+// =======================================================================================================================
 	// Variables Consulta comprobantes
 	private String fecha, hora, moneda;
+
 	String tipoConstaTxRealizadas = null, ordenanteBeneficiario = null, tipoTranferencia = null, estado = null,
 			tipoMoneda = null, fechaTx = null, horaTx = null, fechaDesde = null, fechaHasta = null;
+
+// =======================================================================================================================
 
 	// Variables para guardar últimos valores (optimización de configuración)
 	private String lastNumAprobaciones = "", lastTipoAbono = "", lastCtaInscrita = "", lastIdusuario = "",
@@ -122,6 +129,8 @@ public class ControllerGeneralDivisas implements Controller {
 	public static String tipoPruebaStatic = null;
 	public static String numeroTx = null;
 
+// =======================================================================================================================
+
 	private String[] arrMsgBuscarEstado = { PageConfirmacion1.MSG_EXITO_APROB, PageConfirmacion1.MSG_EXITO_PAGO,
 			PageConfirmacion1.MSG_EXITO_ENV_OTP, PageConfirmacion1.MSG_EXITO_GUARD,
 			PageConfirmacion1.MSG_EXITO_APROB_INTER, };
@@ -129,15 +138,21 @@ public class ControllerGeneralDivisas implements Controller {
 	private String[] arrMsgTxDeclinada = { PageConfirmacion1.MSG_EXITO_DECL1, PageConfirmacion1.MSG_EXITO_DECL2,
 			PageConfirmacion1.MSG_EXITO_DECL3, PageConfirmacion1.MSG_EXITO_DECL5, };
 
-	// -----------------------------------------------------------------------------------------------------------------------
+// =======================================================================================================================
 
+	// VARIABLES GLOBALES DE TX
 	final String TP_LOGIN = "Login";
 	final String TP_EN_LINEA = "Tx En Línea";
 	final String TP_PEND_APR = "Tx Pend Aprobación";
 	final String CN_APRO_PEND = "1";
 
-	// ***********************************************************************************************************************
+// =======================================================================================================================
+	// Datos Motor de riesgo
+	public static String[] cuentasDesMotor = null, datoNumDestCuentas = null;
 
+	public static String activityAmount = null, bancoDesMotor = null, riesgoBc = null, riesgoEfm = null;
+
+// =======================================[ControllerGeneralDivisas]================================================================================
 	/**
 	 * 
 	 * Metodo getInstanciaUnicaControllerFrontEmpresarial: Su Proposito es realizar
@@ -156,6 +171,7 @@ public class ControllerGeneralDivisas implements Controller {
 		this.portalType = portalType;
 	}
 
+// =======================================[ControllerGeneralDivisas getInstance]================================================================================
 	public static ControllerGeneralDivisas getInstance(PortalType portalType) {
 		if (instanciaUnica == null) {
 			instanciaUnica = new ControllerGeneralDivisas(portalType);
@@ -163,10 +179,13 @@ public class ControllerGeneralDivisas implements Controller {
 		return instanciaUnica;
 	}
 
+// =======================================[resetInstance]================================================================================
+
 	public static void resetInstance() {
 		instanciaUnica = null;
 	}
-	// ***********************************************************************************************************************
+
+// =======================================[inicializarInstanciaUnicaControllerFrontEmpresarial]================================================================================
 
 	/**
 	 * 
@@ -185,7 +204,7 @@ public class ControllerGeneralDivisas implements Controller {
 
 	}
 
-	// ===========================================================================================================================================
+// ==========================================[cargarDatosGlobales]=================================================================================================
 
 	/**
 	 * Carga los datos de contexto globales desde SettingsRun. Centraliza la
@@ -251,12 +270,16 @@ public class ControllerGeneralDivisas implements Controller {
 		this.horaTx = SettingsRun.getTestData().getParameter("Hora tx");
 	}
 
+// ==========================================[inicializarSesion]=================================================================================================
+
 	/**
 	 * Inicializa la sesión y páginas requeridas según el portal (PYME o
 	 * Empresarial).
 	 */
 	public void inicializarSesion() throws Exception {
+
 		cargarDatosGlobales();
+
 		if (portalType == PortalType.PYME) {
 
 			String contratacion = SettingsRun.getGlobalData("CONTRATACION");
@@ -281,7 +304,7 @@ public class ControllerGeneralDivisas implements Controller {
 			if (contratacion.equalsIgnoreCase("SI")) {
 				msg = inicializarSesionMiddleEmpresarial();
 				if (msg == null) {
-//					ContratacionMiddleEmpresarial();
+					ContratacionMiddleEmpresarial();
 				} else {
 					Reporter.reportEvent(Reporter.MIC_FAIL, "No se pudo Inicializar Middle Empresarial");
 				}
@@ -289,6 +312,8 @@ public class ControllerGeneralDivisas implements Controller {
 			inicializarSesionEmpresarial();
 		}
 	}
+
+// ==========================================[ValidacionInformeInicial]=================================================================================================	
 
 	/**
 	 * Inicializa la sesión y páginas requeridas según el portal (PYME o
@@ -318,20 +343,13 @@ public class ControllerGeneralDivisas implements Controller {
 		}
 	}
 
-	public void inicializarSesionPyme() throws Exception {
-		String msgError = null;
-		// Datos Login front Login, estos datos se encuentran el archivo del carge DATA
-		DatosEmpresarial.loadLoginData("Cliente Empresarial", "Tipo Identificación", "Id usuario",
-				"Clave personal o CVE", "Tipo Token", "Semilla / Valor Estático / Celular");
-
-		String[] datosLogin = DatosEmpresarial.getLoginData();
-
-		Reporter.reportEvent(Reporter.MIC_INFO, "*** Navegador: [" + this.navegador + "]");
-		Reporter.reportEvent(Reporter.MIC_INFO,
-				"*** Datos de Logueo Front: [" + Util.arrayToString(datosLogin, " - ") + "]");
-
-		String nombreAmbiente = SettingsRun.getGlobalData("data.ambienteFrontPyme", "PROYECTOS_NUBE");
-
+// ==========================================[ValidacionInformeInicial]=================================================================================================
+	/**
+	 * Ambiente a selecionar de Pyme
+	 * 
+	 * @param nombreAmbiente
+	 */
+	private void normalizarAmbiente(String nombreAmbiente) {
 		switch (nombreAmbiente) {
 		case "1":
 		case "PROYECTOS":
@@ -377,104 +395,20 @@ public class ControllerGeneralDivisas implements Controller {
 		}
 
 		DatosEmpresarial.AMBIENTE_TEST = nombreAmbiente;
-
-		String evidenceDir = SettingsRun.RESULT_DIR + File.separator + "Temp";
-		loginFrontPyme = new PageLoginPymes1(this.navegador, evidenceDir);
-
-		DatosEmpresarial.loadLoginData("Cliente Empresarial", "Tipo Identificación", "Id usuario",
-				"Clave personal o CVE", "Tipo Token", "Semilla / Valor Estático / Celular");
-
-		loginFrontPyme.loginFront();
-		loginFrontPyme.selecionambienteClose("NO");
-		loginFrontPyme.changeWindow(loginFrontPyme.accedioAlPortal());
-		loginFrontPyme.maximizeBrowser();
-		pageOrigenPyme = new PageOrigen1(loginFrontPyme);
-
-		String empresa = SettingsRun.getTestData().getParameter("Nombre Empresa").trim();
-		msgError = pageOrigenPyme.seleccionarEmpresa(empresa);
-		if (msgError != null) {
-			Reporter.reportEvent(Reporter.MIC_FAIL, msgError);
-			pageOrigenPyme.terminarIteracion();
-		}
-
-		String codigoCIIU = SettingsRun.getTestData().getParameter("Validar CIIU").trim();
-
-		if (codigoCIIU.equals("SI")) {
-			DXCUtil.wait(3);
-			this.pageActualizacionDeDatos = new PageActualizacionDeDatos1(this.pageOrigenPyme);
-
-			msgError = this.pageActualizacionDeDatos.InicioActualizacionDatos(false);
-
-			if (msgError != null && !msgError.equals("Se actualizaron exitosamente los datos de su empresa")) {
-				msgError = this.pageActualizacionDeDatos.MsgAlertaActualizacionDatos();
-				this.pageOrigenPyme.terminarIteracion(Reporter.MIC_FAIL, msgError);
-			} else {
-				Reporter.reportEvent(Reporter.MIC_PASS, msgError);
-			}
-		}
-
-		String validarCliente = SettingsRun.getTestData().getParameter("ValidarC360");
-		if (validarCliente.equals("SI")) {
-
-			this.ValidarCCIU(this.nitEmpre);
-			Reporter.write("*** Termina la Validación CLIENTE 360 ***");
-		}
-
-		configurarParametrosGeneralesPyme();
-		actualizarDatosEmpresaSiRequiere();
-		inicializarPaginasDivisas(loginFrontPyme);
 	}
 
+// ==========================================[inicializarSesionPymeMiddle]=================================================================================================
+	/**
+	 * Método que llama logueo en el portal Middle Pyme. Realiza el primer ingreso
+	 * 
+	 * @throws Exception
+	 */
 	private String inicializarSesionPymeMiddle() throws Exception {
 		String msgError = null;
 
 		String nombreAmbiente = SettingsRun.getGlobalData("data.ambienteMiddlePyme", "PROYECTOS_NUBE");
 
-		switch (nombreAmbiente) {
-		case "1":
-		case "PROYECTOS":
-			nombreAmbiente = "PROYECTOS";
-			break;
-		case "2":
-		case "CONTENCION":
-			nombreAmbiente = "CONTENCION";
-			break;
-		case "3":
-		case "OBSOLESCENCIA":
-			nombreAmbiente = "OBSOLESCENCIA";
-			break;
-		case "4":
-		case "ONPREMISE":
-			nombreAmbiente = "ONPREMISE";
-			break;
-		case "5":
-		case "POST_NUBE":
-			nombreAmbiente = "POST_NUBE";
-			break;
-		case "6":
-		case "CONTENCION_NUBE":
-			nombreAmbiente = "CONTENCION_NUBE";
-			break;
-		case "7":
-		case "PROYECTOS_NUBE":
-			nombreAmbiente = "PROYECTOS_NUBE";
-			break;
-		case "8":
-		case "MEJORAS":
-			nombreAmbiente = "MEJORAS";
-			break;
-		default:
-			Reporter.reportEvent(Reporter.MIC_FAIL, "Opción no válida");
-			break;
-		}
-
-		if (nombreAmbiente.isEmpty()) {
-			Reporter.reportEvent(Reporter.MIC_FAIL, "Nombre del ambiente seleccionado: Portal - " + nombreAmbiente);
-		} else {
-			Reporter.reportEvent(Reporter.MIC_HEADER, "Nombre del ambiente seleccionado: Portal - " + nombreAmbiente);
-		}
-
-		DatosEmpresarial.AMBIENTE_TEST = nombreAmbiente;
+		this.normalizarAmbiente(nombreAmbiente);
 
 		/*
 		 * Datos Fijos Middle Login, estos datos se encuentran el archivo
@@ -485,7 +419,7 @@ public class ControllerGeneralDivisas implements Controller {
 				SettingsRun.getGlobalData("data.numIdPyme"), SettingsRun.getGlobalData("data.clavepersonalPyme"),
 				SettingsRun.getGlobalData("data.tipoTkPyme"), SettingsRun.getGlobalData("data.tokenEstaticoPyme"));
 
-// -----------------------------------------------------------------------------------------------------------------------
+		// -----------------------------------------------------------------------------------------------------------------------
 
 		// Organiza los datos del cliente Middle con un array
 		String[] datosLogin = DatosEmpresarial.getLoginData();
@@ -500,7 +434,7 @@ public class ControllerGeneralDivisas implements Controller {
 		String tipoTok = datosLogin[4];
 		String datoTok = datosLogin[5];
 
-// -----------------------------------------------------------------------------------------------------------------------
+		// -----------------------------------------------------------------------------------------------------------------------
 
 		// PARÁMETROS REQUERIDOS EN EL ARCHIVO EXCEL
 		this.navegador = SettingsRun.getTestData().getParameter("Navegador").trim();
@@ -514,15 +448,7 @@ public class ControllerGeneralDivisas implements Controller {
 		String tipoIDEmpresa = SettingsRun.getTestData().getParameter("Tipo ID Empresa").trim();
 		String numeroIDEmpresa = SettingsRun.getTestData().getParameter("Numero ID Empresa").trim();
 
-// -----------------------------------------------------------------------------------------------------------------------		
-
-		/*
-		 * Metodo se encarga de validar, que los datos obligatorios esten en el archivo
-		 * a cargar
-		 */
-		// this.validarOCorregirData();
-
-// -----------------------------------------------------------------------------------------------------------------------
+		// -----------------------------------------------------------------------------------------------------------------------
 
 		String msgInicio = "";
 
@@ -539,17 +465,10 @@ public class ControllerGeneralDivisas implements Controller {
 				+ numeroIDEmpresa + "]";
 		Reporter.reportEvent(Reporter.MIC_INFO, msgInicio);
 
-//		Inicializa los valores temporales.
-//		Util para aquellos escenarios en que no se ha adicionado un registro, pero se deben ir guardando determinados datos: Fecha y hora de la transacciÓn /Resultado / Monto / Observación / Número de transacción.
-
 		if (this.tipoPrueba.isEmpty() || this.tipoPrueba.equals(" ")) {
 			Reporter.write("Falta Ingresar Datos de Tipo Prueba, Campo es Obligatorio ");
 			SettingsRun.exitTestIteration();
 		}
-
-// -----------------------------------------------------------------------------------------------------------------------
-
-//*************************************************************************************************************************
 
 		// -----------------------------------------------------------------------------------------------------------------------
 		// Guarda los Datos del cliente Middle
@@ -572,6 +491,15 @@ public class ControllerGeneralDivisas implements Controller {
 		return msgError;
 	}
 
+// ==========================================[ContratacionMiddlePyme]=================================================================================================
+
+	/**
+	 * REALIZA EL FLUJO DE PYME MIDDLE, PARA REALIZAR LA CONTRARACION DE LOS
+	 * SERVICIOS A LOS DEMAS USUARIOS SI ES POR FIRMAS, SUMA 1 A LA VARIABLE
+	 * CONTADOR
+	 * 
+	 * @throws Exception
+	 */
 	public void ContratacionMiddlePyme() throws Exception {
 
 		this.controllerValiPymeMiddle = new ControllerValiPymeMiddle1(this.loginFrontPyme);
@@ -622,11 +550,86 @@ public class ControllerGeneralDivisas implements Controller {
 
 	}
 
+// ==========================================[inicializarSesionPyme]=================================================================================================
+
+	/**
+	 * Método que llama logueo en el portal Front Pyme. Realiza el primer ingreso
+	 * 
+	 * @throws Exception
+	 */
+	public void inicializarSesionPyme() throws Exception {
+		String msgError = null;
+		// Datos Login front Login, estos datos se encuentran el archivo del carge DATA
+		DatosEmpresarial.loadLoginData("Cliente Empresarial", "Tipo Identificación", "Id usuario",
+				"Clave personal o CVE", "Tipo Token", "Semilla / Valor Estático / Celular");
+
+		String[] datosLogin = DatosEmpresarial.getLoginData();
+
+		Reporter.reportEvent(Reporter.MIC_INFO, "*** Navegador: [" + this.navegador + "]");
+		Reporter.reportEvent(Reporter.MIC_INFO,
+				"*** Datos de Logueo Front: [" + Util.arrayToString(datosLogin, " - ") + "]");
+
+		String nombreAmbiente = SettingsRun.getGlobalData("data.ambienteFrontPyme", "PROYECTOS_NUBE");
+
+		this.normalizarAmbiente(nombreAmbiente);
+
+		String evidenceDir = SettingsRun.RESULT_DIR + File.separator + "Temp";
+		loginFrontPyme = new PageLoginPymes1(this.navegador, evidenceDir);
+
+		DatosEmpresarial.loadLoginData("Cliente Empresarial", "Tipo Identificación", "Id usuario",
+				"Clave personal o CVE", "Tipo Token", "Semilla / Valor Estático / Celular");
+
+		loginFrontPyme.loginFront();
+		loginFrontPyme.selecionambienteClose("NO");
+		loginFrontPyme.changeWindow(loginFrontPyme.accedioAlPortal());
+		loginFrontPyme.maximizeBrowser();
+		pageOrigenPyme = new PageOrigen1(loginFrontPyme);
+
+		String empresa = SettingsRun.getTestData().getParameter("Nombre Empresa").trim();
+		msgError = pageOrigenPyme.seleccionarEmpresa(empresa);
+		if (msgError != null) {
+			Reporter.reportEvent(Reporter.MIC_FAIL, msgError);
+			pageOrigenPyme.terminarIteracion();
+		}
+
+		String codigoCIIU = SettingsRun.getTestData().getParameter("Validar CIIU").trim();
+
+		if (codigoCIIU.equals("SI")) {
+			DXCUtil.wait(3);
+			this.pageActualizacionDeDatos = new PageActualizacionDeDatos1(this.pageOrigenPyme);
+
+			msgError = this.pageActualizacionDeDatos.InicioActualizacionDatos(false);
+
+			if (msgError != null && !msgError.equals("Se actualizaron exitosamente los datos de su empresa")) {
+				msgError = this.pageActualizacionDeDatos.MsgAlertaActualizacionDatos();
+				this.pageOrigenPyme.terminarIteracion(Reporter.MIC_FAIL, msgError);
+			} else {
+				Reporter.reportEvent(Reporter.MIC_PASS, msgError);
+			}
+		}
+
+		String validarCliente = SettingsRun.getTestData().getParameter("ValidarC360");
+
+		if (validarCliente.equals("SI")) {
+
+			this.ValidarCCIU(this.nitEmpre);
+			Reporter.write("*** Termina la Validación CLIENTE 360 ***");
+		}
+
+		configurarParametrosGeneralesPyme();
+		actualizarDatosEmpresaSiRequiere();
+		inicializarPaginasDivisas(loginFrontPyme);
+	}
+
+// ==========================================[ValidacionInformeMiddlePyme]=================================================================================================
+
 	private void ValidacionInformeMiddlePyme() throws Exception {
 		this.controllerValiPymeMiddle = new ControllerValiPymeMiddle1(this.loginFrontPyme);
 		// -----------------------------------------------------------------------------------------------------------------------
 		controllerValiPymeMiddle.ValidacionInformeTransInternacional();
 	}
+
+// ====================================[inicializarSesionMiddleEmpresarial]==============================================================================		
 
 	private String inicializarSesionMiddleEmpresarial() throws Exception {
 		// Crea los objetos necesarios
@@ -645,42 +648,56 @@ public class ControllerGeneralDivisas implements Controller {
 		return msgError;
 	}
 
-//	public void ContratacionMiddleEmpresarial() throws Exception {
-//		controllerMiddleEmpresarial = new ControllerMiddleEmpresarial();
-//		// Aquí puedes ejecutar el flujo de contratación específico, por ejemplo:
-//		controllerMiddleEmpresarial.flujoContratacion(); // Ajusta el nombre según lo que exponga el controller
-//		loginMiddleEmpresarial.cerrarNavegador(); // Si necesitas cerrar la sesión luego
-//	}
+// ====================================[ContratacionMiddleEmpresarial]==============================================================================		
+
+	/**
+	 * REALIZA EL FLUJO DE EMPRESARIAL MIDDLE, PARA REALIZAR LA CONTRARACION DE LOS
+	 * SERVICIOS A LOS DEMAS USUARIOS SI ES POR FIRMAS, SUMA 1 A LA VARIABLE
+	 * CONTADOR
+	 * 
+	 * @throws Exception
+	 */
+	public void ContratacionMiddleEmpresarial() throws Exception {
+		controllerMiddleEmpresarial = new ControllerMiddleEmpresarial();
+		// Aquí puedes ejecutar el flujo de contratación específico, por ejemplo:
+		controllerMiddleEmpresarial.flujoContratacion(); // Ajusta el nombre según lo que exponga el controller
+		loginMiddleEmpresarial.cerrarNavegador(); // Si necesitas cerrar la sesión luego
+	}
+
+// ====================================[inicializarSesionEmpresarial]==============================================================================		
 
 	private void inicializarSesionEmpresarial() throws Exception {
 		String evidenceDir = SettingsRun.RESULT_DIR + File.separator + "Temp";
 		loginFrontEmpresarial = new PageLoginFrontEmpresarial(BasePageWeb.CHROME, evidenceDir);
 		DatosEmpresarial.loadLoginData("Cliente Empresarial", "Tipo Identificación", "Id usuario",
 				"Clave personal o CVE", "Tipo Token", "Semilla / Valor Estático / Celular");
-		
+
 		String[] datosLogin = DatosEmpresarial.getLoginData();
 
-		Reporter.reportEvent(Reporter.MIC_INFO, "*** Navegador: ["+this.navegador+"]");
-		Reporter.reportEvent(Reporter.MIC_INFO,"*** Datos de Logueo Front: [" + Util.arrayToString(datosLogin, " - ") + "]");
-		
+		Reporter.reportEvent(Reporter.MIC_INFO, "*** Navegador: [" + this.navegador + "]");
+		Reporter.reportEvent(Reporter.MIC_INFO,
+				"*** Datos de Logueo Front: [" + Util.arrayToString(datosLogin, " - ") + "]");
+
 		String msgError = loginFrontEmpresarial.realizarLogin(
 				SettingsRun.getTestData().getParameter("Cliente Empresarial").trim(),
 				SettingsRun.getTestData().getParameter("Tipo Identificación").trim(),
 				SettingsRun.getTestData().getParameter("Id usuario").trim(), obtenerTipoAutenticacion(),
 				SettingsRun.getTestData().getParameter("Clave personal o CVE").trim(),
 				SettingsRun.getTestData().getParameter("Semilla / Valor Estático / Celular").trim());
+
 		if (msgError != null) {
 			Reporter.reportEvent(Reporter.MIC_FAIL, msgError);
-//			loginFrontEmpresarial.cerrarNavegador();
-			throw new Exception("Login Empresarial fallido: " + msgError);
 		}
+
 		frontEmpresarial = new PageFrontEmpresarial(loginFrontEmpresarial);
+
 		String empresa = SettingsRun.getTestData().getParameter("Nombre Empresa").trim();
+
 		msgError = frontEmpresarial.seleccionarEmpresa(empresa);
 		if (msgError != null) {
 			Reporter.reportEvent(Reporter.MIC_FAIL, msgError);
 			frontEmpresarial.cerrarSesionFrontEmpresarial();
-			throw new Exception("Seleccion de empresa fallida: " + msgError);
+			SettingsRun.exitTestIteration();
 		}
 
 		inicializarPaginasDivisas(frontEmpresarial);
@@ -688,11 +705,25 @@ public class ControllerGeneralDivisas implements Controller {
 		msgError = this.seleccionarTransferenciasInternacionales();
 		if (msgError != null) {
 			Reporter.reportEvent(Reporter.MIC_FAIL, msgError);
-			frontEmpresarial.cerrarSesionFrontEmpresarial();
-			throw new Exception("Seleccion del modulo Divisas fallida " + msgError);
+			SettingsRun.exitTestIteration();
 		}
 
 	}
+
+// ====================================[ValidacionInformeMiddleEmpresa]==============================================================================
+
+	private void ValidacionInformeMiddleEmpresa() throws Exception {
+
+		pageInfoTransInter = new PageInformesTransInternacionales(loginMiddleEmpresarial);
+		this.servicio = SettingsRun.getTestData().getParameter("Servicio").trim();
+		String idEmpresa = SettingsRun.getTestData().getParameter("Numero ID Empresa").trim();
+		String tipoIDUser = SettingsRun.getTestData().getParameter("Tipo Identificación").trim();
+		String numIdUser = SettingsRun.getTestData().getParameter("Id usuario").trim();
+		pageInfoTransInter.irAOpcionTransFerenciasInDivisas(true);
+		pageInfoTransInter.InformeTransInter(this.servicio, tipoIDUser, numIdUser, idEmpresa);
+	}
+
+// ====================================[obtenerTipoAutenticacion]==============================================================================		
 
 	/**
 	 * Obtiene el tipo de autenticación a usar para login en Empresarial.
@@ -711,6 +742,7 @@ public class ControllerGeneralDivisas implements Controller {
 		}
 	}
 
+// ====================================[inicializarPaginasDivisas]==============================================================================		
 	/**
 	 * Inicializa las páginas de Divisas comunes para ambos portales.
 	 */
@@ -724,6 +756,7 @@ public class ControllerGeneralDivisas implements Controller {
 		pageConf = new PageConfirmacion1(parentPage);
 	}
 
+// ====================================[configurarParametrosGeneralesPyme]==============================================================================	
 	/**
 	 * Configura los parámetros generales para PYME (solo si han cambiado).
 	 */
@@ -744,6 +777,7 @@ public class ControllerGeneralDivisas implements Controller {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msgError);
 				throw new Exception("Configuración de parámetros generales fallida: " + msgError);
 			}
+
 			lastNumAprobaciones = numAprobaciones;
 			lastTipoAbono = tipoAbono;
 			lastCtaInscrita = ctaInscrita;
@@ -751,6 +785,8 @@ public class ControllerGeneralDivisas implements Controller {
 			lastempresa = empresa;
 		}
 	}
+
+// ====================================[actualizarDatosEmpresaSiRequiere]==============================================================================
 
 	/**
 	 * Actualiza datos de empresa si el flujo lo requiere (PYME).
@@ -767,6 +803,7 @@ public class ControllerGeneralDivisas implements Controller {
 				if (msgError != null && !"Se actualizaron exitosamente los datos de su empresa".equals(msgError)) {
 					msgError = pageActualizacionDeDatos.MsgAlertaActualizacionDatos();
 					pageOrigenPyme.terminarIteracion(Reporter.MIC_FAIL, msgError);
+
 				} else {
 					Reporter.reportEvent(Reporter.MIC_PASS, msgError);
 				}
@@ -774,18 +811,7 @@ public class ControllerGeneralDivisas implements Controller {
 		}
 	}
 
-	private void ValidacionInformeMiddleEmpresa() throws Exception {
-
-		pageInfoTransInter = new PageInformesTransInternacionales(loginMiddleEmpresarial);
-		this.servicio = SettingsRun.getTestData().getParameter("Servicio").trim();
-		String idEmpresa = SettingsRun.getTestData().getParameter("Numero ID Empresa").trim();
-		String tipoIDUser = SettingsRun.getTestData().getParameter("Tipo Identificación").trim();
-		String numIdUser = SettingsRun.getTestData().getParameter("Id usuario").trim();
-		pageInfoTransInter.irAOpcionTransFerenciasInDivisas(true);
-		pageInfoTransInter.InformeTransInter(this.servicio, tipoIDUser, numIdUser, idEmpresa);
-	}
-
-	// ***********************************************************************************************************************
+// ====================================[seleccionarTransferenciasInternacionales]==============================================================================
 
 	public String seleccionarTransferenciasInternacionales() throws Exception {
 		String msgError = null;
@@ -800,7 +826,8 @@ public class ControllerGeneralDivisas implements Controller {
 		return msgError;
 	}
 
-	// ===========================================[TransferenciasInternacionales]===========================================================================
+// ===========================================[TransferenciasInternacionales]===========================================================================
+
 	/**
 	 * Realiza la transacción de recibir dinero del exterior.<b>
 	 * TransferenciasInternacionales
@@ -904,9 +931,7 @@ public class ControllerGeneralDivisas implements Controller {
 
 	}
 
-	// =======================================================================================================================
-
-	// ===========================================[EnviarTransferenciasInternacionales]===========================================================================
+// ===========================================[EnviarTransferenciasInternacionales]===========================================================================
 	/**
 	 * Metodo se encarga de realizar el flujo completo de transacción de Enviar
 	 * dinero al exterior.<b>
@@ -930,14 +955,14 @@ public class ControllerGeneralDivisas implements Controller {
 		}
 
 		if (portalType == PortalType.PYME)
-			this.inicioCrearTx(); // DEJA LA PANTALLA [Pagos, Transferencias yotros] y seleciona el link del
-									// servicio a realizar
+			this.inicioCrearTx(); // DEJA LA PANTALLA [Pagos, Transferencias yotros] y seleciona el link
+									// delservicio a realizar
 
 		// Espera hasta que el iframe de divisas esté disponible
 		if (this.pageEnviarTransInternacional.switchToFrameDivisas()) {
 
-			msg = pageEnviarTransInternacional.seleccionarTransferencia("Enviar");// Se en carga de selecionar el modulo
-																					// de Divisas
+			msg = pageEnviarTransInternacional.seleccionarTransferencia("Enviar");// Se en carga de selecionar el
+																					// modulode Divisas
 
 			if (msg != null && !msg.equals(""))
 				this.terminarIteracionXError(msg);
@@ -1041,7 +1066,7 @@ public class ControllerGeneralDivisas implements Controller {
 
 	}
 
-	// ===========================================[EnviarTransferenciasInternacionalesPendAprobacion]===========================================================================
+// ===========================================[EnviarTransferenciasInternacionalesPendAprobacion]===========================================================================
 	/**
 	 * Metodo se en carga de dejar la Tx de Divisas en estado pendiente de
 	 * aprobación
@@ -1070,7 +1095,6 @@ public class ControllerGeneralDivisas implements Controller {
 		if (!msg.equals(""))
 			this.terminarIteracionXError(msg);
 
-//			pageEnviarTransInternacional.closeActiveIntAlert();
 		pageRecibirTransferenciasInternacionales.closeActiveIntAlert();
 		msg = pageEnviarTransInternacional.seleccionarCuenta(this.servicio, this.tipoIdEm, this.nitEmpre, this.tipoCta,
 				this.numCta);
@@ -1097,14 +1121,13 @@ public class ControllerGeneralDivisas implements Controller {
 
 		pageEnviarTransInternacional.confirmacion(intermediario);
 
-//			NotificacionSMS.TIPO_NOTIFICACION = NotificacionSMS.TIPO_NOTIF_PYMES_TRANS_ENVIADAS;
 		this.accionGuardarSinAprobarInternacional();
 
 		pageRecibirTransferenciasInternacionales.setTime(pageConf.getFechaHoraTx());
 
 	}
 
-	// ====================================[inicioCrearTx]==============================================================================
+// ====================================[inicioCrearTx]==============================================================================
 
 	/**
 	 * Metodo se ubica en la ruta de inicio de creacion de [Pagos, Transferencias y
@@ -1205,7 +1228,7 @@ public class ControllerGeneralDivisas implements Controller {
 
 	}
 
-	// ===========================================[accionGuardarSinAprobarInternacional]===========================================================================
+// ===========================================[accionGuardarSinAprobarInternacional]===========================================================================
 
 	/**
 	 * Metodo se encarga de las tx Divisas guardar sin probar
@@ -1220,9 +1243,8 @@ public class ControllerGeneralDivisas implements Controller {
 			this.terminarIteracionXError(msgRta);
 
 	}
-	// =======================================================================================================================
 
-	// ===========================================[accionConfirmarInternacional]===========================================================================
+// ===========================================[accionConfirmarInternacional]===========================================================================
 
 	/**
 	 * Metodo se encarga en aprobar las Tx de Divisas
@@ -1254,8 +1276,8 @@ public class ControllerGeneralDivisas implements Controller {
 
 		} else {
 			int numRetosFalla = 0;
-//			if (DatosDavivienda.IS_RISKMOTOR)
-//				numRetosFalla = Integer.valueOf(SettingsRun.getTestData().getParameter("Ingresos Fallidos").trim());
+			if (DatosDavivienda.IS_RISKMOTOR)
+				numRetosFalla = Integer.valueOf(SettingsRun.getTestData().getParameter("Ingresos Fallidos").trim());
 
 			msgRta = pageConf.aprobarTx(numRetosFalla, true);
 
@@ -1290,7 +1312,7 @@ public class ControllerGeneralDivisas implements Controller {
 
 //					this.validarIngresoMR();
 
-//					this.pageOrigen.terminarIteracion();
+					this.terminarIteracionXError(msgRta);
 				}
 			}
 
@@ -1496,9 +1518,7 @@ public class ControllerGeneralDivisas implements Controller {
 
 	}
 
-	// =======================================================================================================================
-
-	// ===========================================[aprobarTxPendienteIntern]===========================================================================
+// ===========================================[aprobarTxPendienteIntern]===========================================================================
 	/**
 	 * Intenta aprobar una transacción cuyo número de transacción se encuentra
 	 * almacenado en el parámetro "Número Aprobación".<br>
@@ -1553,7 +1573,7 @@ public class ControllerGeneralDivisas implements Controller {
 			if (msgRta.contains(PageConfirmacion1.MSG_EXITO_DOCYFOR)) {
 				Reporter.reportEvent(Reporter.MIC_INFO,
 						"Tiene al menos una operación que requiere adjuntar documentos.");
-				;
+
 			}
 
 			msg = this.pageDocumentos_Y_Formularios.ModuloDocumetosYFormularios(this.tipoPrueba, this.servicio,
@@ -1760,8 +1780,6 @@ public class ControllerGeneralDivisas implements Controller {
 
 			this.pageDocumentos_Y_Formularios = new PageDocumentos_Y_Formularios(this.pageDivisas);
 
-//    			this.pageDivisas = new PageDivisas(this.pageLogin);
-
 			if (this.pageDivisas.switchToFrameDivisas()) {
 
 				msg = this.pageDocumentos_Y_Formularios.IralModuloDocumetosYFormularios(this.tipoPrueba, this.servicio,
@@ -1770,7 +1788,7 @@ public class ControllerGeneralDivisas implements Controller {
 				if (msg != null) {
 					if (!msg.isEmpty())
 						Reporter.reportEvent(Reporter.MIC_FAIL, msg);
-//    					this.pageOrigen.terminarIteracion();
+					this.terminarIteracionXError(msg);
 				}
 
 				// Datos iniciales
@@ -1922,8 +1940,7 @@ public class ControllerGeneralDivisas implements Controller {
 
 				if (msg != null && !msg.contains(
 						"Documentos enviados exitosamente. Davivienda validará la información recibida y en caso de presentar inconsistencias informará vía correo electrónico. Por favor haga seguimiento de su operación en la opción de consultas y verifique el estado de su trámite.")) {
-					Reporter.reportEvent(Reporter.MIC_FAIL, msg);
-//    					this.pageOrigen.terminarIteracion();
+					this.terminarIteracionXError(msg);
 				}
 			}
 			break;
@@ -1936,6 +1953,7 @@ public class ControllerGeneralDivisas implements Controller {
 					this.tipoMoneda, this.fechaTx, this.horaTx, this.fechaDesde, this.fechaHasta, this.valorTx);
 			break;
 		default:
+			this.terminarIteracionXError("Servicio no soportado en flujo Divisas: " + this.servicio);
 			throw new UnsupportedOperationException("Servicio no soportado en flujo Divisas: " + this.servicio);
 		}
 
@@ -1955,6 +1973,7 @@ public class ControllerGeneralDivisas implements Controller {
 				this.fechaTx = SettingsRun.getTestData().getParameter("Fecha tx");
 				this.horaTx = SettingsRun.getTestData().getParameter("Hora tx");
 			}
+
 			this.estado = SettingsRun.getTestData().getParameter("Estado");
 
 			this.pageConsultatxInternacional.ConsultaNumtx(this.tipoPrueba, this.nombreEmpre, this.servicio,
@@ -1967,57 +1986,6 @@ public class ControllerGeneralDivisas implements Controller {
 
 			this.pageConsultatxInternacional.getDriver().switchTo().defaultContent();
 
-			// Prueba informe----------------------------------------------------
-
-//			if (informe.equals("SI")) {
-////				Reporter.reportEvent(Reporter.MIC_PASS, "");
-//				// -----------------------------------------------------------------------------------------------------------------------
-//				/*
-//				 * Datos Fijos Middle Login, estos datos se encuentran el archivo
-//				 * data.properties
-//				 */
-//				// numCli tipoDoc numDoc clave tipoTok datoTok
-//				// Organiza los datos del cliente Middle con un array
-//				// numCli tipoDoc numDoc clave tipoTok datoTok
-//
-//				DatosEmpresarial.loadLoginDataFija("0", numCliEmp, tipoDoc, numDoc, clave, datoTok);
-//
-//				// Organiza los datos del cliente Middle con un array
-//				String[] datosLogin = DatosEmpresarial.getLoginData();
-//				// Reporta los datos del logeo
-//				Reporter.write("Datos de Logueo [" + Util.arrayToString(datosLogin, " - ") + "]");
-//				// -----------------------------------------------------------------------------------------------------------------------
-//
-//				// INTENTA HACER EL LOGUEO
-//
-//				this.pageLogin = new PageLoginPymes(this.navegador);// Carga en que navegador se va realizar la prueba
-//				String msgError = this.pageLogin.loginMiddle(); // M�todo para hacer el logueo en el portal Middle Pyme.
-//				this.pageLogin.selecionambienteClose("SI");// Indicativo para el ambiente middle// Marca si esta en el
-//															// Ambiente Middle o FRONT
-//				// -----------------------------------------------------------------------------------------------------------------------
-//
-//				// SI ES NULL EL MENSAJE DE ALERTA INGRESA AL LOGIN
-//				if (msgError == null) {
-//
-//					this.controllerValiPymeMiddle = new ControllerValiPymeMiddle(this.pageLogin);
-//					// -----------------------------------------------------------------------------------------------------------------------
-//					// NUMEROS DE FIRMAS A RALIZAR
-//					this.numAprobaciones = SettingsRun.getTestData().getParameter("Números de Aprobaciones").trim();
-//
-//					controllerValiPymeMiddle.ValidacionInformeTransInternacional();
-//
-//				}
-////-----------------------------------------------------------------------------------------------------------------------
-//
-//				// Cierra la sesion en la actual que se cuentra y procede al cierre del Browser.
-////					this.pageLogin.CerrarSesionMiddle();
-////					this.pageOrigen.closeAllBrowsers();
-////					SettingsRun.exitTestIteration();
-//
-//			} else {
-//				this.pageOrigen.getDriver().switchTo().defaultContent();
-////					this.pageOrigen.click(cerrarSesion);
-//			}
 		} else if ((this.servicio.contains("Internacionales") || this.servicio.contains("Divisas"))
 				&& this.servicio.contains("Aprobación") && !this.servicio.contains("Validar Estado")) {
 			this.pageConsultatxInternacional = new PageConsultatxInternacional(this.pageDivisas);
@@ -2059,60 +2027,18 @@ public class ControllerGeneralDivisas implements Controller {
 			Reporter.reportEvent(Reporter.MIC_FAIL, "No se adiciona a MR >>> " + msgError);
 			Reporter.write("No se adiciona a MR >>> " + msgError);
 		} else {
-			Reporter.write("En construcción XQ no sé si es error >>> " + msgError);
 			Reporter.reportEvent(Reporter.MIC_FAIL, msgError);
 		}
 		if (frontEmpresarial != null) {
-//        	frontEmpresarial.terminarIteracion(); // Cerrar tanto en empresarial como Pyme
+			frontEmpresarial.cerrarSesionFrontEmpresarial();
+			SettingsRun.exitTestIteration();
 
-		} else {
-
+		} else if (loginFrontPyme != null) {
 			loginFrontPyme.terminarIteracion(); // Cerrar tanto en empresarial como Pyme
 		}
 	}
 
-	// ==================== Destructor ====================
-
-	/**
-	 * Destructor. Útil para limpiar o cerrar recursos si es necesario.
-	 */
-	public void destroy() {
-		// Implementar si hay recursos a liberar
-	}
-	// ***********************************************************************************************************************
-
-	public static String[] cuentasDesMotor = null, datoNumDestCuentas = null;// Datos Motor de riesgo
-
-	public static String activityAmount = null, bancoDesMotor = null, riesgoBc = null, riesgoEfm = null,
-			diaDiaDelpago = null, adenda = null;
-
-	public void SetPrioridaMr(String riesgo) throws Exception {
-		this.prioridaRiesgo = riesgo;
-
-	}
-
-	public void SetuserAgent(String user) throws Exception {
-		this.userAgent = user;
-	}
-
-	public void SetActivityAmount(String activityAmountx) {
-
-		this.activityAmount = activityAmountx;
-	}
-
-	public void SetBancoDesTx(String bancoDes) {
-		this.bancoDesMotor = bancoDes;
-	}
-
-	public void SetEstado(String estado) {
-		this.estado = estado;
-	}
-
-	public String[] getCuentasMotor() {
-		return cuentasDesMotor;
-	}
-
-	// ===========================================[getTransaccion]===========================================================================
+// ===========================================[getTransaccion]===========================================================================
 
 	/**
 	 * Retorna el valor de "Transacción", dependiendo del tipo de prueba y del
@@ -2172,7 +2098,7 @@ public class ControllerGeneralDivisas implements Controller {
 		return transaccion;
 	}
 
-	// ===========================================[TransferenciasInternacionales]===========================================================================
+// ===========================================[TipoProd]===========================================================================
 
 	/**
 	 * Metodo retorna el tipo de producto
@@ -2197,7 +2123,7 @@ public class ControllerGeneralDivisas implements Controller {
 		return tipoProd;
 	}
 
-	// ===========================================[Stratus]===========================================================================
+// ===========================================[Stratus]===========================================================================
 
 	/**
 	 * Realiza el Login de Stratus de Forma general
@@ -2211,7 +2137,7 @@ public class ControllerGeneralDivisas implements Controller {
 
 		// Se comentan las siguientes 3 lineas para que no ejecute en stratus
 		if (DatosDavivienda.STRATUS == null) {
-			// 1.1: Abrir WinAppDriver si no se encuentra abierto - isaac
+			// 1.1: Abrir WinAppDriver si no se encuentra abierto
 			DXCUtil.startWinAppDriver();
 			DatosDavivienda.STRATUS = new Stratus(strusu, strpass, "EMPRESAS");
 			Reporter.reportEvent(Reporter.MIC_INFO, "Se cargan datos para logueo" + " de Stratus");
@@ -2219,10 +2145,10 @@ public class ControllerGeneralDivisas implements Controller {
 
 	}
 
-	// ======================================================================================================================
+// ============================================[logueoC360]===========================================================================
 
 	/**
-	 * Metodo que llama y hace el logueo
+	 * Metodo Realiza logueoC360
 	 * 
 	 * @throws Exception
 	 */
@@ -2237,11 +2163,16 @@ public class ControllerGeneralDivisas implements Controller {
 		return this.pageInicioC360;
 	}
 
-	// ============================================[ValidarCCIU]===========================================================================
+// ============================================[ValidarCCIU]===========================================================================
 
+	/**
+	 * Valida en cliente 360 el CCIU de la empresa
+	 * 
+	 * @param numeroIDEmpresa
+	 * @throws Exception
+	 */
 	public void ValidarCCIU(String numeroIDEmpresa) throws Exception {
 
-//				String numeroIDEmpresa = SettingsRun.getTestData().getParameter("Numero ID Empresa").trim();
 		String reportMsg = null;
 
 		this.pageDivisas.BonotesTecla("ALTTAB");
@@ -2266,6 +2197,43 @@ public class ControllerGeneralDivisas implements Controller {
 		this.pageDivisas.BonotesTecla("ALTTAB");
 
 		this.pageInicioC360.cerrarSesion();
+	}
+
+// ============================================[Datos a utilizar a Motor]===========================================================================
+
+	public void SetPrioridaMr(String riesgo) throws Exception {
+		this.prioridaRiesgo = riesgo;
+
+	}
+
+	public void SetuserAgent(String user) throws Exception {
+		this.userAgent = user;
+	}
+
+	public void SetActivityAmount(String activityAmountx) {
+
+		this.activityAmount = activityAmountx;
+	}
+
+	public void SetBancoDesTx(String bancoDes) {
+		this.bancoDesMotor = bancoDes;
+	}
+
+	public void SetEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public String[] getCuentasMotor() {
+		return cuentasDesMotor;
+	}
+
+// ============================================[Destructor]===========================================================================
+
+	/**
+	 * Destructor. Útil para limpiar o cerrar recursos si es necesario.
+	 */
+	public void destroy() {
+		// Implementar si hay recursos a liberar
 	}
 
 }
