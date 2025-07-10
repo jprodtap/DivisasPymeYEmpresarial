@@ -13,6 +13,7 @@ import pages.actions.Divisas.PageConsultatxInternacional;
 import pages.actions.Divisas.PageDivisas;
 import pages.actions.Divisas.PageDocumentos_Y_Formularios;
 import pages.actions.Divisas.PageEnviarTransInternacional;
+import pages.actions.Divisas.PageInformesTransInternacionales;
 import pages.actions.Divisas.PageRecibirTransferenciasInternacionales;
 import pages.actions.FrontEmpresarial.CommonFrontEmpresarial;
 import pages.actions.FrontEmpresarial.PageConsultaProductosFrontEmpresarial;
@@ -25,16 +26,10 @@ import pages.actios.Pyme.PageLoginPymes1;
 import pages.actios.Pyme.PageOrigen1;
 
 import java.io.File;
-import java.util.Date;
 
-import dav.ActualizacionDeDatos.PageActualizacionDeDatos;
-import dav.CobrosMiddle.ControllerMiddleCobros;
 import dav.c360.PageInicioC360;
 import dav.c360.PageLogin;
 import dav.c360.moduloPersonas.PageEmpresas;
-import dav.middlePymes.ControllerValiPymeMiddle;
-import dav.middlePymes.PageUsuariosEmpresa;
-import dav.pymes.PageLoginPymes;
 import dav.transversal.DatosDavivienda;
 import dav.transversal.DatosEmpresarial;
 import dav.transversal.MotorRiesgo;
@@ -42,6 +37,9 @@ import dav.transversal.NotificacionSMS;
 import dav.transversal.Stratus;
 //import dxc.util.Util;
 import dxc.util.DXCUtil;
+
+import pages.actions.MiddleEmpresarial.PageLoginMiddleEmpresarial;
+import dav.Controllers.ControllerMiddleEmpresarial;
 
 /**
  * Controlador General de Divisas para los portales PYME y Portal Empresarial.
@@ -86,6 +84,9 @@ public class ControllerGeneralDivisas implements Controller {
 	private PageLoginFrontEmpresarial loginFrontEmpresarial;
 	private PageFrontEmpresarial frontEmpresarial;
 
+	private PageLoginMiddleEmpresarial loginMiddleEmpresarial;
+	private ControllerMiddleEmpresarial controllerMiddleEmpresarial;
+
 	// Instancias de páginas comunes a ambos portales (se inicializan según portal)
 	private PageDivisas pageDivisas;
 	private PageEnviarTransInternacional pageEnviarTransInternacional;
@@ -94,6 +95,7 @@ public class ControllerGeneralDivisas implements Controller {
 	private PageConsultatxInternacional pageConsultatxInternacional;
 	private PageAprobacionInter pageAprobInter;
 	private PageConfirmacion1 pageConf;
+	private PageInformesTransInternacionales pageInfoTransInter;
 
 	// Variables de contexto y flujo
 	private String usuario, servicio, tipoPrueba, navegador, nombreEmpre, nitEmpre, tipoIdEm, numCta, tipoCta,
@@ -274,6 +276,16 @@ public class ControllerGeneralDivisas implements Controller {
 			inicializarSesionPyme();
 
 		} else {
+			String contratacion = SettingsRun.getGlobalData("CONTRATACION");
+			String msg = null;
+			if (contratacion.equalsIgnoreCase("SI")) {
+				msg = inicializarSesionMiddleEmpresarial();
+				if (msg == null) {
+//					ContratacionMiddleEmpresarial();
+				} else {
+					Reporter.reportEvent(Reporter.MIC_FAIL, "No se pudo Inicializar Middle Empresarial");
+				}
+			}
 			inicializarSesionEmpresarial();
 		}
 	}
@@ -287,7 +299,7 @@ public class ControllerGeneralDivisas implements Controller {
 			String msg = null;
 			msg = inicializarSesionPymeMiddle();
 			if (msg == null) {
-				ValidacionInforme();
+				ValidacionInformeMiddlePyme();
 			} else {
 				Reporter.reportEvent(Reporter.MIC_FAIL, "No se pudo Inicializar Middle");
 			}
@@ -295,12 +307,12 @@ public class ControllerGeneralDivisas implements Controller {
 		} else {
 
 			String msg = null;
-
-//				msg = inicializarSesionEmpresarialMiddle();
+			msg = inicializarSesionMiddleEmpresarial();
 			if (msg == null) {
-				ValidacionInforme();
+				// Ejecuta la validación de informe usando Middle Empresarial
+				ValidacionInformeMiddleEmpresa();
 			} else {
-				Reporter.reportEvent(Reporter.MIC_FAIL, "No se pudo Inicializar Middle");
+				Reporter.reportEvent(Reporter.MIC_FAIL, "No se pudo Inicializar Middle Empresarial");
 			}
 
 		}
@@ -314,7 +326,7 @@ public class ControllerGeneralDivisas implements Controller {
 
 		String[] datosLogin = DatosEmpresarial.getLoginData();
 
-		Reporter.reportEvent(Reporter.MIC_INFO, "*** Navegador: []");
+		Reporter.reportEvent(Reporter.MIC_INFO, "*** Navegador: [" + this.navegador + "]");
 		Reporter.reportEvent(Reporter.MIC_INFO,
 				"*** Datos de Logueo Front: [" + Util.arrayToString(datosLogin, " - ") + "]");
 
@@ -610,17 +622,47 @@ public class ControllerGeneralDivisas implements Controller {
 
 	}
 
-	private void ValidacionInforme() throws Exception {
+	private void ValidacionInformeMiddlePyme() throws Exception {
 		this.controllerValiPymeMiddle = new ControllerValiPymeMiddle1(this.loginFrontPyme);
 		// -----------------------------------------------------------------------------------------------------------------------
 		controllerValiPymeMiddle.ValidacionInformeTransInternacional();
 	}
+
+	private String inicializarSesionMiddleEmpresarial() throws Exception {
+		// Crea los objetos necesarios
+		loginMiddleEmpresarial = new PageLoginMiddleEmpresarial(BasePageWeb.CHROME);
+
+		// Obtén los datos del login
+		String tipoDocumento = SettingsRun.getGlobalData("data.tipoIdEmp").trim();
+		String numeroDocumento = SettingsRun.getGlobalData("data.numIdEmp").trim();
+		String numeroClienteEmpresarial = SettingsRun.getGlobalData("data.numClieEmp").trim();
+		String clavePersonal = SettingsRun.getGlobalData("data.clavepersonalEmp").trim();
+		String token = SettingsRun.getGlobalData("data.tokenEstaticoEmp").trim();
+
+		// Realiza el login
+		String msgError = loginMiddleEmpresarial.realizarLoginMiddleEmpresarial(tipoDocumento, numeroDocumento,
+				numeroClienteEmpresarial, clavePersonal, token);
+		return msgError;
+	}
+
+//	public void ContratacionMiddleEmpresarial() throws Exception {
+//		controllerMiddleEmpresarial = new ControllerMiddleEmpresarial();
+//		// Aquí puedes ejecutar el flujo de contratación específico, por ejemplo:
+//		controllerMiddleEmpresarial.flujoContratacion(); // Ajusta el nombre según lo que exponga el controller
+//		loginMiddleEmpresarial.cerrarNavegador(); // Si necesitas cerrar la sesión luego
+//	}
 
 	private void inicializarSesionEmpresarial() throws Exception {
 		String evidenceDir = SettingsRun.RESULT_DIR + File.separator + "Temp";
 		loginFrontEmpresarial = new PageLoginFrontEmpresarial(BasePageWeb.CHROME, evidenceDir);
 		DatosEmpresarial.loadLoginData("Cliente Empresarial", "Tipo Identificación", "Id usuario",
 				"Clave personal o CVE", "Tipo Token", "Semilla / Valor Estático / Celular");
+		
+		String[] datosLogin = DatosEmpresarial.getLoginData();
+
+		Reporter.reportEvent(Reporter.MIC_INFO, "*** Navegador: ["+this.navegador+"]");
+		Reporter.reportEvent(Reporter.MIC_INFO,"*** Datos de Logueo Front: [" + Util.arrayToString(datosLogin, " - ") + "]");
+		
 		String msgError = loginFrontEmpresarial.realizarLogin(
 				SettingsRun.getTestData().getParameter("Cliente Empresarial").trim(),
 				SettingsRun.getTestData().getParameter("Tipo Identificación").trim(),
@@ -730,6 +772,17 @@ public class ControllerGeneralDivisas implements Controller {
 				}
 			}
 		}
+	}
+
+	private void ValidacionInformeMiddleEmpresa() throws Exception {
+
+		pageInfoTransInter = new PageInformesTransInternacionales(loginMiddleEmpresarial);
+		this.servicio = SettingsRun.getTestData().getParameter("Servicio").trim();
+		String idEmpresa = SettingsRun.getTestData().getParameter("Numero ID Empresa").trim();
+		String tipoIDUser = SettingsRun.getTestData().getParameter("Tipo Identificación").trim();
+		String numIdUser = SettingsRun.getTestData().getParameter("Id usuario").trim();
+		pageInfoTransInter.irAOpcionTransFerenciasInDivisas(true);
+		pageInfoTransInter.InformeTransInter(this.servicio, tipoIDUser, numIdUser, idEmpresa);
 	}
 
 	// ***********************************************************************************************************************

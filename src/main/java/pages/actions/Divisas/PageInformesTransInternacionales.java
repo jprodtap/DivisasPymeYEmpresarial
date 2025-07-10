@@ -10,9 +10,6 @@ import org.openqa.selenium.WebElement;
 
 import java.util.Calendar;
 
-import dav.pymes.PageLoginPymes;
-//import dav.transversal.DatosEmpresarial;
-//import dxc.util.Util;
 import library.reporting.Reporter;
 import library.settings.SettingsRun;
 import page.middlePymes.PageInicioMiddle1;
@@ -22,13 +19,18 @@ import library.reporting.Evidence;
 
 public class PageInformesTransInternacionales extends BasePageWeb {
 
-	
+	// Instancias de páginas comunes a ambos portales (se inicializan según portal)
+	private PageDivisas pageDivisas;
 
 	public PageInformesTransInternacionales(BasePageWeb parentPage) {
 		super(parentPage);
 		// TODO Auto-generated constructor stub
 	}
 
+	public By iframeIdDivisasEmpresarial = By.name("contenido");
+	public By frmMenu = By.xpath("//frame[@name = 'menu']");
+	// OPCIÓN MENU INFORMES EMPRESARIAL
+	public String xpathSeleccionInforme = "//a[contains(text(), 'SEL_INFORME')]";
 
 	// Botones de seleccion Transferencia internacionales o Accesos al sistema
 	WebElement linkTransferenciasInternacionales;
@@ -42,7 +44,6 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 
 	String numAprobacion = null;
 	String today = "";
-
 
 	By link = By.xpath("//li[@onclick][1]");
 	By linkAcceAlSistema = By.xpath("//li[@onclick][2]");
@@ -73,7 +74,8 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 	By btnImprimir = By.xpath("//*[@id='paginacion']/div[4]/div/button[1]");
 	By btnDescargar = By.xpath("//*[@id='paginacion']/div[4]/div/button[2]");
 
-	By subResultado = By.xpath("//*[@id='paginacion']/div/div[1]/div/h3[contains (text(), 'Resultado de la bï¿½squeda')]");
+	By subResultado = By
+			.xpath("//*[@id='paginacion']/div/div[1]/div/h3[contains (text(), 'Resultado de la bï¿½squeda')]");
 
 	// Variables para busqueda TI o AS
 	String cantidadPaginas = "//*[@id='pagina']/option[NUM_PAGINA]";
@@ -124,10 +126,42 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 
 //***********************************************************************************************************************
 	/**
+	 * Metodo ingresa al modulo de informes de Transferencias Internacionales
+	 * Divisas
+	 */
+	public void irAOpcionTransFerenciasInDivisas(boolean empresarial) throws Exception {
+		if (empresarial) {
+			WebElement elem = null;
+			int con = 0;
+			do {
+				// Realiza Cambios de Frame, para poder continuar con Flujo.
+
+				this.changeToDefaultFrame();
+				this.changeFrame(frmMenu);
+				elem = this.element(
+						By.xpath(xpathSeleccionInforme.replace("SEL_INFORME", "Transferencias Internacionales")));
+				con++;
+				if (con == 30) {
+					System.out.println("No se ingreso al portal");
+//				return "No se ingreso al portal";
+
+				}
+
+			} while (elem == null);
+			// Selecciona el modulo de Informes Transferencia Internacionales
+
+			elem.click();
+
+		} else {
+			this.irAOpcion("", "Informes", "Informes Transferencias Internacionales");
+		}
+	}
+
+	/**
 	 * Metodo inicial, ejecuta los metodos de todo el flujo de informes organizados
 	 */
-	public void InformeTransInter(String servicio,String tipoId,String idUsuario,String numIdEmpresa) throws Exception {
-
+	public void InformeTransInter(String servicio, String tipoId, String idUsuario, String numIdEmpresa)
+			throws Exception {
 
 		fechaHora = dataArrayConsultas[0];
 		String NoAprobacion = dataArrayConsultas[1];
@@ -142,27 +176,27 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 
 		today = Util.dateToString(fechaTxTemp, "dd/mm/yyyy");
 
-		// Selecciona el modulo de Informes Transferencia Internacionales
-		this.irAOpcion("", "Informes", "Informes Transferencias Internacionales");
-		
 		Util.wait(2);
 
 		// Cambiar el contexto del driver al iframe
+		this.changeToDefaultFrame();
 		this.switchToFrameDivisas();
 		Reporter.write(" ");
-		Reporter.write("==========[INFORMES - TRANSFERENCIAS INTERNACIONALES]======================================================================================================= ");
+		Reporter.write(
+				"==========[INFORMES - TRANSFERENCIAS INTERNACIONALES]======================================================================================================= ");
 		Reporter.write(" ");
 
 		linkTransferenciasInternacionales = this.getDriver().findElement(link);
-		this.TransferenciasInternacionales(servicio,numIdEmpresa,fecha, NoAprobacion);
+
+		this.TransferenciasInternacionales(servicio, numIdEmpresa, fecha, NoAprobacion);
 
 		Reporter.write(" ");
-		Reporter.write("==========[INFORMES - ACCESOS AL SISTEMA]======================================================================================================= ");
+		Reporter.write(
+				"==========[INFORMES - ACCESOS AL SISTEMA]======================================================================================================= ");
 		Reporter.write(" ");
-		
 
 		linkAccesosAlSistema = this.getDriver().findElement(linkAcceAlSistema);
-		String msg = this.AccesosAlSistema(servicio,tipoId,idUsuario,fecha, fechaHora);
+		String msg = this.AccesosAlSistema(servicio, tipoId, idUsuario, fecha, fechaHora);
 
 		if (msg != null) {
 
@@ -170,7 +204,7 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 			fechaHora = newDateString;
 
 			linkAccesosAlSistema = this.getDriver().findElement(linkAcceAlSistema);
-			msg = this.AccesosAlSistema(servicio,tipoId,idUsuario,fechaCampo, newDateString);
+			msg = this.AccesosAlSistema(servicio, tipoId, idUsuario, fechaCampo, newDateString);
 
 		}
 
@@ -179,7 +213,7 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 			String newDateString = this.subtractOneMinute(fechaHora);
 
 			linkAccesosAlSistema = this.getDriver().findElement(linkAcceAlSistema);
-			msg = this.AccesosAlSistema(servicio,tipoId,idUsuario,fechaCampo, newDateString);
+			msg = this.AccesosAlSistema(servicio, tipoId, idUsuario, fechaCampo, newDateString);
 
 			if (msg != null) {
 //				this.pageLogin.CerrarSesionMiddle();
@@ -195,10 +229,12 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 
 		Evidence.saveAllScreens("Informes_ver detalles", this);
 		Reporter.write(" ");
-		Reporter.write("==========[INFORMES - VER DETALLES]======================================================================================================= ");
+		Reporter.write(
+				"==========[INFORMES - VER DETALLES]======================================================================================================= ");
 		Reporter.write(" ");
 
-		// Imprime en el LOG todo el comprobante de "Ver Detalles", organizado en saltos de linea - 1ra tabla
+		// Imprime en el LOG todo el comprobante de "Ver Detalles", organizado en saltos
+		// de linea - 1ra tabla
 		WebElement tabla = this.element(tableVerDetalles);
 		java.util.List<WebElement> filas = tabla.findElements(By.tagName("tr"));
 
@@ -215,12 +251,13 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 			}
 
 			if (!acumuladorTable.equals("*** INFO ----------- ")) {
-				
+
 				Reporter.reportEvent(Reporter.MIC_INFO, acumuladorTable);
 			}
 		}
 
-		// Imprime en el LOG todo el comprobante de "Ver Detalles", organizado en saltos  de linea - 2da tabla
+		// Imprime en el LOG todo el comprobante de "Ver Detalles", organizado en saltos
+		// de linea - 2da tabla
 		WebElement tabla2 = this.element(tableVerDetalles2);
 		java.util.List<WebElement> filas2 = tabla2.findElements(By.tagName("tr"));
 
@@ -235,15 +272,15 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 					acumuladorTable = acumuladorTable + "\n" + "*** INFO ----------- ";
 				}
 			}
-			
-			 if (!acumuladorTable.equals("*** INFO ----------- ")) {
-				
-				 Reporter.reportEvent(Reporter.MIC_INFO, acumuladorTable);
+
+			if (!acumuladorTable.equals("*** INFO ----------- ")) {
+
+				Reporter.reportEvent(Reporter.MIC_INFO, acumuladorTable);
 			}
 		}
 
-
-		// Imprime en el LOG todo el comprobante de "Ver Detalles", organizado en saltos de linea - 3ra tabla
+		// Imprime en el LOG todo el comprobante de "Ver Detalles", organizado en saltos
+		// de linea - 3ra tabla
 //		WebElement tabla3 = this.findElement(tableVerDetalles3);
 //		java.util.List<WebElement> filas3 = tabla3.findElements(By.tagName("tr"));
 
@@ -261,21 +298,32 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 	}
 
 //***********************************************************************************************************************
-	
+
 	/**
 	 * Realiza el flujo de la ventana Tranferencias Internacionales
 	 */
-	public void TransferenciasInternacionales(String servicio,String numIdEmpresa ,String today, String NoAprobacion) throws Exception {
+	public void TransferenciasInternacionales(String servicio, String numIdEmpresa, String today, String NoAprobacion)
+			throws Exception {
 
 		linkTransferenciasInternacionales.click();
-
+		int contador = 0;
 		do {
 			Util.wait(1);
+			if (this.element(sesionEx) != null) {
+				String msg = this.element(sesionEx).getText();
+				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
+			}
+			if (contador >= 30) {
+				Reporter.reportEvent(Reporter.MIC_FAIL, "No aparece el Informes Transferencias Internacionales");
+			}
 		} while (this.element(btnBuscar) == null);
 
 		this.element(fechaDesde).sendKeys(today);
 		this.element(fechaHasta).sendKeys(today);
 
+		Util.wait(3);
+		Util.pressEnter();
+		
 		Util.wait(1);
 
 		this.click(btnBuscar);
@@ -287,22 +335,26 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 		} while (this.element(Alerta) == null && i < 10);
 
 		if (this.element(Alerta) != null) {
-//			String msj = this.closeActiveIntAlert();
-//			Reporter.reportEvent(Reporter.MIC_FAIL, "Error en Informes Tranferencias Internacionales:  " + msj);
+			pageDivisas = new PageDivisas(this);
+			String msj = pageDivisas.closeActiveIntAlert();
+			Reporter.reportEvent(Reporter.MIC_FAIL, "Error en Informes Tranferencias Internacionales:  " + msj);
 //			this.pageLogin.CerrarSesionMiddle();
 			SettingsRun.exitTestIteration();
 		}
-
+		contador = 0;
 		do {
 			Util.wait(1);
+			if (contador >= 30) {
+				Reporter.reportEvent(Reporter.MIC_FAIL, "No aparece Resultado de la búsqueda");
+			}
 		} while (this.element(table) == null);
 
 		if (this.element(subResultado) != null) {
 
-			Reporter.reportEvent(Reporter.MIC_PASS, "Aparece el subtitulo 'Resultado de la bÃºsqueda'");
-			
+			Reporter.reportEvent(Reporter.MIC_PASS, "Aparece el subtitulo 'Resultado de la búsqueda'");
+
 		} else {
-			Reporter.reportEvent(Reporter.MIC_FAIL, "No aparece el subtitulo 'Resultado de la bÃºsqueda'");
+			Reporter.reportEvent(Reporter.MIC_FAIL, "No aparece el subtitulo 'Resultado de la búsqueda'");
 		}
 
 		if (this.element(tablaPCT) != null) {
@@ -337,8 +389,7 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 				RegistroTI = this.SearchAndSave_TransferenciasInternacionales(NoAprobacion);
 
 				if (numPagina == cantidadDeOptions && encontradoTI == false) {
-					Reporter.reportEvent(Reporter.MIC_FAIL,
-							"No se escuentra el registro con numero de aprobacion:  " + NoAprobacion);
+					Reporter.reportEvent(Reporter.MIC_FAIL,"No se escuentra el registro con numero de aprobacion:  " + NoAprobacion);
 					numPagina++;
 //					this.pageLogin.CerrarSesionMiddle();
 					SettingsRun.exitTestIteration();
@@ -351,7 +402,7 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 			RegistroTI = this.SearchAndSave_TransferenciasInternacionales(NoAprobacion);
 		}
 
-		this.Comparacion_TransferenciasInternacionales(servicio,numIdEmpresa,RegistroTI[0], RegistroTI[1]);
+		this.Comparacion_TransferenciasInternacionales(servicio, numIdEmpresa, RegistroTI[0], RegistroTI[1]);
 
 	}
 
@@ -359,18 +410,25 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 	/**
 	 * Realiza el flujo de la ventana Accesos al Sistema
 	 */
-	public String AccesosAlSistema(String servicio,String tipoId,String idUsuario,String today, String fechaHora) throws Exception {
+	public String AccesosAlSistema(String servicio, String tipoId, String idUsuario, String today, String fechaHora)
+			throws Exception {
 
 		linkAccesosAlSistema.click();
 
 		Util.wait(5);
-
+		int contador = 0;
 		do {
+			Util.wait(1);
+			if (contador >= 30) {
+				Reporter.reportEvent(Reporter.MIC_FAIL, "No aparece modulo Consulta de Acceso al Sistema");
+			}
 		} while (this.element(btnBuscarAccesos) == null);
 
 		this.element(fechaDesde).sendKeys(today);
 		this.element(fechaHasta).sendKeys(today);
-
+		
+		Util.wait(3);
+		Util.pressEnter();
 		Util.wait(3);
 
 		this.click(btnBuscarAccesos);
@@ -382,20 +440,27 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 		} while (this.element(Alerta) == null && i < 10);
 
 		if (this.element(Alerta) != null) {
-//			String msj = this.closeActiveIntAlert();
-//			Reporter.reportEvent(Reporter.MIC_FAIL, "Error en Informes Acceso al Sistema:  " + msj);
+			if (this.isDisplayed(Alerta)) {
+				pageDivisas = new PageDivisas(this);
+				String msj = pageDivisas.closeActiveIntAlert();
+				Reporter.reportEvent(Reporter.MIC_FAIL, "Error en Informes Acceso al Sistema:  " + msj);
 //			this.pageLogin.CerrarSesionMiddle();
-			SettingsRun.exitTestIteration();
+				SettingsRun.exitTestIteration();
+			}
 		}
-
+		contador = 0;
 		do {
+			Util.wait(1);
+			if (contador >= 30) {
+				Reporter.reportEvent(Reporter.MIC_FAIL, "No aparece Resultado de la búsqueda");
+			}
 		} while (this.element(table) == null);
 
 		if (this.element(subResultado) != null) {
 
-			Reporter.reportEvent(Reporter.MIC_PASS, "Aparece el subtitulo 'Resultado de la bÃºsqueda'");
+			Reporter.reportEvent(Reporter.MIC_PASS, "Aparece el subtitulo 'Resultado de la búsqueda'");
 		} else {
-			Reporter.reportEvent(Reporter.MIC_FAIL, "No aparece el subtitulo 'Resultado de la bÃºsqueda'\"");
+			Reporter.reportEvent(Reporter.MIC_FAIL, "No aparece el subtitulo 'Resultado de la búsqueda'\"");
 		}
 
 		if (this.element(tablaPCT) != null) {
@@ -449,7 +514,7 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 
 		}
 
-		this.Comparacion_AccesosAlSistema(servicio,tipoId,idUsuario,RegistroAS[0], RegistroAS[1]);
+		this.Comparacion_AccesosAlSistema(servicio, tipoId, idUsuario, RegistroAS[0], RegistroAS[1]);
 		return null;
 	}
 
@@ -484,14 +549,16 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 				int j = 1;
 				do {
 
-					registroEncontrado[j - 1] = this.element(datoRegistrosTabla.replace("I", String.valueOf(i)).replace("J", String.valueOf(j))).getText();
+					registroEncontrado[j - 1] = this
+							.element(datoRegistrosTabla.replace("I", String.valueOf(i)).replace("J", String.valueOf(j)))
+							.getText();
 
 					headerRegistro[j - 1] = this.element(datoRegistrosheader.replace("J", String.valueOf(j))).getText();
 
 					j++;
 
 				} while (j < 16);
-				
+
 				encontradoTI = true;
 			}
 
@@ -506,7 +573,8 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 			}
 
 			if (i == 20 && encontradoTI == false && this.element(masPaginas) == null) {
-				Reporter.reportEvent(Reporter.MIC_FAIL,"No se escuentra el registro con numero de aprobacion:  " + NoAprobacion);
+				Reporter.reportEvent(Reporter.MIC_FAIL,
+						"No se escuentra el registro con numero de aprobacion:  " + NoAprobacion);
 //				this.pageLogin.CerrarSesionMiddle();
 				SettingsRun.exitTestIteration();
 			}
@@ -514,7 +582,7 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 		} while (this.element(btnBuscar) != null && i < 20 && encontradoTI == false);
 
 		String[][] Registro = { headerRegistro, registroEncontrado };
-		
+
 		return Registro;
 
 	}
@@ -557,10 +625,12 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 
 					if (j == 4 || j == 9) {
 
-						headerRegistroAcc[j - 1] = this.element(headerValidad.replace("J", String.valueOf(j))).getText();
+						headerRegistroAcc[j - 1] = this.element(headerValidad.replace("J", String.valueOf(j)))
+								.getText();
 					} else {
 
-						headerRegistroAcc[j - 1] = this.element(headerValidadbutton.replace("J", String.valueOf(j))).getText();
+						headerRegistroAcc[j - 1] = this.element(headerValidadbutton.replace("J", String.valueOf(j)))
+								.getText();
 					}
 
 					j++;
@@ -579,7 +649,8 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 			}
 
 			if (i == 20 && encontradoAS == false && this.element(masPaginas) == null) {
-				Reporter.reportEvent(Reporter.MIC_FAIL,"No se escuentra el registro con fecha y hora de aprobacion:  " + fechaHora);
+				Reporter.reportEvent(Reporter.MIC_FAIL,
+						"No se escuentra el registro con fecha y hora de aprobacion:  " + fechaHora);
 
 				return null;
 			}
@@ -595,7 +666,8 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 	 * Realiza la comparacion de datos de la transaccion vs datos del informe en
 	 * tranferencias internacionales
 	 */
-	public void Comparacion_TransferenciasInternacionales(String servicio, String numIdEmpresa ,String[] headerRegistro, String[] bodyRegistro) throws Exception {
+	public void Comparacion_TransferenciasInternacionales(String servicio, String numIdEmpresa, String[] headerRegistro,
+			String[] bodyRegistro) throws Exception {
 
 		String numeral2 = SettingsRun.getTestData().getParameter("Numeral cambiario 2").trim();
 
@@ -662,7 +734,8 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 	 * Realiza la comparacion de datos de la transaccion vs datos del informe en
 	 * accesos al sistema
 	 */
-	public void Comparacion_AccesosAlSistema(String servicio, String tipoId,String idUsuario,String[] headerRegistro, String[] bodyRegistro) throws Exception {
+	public void Comparacion_AccesosAlSistema(String servicio, String tipoId, String idUsuario, String[] headerRegistro,
+			String[] bodyRegistro) throws Exception {
 
 		bodyRegistro[5] = bodyRegistro[5].substring(0, bodyRegistro[5].length() - 3);
 		this.ValidarIgualdad(headerRegistro[0], bodyRegistro[0], dataArrayConsultas[4]);
@@ -709,10 +782,9 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 		return newDateString;
 	}
 
-	
 	public By iframeIdDivisas = By.id("cphCuerpo_IframeDivisas");
-	By sesionEx = By.xpath("//b[contains(text(), 'SesiÃ³n no existe o ha expirado por inactividad.')]");
-	
+	By sesionEx = By.xpath("//b[contains(text(), 'Sesión no existe o ha expirado por inactividad.')]");
+
 	/**
 	 * Espera hasta que el iframe de divisas estÃ© disponible, lo selecciona y hace
 	 * zoom.
@@ -731,6 +803,14 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 				this.getJse().executeScript("document.body.style.zoom ='90%';");
 				return true;
 			}
+
+			if (iframe == null) {
+				iframe = this.element(iframeIdDivisasEmpresarial);
+				if (iframe != null) {
+					this.getDriver().switchTo().frame(iframe);
+					return true;
+				}
+			}
 			contador++;
 
 			if (this.element(sesionEx) != null) {
@@ -740,103 +820,102 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 			this.getDriver().switchTo().defaultContent();
 		}
 		this.getDriver().switchTo().defaultContent();
-		Reporter.reportEvent(Reporter.MIC_FAIL, "TimeOut: No se presentÃ³ el mÃ³dulo de divisas");
+		Reporter.reportEvent(Reporter.MIC_FAIL, "TimeOut: No se presentó el módulo de divisas");
 		return false;
 	}
-	
-	
+
 	String xPathLocMenu = "//span[@id='lblMasterMenu']//a[contains(text(), 'NB_MENU_INICIAL')]//parent::td";
 	String xPathLocSubMenu = "//td[@class='easyMenuItemContentCell']/a[text()='NB_SUBMENU']//parent::td";
 	String xPathLocSubMenu2 = "//td[@class='easyMenuItemContentCell']/a[contains(text(), 'NB_SUBMENU')]//parent::td";
-	
-	//***********************************************************************************************************************
-		/**
-		 * Método que permite moverse a través de los menúes presentados en Middle.
-		 * Abriendo el menú dado por [opcMenu] y siguiendo la ruta por las opciones
-		 * enviadas en [opcSubMenu], dando click en el último elemento de [opcSubMenu],
-		 * en caso que no hayan sido enviados, da click directamente en [opcMenu].<br>
-		 * [title] puede ser [null], VACIO o un valor; cuando se envía valor este método
-		 * espera a que el título enviado se presente en pantalla <b>OJO</b> sólo si el
-		 * título corresponde a un elemento con ID 'lblMasterTitulo'.<br>
-		 * El retorno es [null] si se pudo ir a la opción deseada, en caso contrario
-		 * envía un error, los errores que se pueden presentar, son porque no se
-		 * encuentran las opciones enviadas.
-		 */
-		public String irAOpcion(String title, String opcMenu, String... opcSubMenu) throws Exception {
-			Util.wait(1);
-			String xPath = xPathLocMenu.replace("NB_MENU_INICIAL", opcMenu);
-			String pathMenu = opcMenu;
-			String finalOption = opcMenu;
-			WebElement elemtMenu = this.element(xPath);
-			if (elemtMenu == null) {
-//				Evidence.save("ErrorMenu", this);
-				Evidence.save("ErrorMenu",this);
-				return "No se encontró en el Menú [" + pathMenu + "] - Valide la información";
-			}
-	//-----------------------------------------------------------------------------------------------------------------------
-			// SI LLEGA A ESTE PUNTO PUEDE IR SELECCIONANDO LAS OTRAS OPCIONES
-			String navegador = SettingsRun.getTestData().getParameter("Navegador").trim();
-			if (navegador.contains("CHROME")) {
-				this.mouseOver(elemtMenu);
 
+	// ***********************************************************************************************************************
+	/**
+	 * Método que permite moverse a través de los menúes presentados en Middle.
+	 * Abriendo el menú dado por [opcMenu] y siguiendo la ruta por las opciones
+	 * enviadas en [opcSubMenu], dando click en el último elemento de [opcSubMenu],
+	 * en caso que no hayan sido enviados, da click directamente en [opcMenu].<br>
+	 * [title] puede ser [null], VACIO o un valor; cuando se envía valor este método
+	 * espera a que el título enviado se presente en pantalla <b>OJO</b> sólo si el
+	 * título corresponde a un elemento con ID 'lblMasterTitulo'.<br>
+	 * El retorno es [null] si se pudo ir a la opción deseada, en caso contrario
+	 * envía un error, los errores que se pueden presentar, son porque no se
+	 * encuentran las opciones enviadas.
+	 */
+	public String irAOpcion(String title, String opcMenu, String... opcSubMenu) throws Exception {
+		Util.wait(1);
+		String xPath = xPathLocMenu.replace("NB_MENU_INICIAL", opcMenu);
+		String pathMenu = opcMenu;
+		String finalOption = opcMenu;
+		WebElement elemtMenu = this.element(xPath);
+		if (elemtMenu == null) {
+//				Evidence.save("ErrorMenu", this);
+			Evidence.save("ErrorMenu", this);
+			return "No se encontró en el Menú [" + pathMenu + "] - Valide la información";
+		}
+		// -----------------------------------------------------------------------------------------------------------------------
+		// SI LLEGA A ESTE PUNTO PUEDE IR SELECCIONANDO LAS OTRAS OPCIONES
+		String navegador = SettingsRun.getTestData().getParameter("Navegador").trim();
+		if (navegador.contains("CHROME")) {
+			this.mouseOver(elemtMenu);
+
+		} else {
+			this.getJse().executeScript(
+					"var event = new MouseEvent('mouseover', {bubbles: true, cancelable: true, view: window}); arguments[0].dispatchEvent(event);",
+					elemtMenu);
+
+		}
+
+		List<WebElement> listaElements;
+		for (int numOpc = 0; numOpc < opcSubMenu.length; numOpc++) {
+			Util.wait(1);
+
+			xPath = xPathLocSubMenu2.replace("NB_SUBMENU", opcSubMenu[numOpc]);
+			listaElements = this.findElements(By.xpath(xPath));
+
+			if (listaElements.size() > 1) {
+				xPath = "(" + xPathLocSubMenu.replace("NB_SUBMENU", opcSubMenu[numOpc] + "    ") + ")[1]";
+
+				listaElements = this.findElements(By.xpath(xPath));
+			}
+			if (listaElements.size() == 0) {
+//					Evidence.save("ErrorMenu", this);
+				Evidence.save("ErrorMenu", this);
+				return "En el menú [" + pathMenu + "] NO se encontró la opción [" + opcSubMenu[numOpc]
+						+ "] - Valide la información";
+			} else if (listaElements.size() > 1)
+				return "Existen muchos submenús que contienen [" + opcSubMenu[numOpc] + "] en el WebPage";
+
+			do { // ESPERA A QUE SE HAYA DESPLEGADO EL ELEMENTO
+				Util.wait(1);
+			} while (!this.isDisplayed(listaElements.get(0)));
+			pathMenu += "/" + opcSubMenu[numOpc];
+			finalOption = opcSubMenu[numOpc];
+			// NO SE PUEDE CON [listaElements.get(0)] PORQUE SE PRESENTA UN
+			// [MoveTargetOutOfBoundsException]
+
+			if (navegador.contains("CHROME")) {
+				Util.wait(3);
+				this.mouseOver(this.element(xPath)); // POSICIONA EL MOUSE SOBRE EL ELEMENTO RESPECTIVO
 			} else {
+
+				WebElement elemento = this.element(By.xpath(xPath));
 				this.getJse().executeScript(
 						"var event = new MouseEvent('mouseover', {bubbles: true, cancelable: true, view: window}); arguments[0].dispatchEvent(event);",
-						elemtMenu);
+						elemento);
+				this.getJse().executeScript("arguments[0].click();", elemento);
 
 			}
-
-			List<WebElement> listaElements;
-			for (int numOpc = 0; numOpc < opcSubMenu.length; numOpc++) {
-				Util.wait(1);
-
-				xPath = xPathLocSubMenu2.replace("NB_SUBMENU", opcSubMenu[numOpc]);
-				listaElements = this.findElements(By.xpath(xPath));
-
-				if (listaElements.size() > 1) {
-					xPath = "(" + xPathLocSubMenu.replace("NB_SUBMENU", opcSubMenu[numOpc] + "    ") + ")[1]";
-
-					listaElements = this.findElements(By.xpath(xPath));
-				}
-				if (listaElements.size() == 0) {
-//					Evidence.save("ErrorMenu", this);
-					Evidence.save("ErrorMenu",this);
-					return "En el menú [" + pathMenu + "] NO se encontró la opción [" + opcSubMenu[numOpc]
-							+ "] - Valide la información";
-				} else if (listaElements.size() > 1)
-					return "Existen muchos submenús que contienen [" + opcSubMenu[numOpc] + "] en el WebPage";
-
-				do { // ESPERA A QUE SE HAYA DESPLEGADO EL ELEMENTO
-					Util.wait(1);
-				} while (!this.isDisplayed(listaElements.get(0)));
-				pathMenu += "/" + opcSubMenu[numOpc];
-				finalOption = opcSubMenu[numOpc];
-				// NO SE PUEDE CON [listaElements.get(0)] PORQUE SE PRESENTA UN
-				// [MoveTargetOutOfBoundsException]
-
-				if (navegador.contains("CHROME")) {
-					Util.wait(3);
-					this.mouseOver(this.element(xPath)); // POSICIONA EL MOUSE SOBRE EL ELEMENTO RESPECTIVO
-				} else {
-
-					WebElement elemento = this.element(By.xpath(xPath));
-					this.getJse().executeScript(
-							"var event = new MouseEvent('mouseover', {bubbles: true, cancelable: true, view: window}); arguments[0].dispatchEvent(event);",
-							elemento);
-					this.getJse().executeScript("arguments[0].click();", elemento);
-
-				}
 //				this.mouseOver(this.element(xPath)); // POSICIONA EL MOUSE SOBRE EL ELEMENTO RESPECTIVO
-			}
-
-			if (navegador.contains("CHROME")) {
-				this.mouseClick();
-			}
-	//-----------------------------------------------------------------------------------------------------------------------
-	//-----------------------------------------------------------------------------------------------------------------------
-	
-	//-----------------------------------------------------------------------------------------------------------------------
-			Evidence.save("IngresoA_" + finalOption.replace(" ", "_"),this);
-			return null;
 		}
+
+		if (navegador.contains("CHROME")) {
+			this.mouseClick();
+		}
+		// -----------------------------------------------------------------------------------------------------------------------
+		// -----------------------------------------------------------------------------------------------------------------------
+
+		// -----------------------------------------------------------------------------------------------------------------------
+		Evidence.save("IngresoA_" + finalOption.replace(" ", "_"), this);
+		return null;
+	}
 }

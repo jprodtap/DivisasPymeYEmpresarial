@@ -76,7 +76,7 @@ public class PageDivisas extends BasePageWeb {
 	public boolean switchToFrameDivisas() throws Exception {
 		int contador = 0;
 
-		while (contador < 30) {
+		while (contador <= 30) {
 			Util.wait(1);
 			WebElement iframe = this.element(loc.iframeIdDivisas);
 			if (iframe != null) {

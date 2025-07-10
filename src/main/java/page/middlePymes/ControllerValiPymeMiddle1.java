@@ -180,6 +180,7 @@ public class ControllerValiPymeMiddle1 {
 		this.tipoIDUser = SettingsRun.getTestData().getParameter("Tipo Identificación").trim();
 		this.numIdUser = SettingsRun.getTestData().getParameter("Id usuario").trim();
 		
+		pageInfoTransInter.irAOpcionTransFerenciasInDivisas(false);
 		pageInfoTransInter.InformeTransInter(this.servicio,this.tipoIDUser,this.numIdUser,this.idEmpresa);
 	}
 }

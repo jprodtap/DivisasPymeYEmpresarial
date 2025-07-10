@@ -687,19 +687,13 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 			return elementoSelecionado;
 		}
 
-//		String numeroDeposito = SettingsRun.getTestData().getParameter("Número de depósito 1");
-//		String numeroFacturaoReferDeclaracion = SettingsRun.getTestData().getParameter("Número de declaración 1");
 
 		if (isValid(conceptosCambiario)) {
 
 			Evidence.save("Descripción de la operación",this);
 
-//			String cambiarlistnumeralOperacion_Numeral1 = SettingsRun.getTestData().getParameter("Cambiar Numeral cambiario 1");
-//			String numeral1Acambiar = SettingsRun.getTestData().getParameter("Numeral cambiario A Cambiar 1");
-//			String cambiarConcepto = SettingsRun.getTestData().getParameter("Cambiar Concepto de la transferencia");
 
 			if (cambiarConcepto.equals("SI")) {
-//				String conceptoAcambiar = SettingsRun.getTestData().getParameter("Concepto de la transferencia A Cambiar");
 				conceptosCambiario = conceptoAcambiar;
 			}
 
@@ -742,23 +736,7 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 				// Administrador(Portafolio)]--------------------------------
 
 				if (Portafolio) {
-//					String tipodeidentificacionReceptora = SettingsRun.getTestData().getParameter("Empresa receptora - Tipo de identificación");
-//					String numerodeidentificacionReceptora = SettingsRun.getTestData().getParameter("Empresa receptora - Número de identificación");
-//					String digitodeverificacionReceptora = SettingsRun.getTestData().getParameter("Empresa receptora - Dígito de verificación");
-//					String nombreorazonsocialReceptora = SettingsRun.getTestData().getParameter("Empresa receptora - Nombre o razón social");
-//					String codigopaisReceptora = SettingsRun.getTestData().getParameter("Empresa receptora - Código país");
-//					String codigodepartamentoReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Código departamento");
-//					String codigociudadReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Código ciudad");
-//					String codigoCIIUReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Código CIIU");
-//					String telefonoReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Teléfono");
-//					String direccionReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Dirección");
-//					String correoReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Correo electrónico");
-//					String sectorReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Sector");
-//					String tipodeempresaReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Tipo de empresa");
-//					String superintendenciaReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Superintendencia de vigilancia");
-//					String actividadReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Actividad");
-//					String tipoderegimenReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Tipo de régimen");
-//					String naturalezaReptora = SettingsRun.getTestData().getParameter("Empresa receptora  - Naturaleza");
+
 
 					if (!isValid(tipodeidentificacionReceptora)) {
 						tipodeidentificacionReceptora = "NIT";
@@ -841,46 +819,6 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 				// extranjero)]--------------------------------
 
 				if (Inversionista) {
-
-//					String identificacionInversionista = SettingsRun.getTestData()
-//							.getParameter("Identificación del inversionista - Tipo de identificación");
-//					String numerodeidentificacionInversionista = SettingsRun.getTestData()
-//							.getParameter("Identificación del inversionista - Número de identificación");
-//					String digitodeverificacionInversionista = SettingsRun.getTestData()
-//							.getParameter("Identificación del inversionista - Dígito de verificación");
-//					String nombreorazonsocialInversionista = SettingsRun.getTestData()
-//							.getParameter("Identificación del inversionista - Nombre o razón social");
-//
-//					String codigoPaisInversionista = SettingsRun.getTestData()
-//							.getParameter("Identificación del inversionista - Código país");
-//					String codigoDepartamentoInversionista = SettingsRun.getTestData()
-//							.getParameter("Identificación del inversionista - Código departamento");
-//					String codigociudadInversionista = SettingsRun.getTestData()
-//							.getParameter("Identificación del inversionista - Código ciudad");
-//					String codigoCIIUInversionista = SettingsRun.getTestData()
-//							.getParameter("Identificación del inversionista - Código CIIU");
-//
-//					String correoElectronicoInversionista = SettingsRun.getTestData()
-//							.getParameter("Identificación del inversionista - Correo electrónico");
-//					String sectorInversionista = SettingsRun.getTestData()
-//							.getParameter("Identificación del inversionista - Sector");
-//					String tipodeempresaInversionista = SettingsRun.getTestData()
-//							.getParameter("Identificación del inversionista - Tipo de empresa");
-//					String superintendenciaInversionista = SettingsRun.getTestData()
-//							.getParameter("Identificación del inversionista - Superintendencia de vigilancia");
-//					String naturalezaInversionista = SettingsRun.getTestData()
-//							.getParameter("Identificación del inversionista - Naturaleza");
-//
-//					String telefonoInversionista = "";
-//					String direccionInversionista = "";
-
-//					if (SettingsRun.getTestData().parameterExist("Identificación del inversionista - Teléfono"))
-//
-//						telefonoInversionista = SettingsRun.getTestData().getParameter("Identificación del inversionista - Teléfono");
-//
-//					if (SettingsRun.getTestData().parameterExist("Identificación del inversionista - Teléfono"))
-//						direccionInversionista = SettingsRun.getTestData()
-//								.getParameter("Identificación del inversionista - Dirección");
 
 					if (!isValid(identificacionInversionista)) {
 						identificacionInversionista = "NIT";
@@ -1639,14 +1577,11 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 		}
 
 		if (isElementInteractable(imputempresaReceptoraNombreRazonSocial)) {
-
 			this.write(imputempresaReceptoraNombreRazonSocial, nomRaz);
 		}
 
 		if (isElementInteractable(empresaReceptoraCodigoPais_NHidden)) {
-
 			// Dato predetivo
-//			this.selectPredictiveListItemLi(empresaReceptoraCodigoPais_NHidden, "ESPAÑA");
 			msg = this.selectPredictiveListItemLi(empresaReceptoraCodigoPais_NHidden, codigoPais);
 			if (isValid(msg) && !msg.contains("Valor ya seleccionado")) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
@@ -1661,9 +1596,7 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 		if (isElementInteractable(empresaReceptoraCodigoDepartamento_NHidden)) {
 
 			// Dato predetivo
-//			this.selectPredictiveListItemLi(empresaReceptoraCodigoDepartamento_NHidden, "25");
 			msg = this.selectPredictiveListItemLi(empresaReceptoraCodigoDepartamento_NHidden, codigoDepartamento);
-//			msg = this.selectPredictiveListItemLi(empresaReceptoraCodigoDepartamento_NHidden, "Atlántico");
 
 			if (isValid(msg) && !msg.contains("Valor ya seleccionado")) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
@@ -1679,13 +1612,12 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 
 		if (isElementInteractable(empresaReceptoraCodigoCiudad)) {
 
-//			msg = this.selectListItem2(empresaReceptoraCodigoCiudad, "Bogotá");
 			msg = this.selectListItem2(empresaReceptoraCodigoCiudad, codigoCiudad);
 			String[] listapais = this.getListItems(empresaReceptoraCodigoCiudad);
 
-			for (String listapis : listapais) {
-				System.out.println(listapis);
-			}
+//			for (String listapis : listapais) {
+//				System.out.println(listapis);
+//			}
 
 			if (isValid(msg) && !msg.contains("Valor ya seleccionado")) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
@@ -1698,8 +1630,6 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 		}
 
 		if (isElementInteractable(empresaReceptoraCodigoCIUU)) {
-
-//			msg = this.selectListItem2(empresaReceptoraCodigoCIUU, "115");
 			msg = this.selectListItem2(empresaReceptoraCodigoCIUU, codigoCIUUEmpresas);
 
 			Evidence.save("Campo-Seleccione Tipo Identificación",this);
@@ -1714,24 +1644,19 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 			}
 		}
 
+		Util.wait(2);
+		
 		if (isElementInteractable(empresaReceptoraTelefono))
-
 			this.write(empresaReceptoraTelefono, telefono);
-//			this.write(empresaReceptoraTelefono, "5121457");
 
 		if (isElementInteractable(empresaReceptoraDireccion))
-
 			this.write(empresaReceptoraDireccion, direccion);
-//			this.write(empresaReceptoraDireccion, "CALLE 190 # 75");
 
 		if (isElementInteractable(empresaReceptoraCorreo))
 			this.write(empresaReceptoraCorreo, correo);
-//		this.write(empresaReceptoraCorreo, "davivi@gmail.com");
 
 		if (isElementInteractable(empresaReceptoraSector)) {
-
 			msg = this.selectListItem2(empresaReceptoraSector, sector);
-//			msg = this.selectListItem2(empresaReceptoraSector, "PU");
 
 			if (isValid(msg) && !msg.contains("Valor ya seleccionado")) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
@@ -1742,11 +1667,10 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 				}
 			}
 		}
+		
 		if (isElementInteractable(empresaReceptoraTipoEmpresa)) {
 
 			msg = this.selectListItem2(empresaReceptoraTipoEmpresa, tipoEmpresa);
-//			msg = this.selectListItem2(empresaReceptoraTipoEmpresa, "1");
-
 			if (isValid(msg) && !msg.contains("Valor ya seleccionado")) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 				this.click(btnEnviar);
@@ -1762,7 +1686,6 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 		if (isElementInteractable(selectempresaReceptora_Naturaleza)) {
 
 			msg = this.selectListItem2(selectempresaReceptora_Naturaleza, naturaleza);
-//			msg = this.selectListItem2(selectempresaReceptora_Naturaleza, "Persona jurídica");
 
 			if (isValid(msg) && !msg.contains("Valor ya seleccionado")) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
@@ -1773,12 +1696,10 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 				}
 			}
 		}
-
+		
+		Util.wait(2);
 		if (isElementInteractable(empresaReceptoraSuperintendencia)) {
-
 			msg = this.selectListItem2(empresaReceptoraSuperintendencia, superintendencia);
-//			msg = this.selectListItem2(empresaReceptoraSuperintendencia, "1");
-
 			if (isValid(msg) && !msg.contains("Valor ya seleccionado")) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 				this.click(btnEnviar);
@@ -1815,11 +1736,9 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 				return "No se encuentra el campo Opcion inversionista";
 			}
 
-		} while (this.element(listSeleOpcioninversionistaTipoIdentificacion) == null
-				&& !this.element(listSeleOpcioninversionistaTipoIdentificacion).isDisplayed());
+		} while (this.element(listSeleOpcioninversionistaTipoIdentificacion) == null && !this.element(listSeleOpcioninversionistaTipoIdentificacion).isDisplayed());
 
 		msg = this.selectListItemExacto(listSeleOpcioninversionistaTipoIdentificacion, tipoId);
-//		msg = this.selectListItemExacto(listSeleOpcioninversionistaTipoIdentificacion, "NI");
 
 		Evidence.save("Campo-Seleccione Tipo Identificación",this);
 
@@ -1832,22 +1751,19 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 			}
 		}
 
+		Util.wait(2);
 		this.write(imputinversionistaNumeroIdentificacion, numID);
-//		this.write(imputinversionistaNumeroIdentificacion, "1032516437");
 
 		if (isElementInteractable(imputinversionista_DigitoVerificacion)) {
 
 			this.write(imputinversionista_DigitoVerificacion, digNo);
-//			this.write(imputinversionista_DigitoVerificacion, "1");
 		}
 
 		this.write(imputinversionista_NombreRazonSocial, nomRaz);
-//		this.write(imputinversionista_NombreRazonSocial, "davivien");
 
 		if (isElementInteractable(selectinversionista_CodigoPais)) {
 
 			msg = this.selectListItem2(selectinversionista_CodigoPais, codigoPais);
-//			msg = this.selectListItem2(selectinversionista_CodigoPais, "CO");
 
 			if (isValid(msg) && !msg.contains("Valor ya seleccionado")) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
@@ -1859,10 +1775,11 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 			}
 		}
 
+		Util.wait(2);
+		
 		if (isElementInteractable(imputinversionista_CodigoDepartamento_NHidden)) {
 			// Dato predetivo
 			msg = this.selectPredictiveListItemLi(imputinversionista_CodigoDepartamento_NHidden, codigoDepartamento);
-//		this.selectPredictiveListItemLi(imputinversionista_CodigoDepartamento_NHidden, "Bogotá D.C.");
 
 			if (isValid(msg) && !msg.contains("Valor ya seleccionado")) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
@@ -1886,7 +1803,6 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 		if (isElementInteractable(selectinversionista_CodigoCiudad)) {
 
 			msg = this.selectListItem2(selectinversionista_CodigoCiudad, codigoCiudad);
-//			msg = this.selectListItem2(selectinversionista_CodigoCiudad, "BOGOTÁ");
 
 			if (isValid(msg) && !msg.contains("Valor ya seleccionado")) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
@@ -1920,7 +1836,6 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 		if (isElementInteractable(selectinversionista_Naturaleza)) {
 
 			msg = this.selectListItem2(selectinversionista_Naturaleza, naturaleza);
-//			msg = this.selectListItem2(selectinversionista_Naturaleza, "Persona jurídica");
 
 			if (isValid(msg) && !msg.contains("Valor ya seleccionado")) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
@@ -1936,25 +1851,20 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 
 		if (isElementInteractable(imputinversionista_Telefono))
 			this.write(imputinversionista_Telefono, telefono);
-//			this.write(imputinversionista_Telefono, "5121457");
 
 		Util.wait(1);
 		if (isElementInteractable(imputinversionista_Correo))
 
 			this.write(imputinversionista_Correo, correo);
-//			this.write(imputinversionista_Correo, "davivi@gmail.com");
 
 		Util.wait(1);
 		if (isElementInteractable(imputinversionista_Direccion))
 			this.write(imputinversionista_Direccion, direccion);
-//		this.write(imputinversionista_Direccion, "calle 115");
 
 		Util.wait(1);
 		if (isElementInteractable(selectinversionista_Sector)) {
 
 			msg = this.selectListItem2(selectinversionista_Sector, sector);
-//			msg = this.selectListItem2(selectinversionista_Sector, "PU");
-
 			if (isValid(msg) && !msg.contains(
 					"Valor ya seleccionado [PU = Público] - no es igual a [PU] pero se deja por estar contenido.")) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
@@ -1992,7 +1902,6 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 		if (isElementInteractable(selectinversionista_Superintendencia)) {
 
 			msg = this.selectListItem2(selectinversionista_Superintendencia, superintendencia);
-//			msg = this.selectListItem2(selectinversionista_Superintendencia, "1");
 
 			if (isValid(msg) && !msg.contains("Valor ya seleccionado")) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
