@@ -302,7 +302,7 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 	/**
 	 * Realiza el flujo de la ventana Tranferencias Internacionales
 	 */
-	public void TransferenciasInternacionales(String servicio, String numIdEmpresa, String today, String NoAprobacion)
+	public String TransferenciasInternacionales(String servicio, String numIdEmpresa, String today, String NoAprobacion)
 			throws Exception {
 
 		linkTransferenciasInternacionales.click();
@@ -312,6 +312,7 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 			if (this.element(sesionEx) != null) {
 				String msg = this.element(sesionEx).getText();
 				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
+				return msg;
 			}
 			if (contador >= 30) {
 				Reporter.reportEvent(Reporter.MIC_FAIL, "No aparece el Informes Transferencias Internacionales");
@@ -338,8 +339,7 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 			pageDivisas = new PageDivisas(this);
 			String msj = pageDivisas.closeActiveIntAlert();
 			Reporter.reportEvent(Reporter.MIC_FAIL, "Error en Informes Tranferencias Internacionales:  " + msj);
-//			this.pageLogin.CerrarSesionMiddle();
-			SettingsRun.exitTestIteration();
+			return msj;
 		}
 		contador = 0;
 		do {
@@ -359,20 +359,16 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 
 		if (this.element(tablaPCT) != null) {
 
-			Reporter.reportEvent(Reporter.MIC_PASS,
-					"Aparece la table de informacion paginacion, contador y total COP en Transferencias Internacionales");
+			Reporter.reportEvent(Reporter.MIC_PASS,"Aparece la table de informacion paginacion, contador y total COP en Transferencias Internacionales");
 		} else {
-			Reporter.reportEvent(Reporter.MIC_FAIL,
-					"No aparece la table de informacion paginacion, contador y total COP en Transferencias Internacionales");
+			Reporter.reportEvent(Reporter.MIC_FAIL,"No aparece la table de informacion paginacion, contador y total COP en Transferencias Internacionales");
 		}
 
 		if (this.element(btnImprimir) != null && this.element(btnDescargar) != null) {
 
-			Reporter.reportEvent(Reporter.MIC_PASS,
-					"Aparece el boton de descargar e imprimir en Transferencia Internacionales");
+			Reporter.reportEvent(Reporter.MIC_PASS,"Aparece el boton de descargar e imprimir en Transferencia Internacionales");
 		} else {
-			Reporter.reportEvent(Reporter.MIC_FAIL,
-					"No parece los botone de descargar y/o imprimir en Transferencias Internacionales");
+			Reporter.reportEvent(Reporter.MIC_FAIL,"No parece los botone de descargar y/o imprimir en Transferencias Internacionales");
 		}
 
 		Evidence.saveAllScreens("Informes - transferencias internacionales", this);
@@ -391,8 +387,7 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 				if (numPagina == cantidadDeOptions && encontradoTI == false) {
 					Reporter.reportEvent(Reporter.MIC_FAIL,"No se escuentra el registro con numero de aprobacion:  " + NoAprobacion);
 					numPagina++;
-//					this.pageLogin.CerrarSesionMiddle();
-					SettingsRun.exitTestIteration();
+					return "No se escuentra el registro con numero de aprobacion:  " + NoAprobacion;
 				}
 
 			} while (numPagina <= cantidadDeOptions && encontradoTI == false);
@@ -403,6 +398,7 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 		}
 
 		this.Comparacion_TransferenciasInternacionales(servicio, numIdEmpresa, RegistroTI[0], RegistroTI[1]);
+		return null;
 
 	}
 
@@ -444,15 +440,23 @@ public class PageInformesTransInternacionales extends BasePageWeb {
 				pageDivisas = new PageDivisas(this);
 				String msj = pageDivisas.closeActiveIntAlert();
 				Reporter.reportEvent(Reporter.MIC_FAIL, "Error en Informes Acceso al Sistema:  " + msj);
+				return"Error en Informes Acceso al Sistema:  " + msj;
 //			this.pageLogin.CerrarSesionMiddle();
-				SettingsRun.exitTestIteration();
+//				SettingsRun.exitTestIteration();
 			}
 		}
 		contador = 0;
 		do {
 			Util.wait(1);
 			if (contador >= 30) {
+				if (this.element(sesionEx) != null) {
+					String msg = this.element(sesionEx).getText();
+					Reporter.reportEvent(Reporter.MIC_FAIL, msg);
+					return msg;
+				}
 				Reporter.reportEvent(Reporter.MIC_FAIL, "No aparece Resultado de la búsqueda");
+				return  "No aparece Resultado de la búsqueda";
+				
 			}
 		} while (this.element(table) == null);
 

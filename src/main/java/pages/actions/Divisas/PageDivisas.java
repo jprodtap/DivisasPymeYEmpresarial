@@ -152,8 +152,11 @@ public class PageDivisas extends BasePageWeb {
 	 */
 	public String seleccionarTransferencia(String servicio) throws Exception {
 
-		this.ErrorSesionExpirada();
-
+		String msg = this.ErrorSesionExpirada();
+		if (msg != null) {
+			this.getDriver().switchTo().defaultContent();
+			return msg;
+		}
 		Evidence.save("Transferencias internacionales", this);
 
 		switchToFrameDivisas();
@@ -192,8 +195,13 @@ public class PageDivisas extends BasePageWeb {
 
 		this.click(By.xpath(loc.moduloSelecionarDivisas.replace("MENU", servicio)));
 
-		this.ErrorSesionExpirada();
+		msg = this.ErrorSesionExpirada();
 
+		if (msg != null) {
+			this.getDriver().switchTo().defaultContent();
+			return msg;
+		}
+		
 		msgError = this.getMsgAlertIfExist("lblMasterAlerta");
 
 		if (isValid(msgError)) {

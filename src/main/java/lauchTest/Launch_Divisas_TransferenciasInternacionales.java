@@ -22,7 +22,7 @@ public class Launch_Divisas_TransferenciasInternacionales extends BaseTestNG {
 	public void launchData() {
 		// TODO Auto-generated method stub
 		Reporter.initializeEvidenceType(new EvidencePdfFile());
-		Reporter.writeTitle("\n*** PRUEBAS AUTENTICACIÓN DAVICOM ***");
+		Reporter.writeTitle("\n*** PRUEBAS TRANSFERENCIAS INTERNACIONALES***");
 		SettingsRun.DEFAULT_HEADER = 4;
 
 		// PARÁMETROS REQUERIDOS EN LA HOJA DE DATOS GLOBAL PARA EL LAUNCH QUE SE ESTÉ
@@ -41,9 +41,9 @@ public class Launch_Divisas_TransferenciasInternacionales extends BaseTestNG {
 		// Determina el tipo de portal desde los datos de prueba o por lógica
 		// Puedes leerlo desde Excel, aquí está hardcodeado como ejemplo:
 		// Obtén el tipo de portal desde Excel (o config)
-//		String tipoPortal = SettingsRun.getTestData().getParameter("Typo Portal");
-//		String tipoPortal = "Pyme";
-		String tipoPortal = "Empresarial";
+		String tipoPortal = SettingsRun.getTestData().getParameter("Tipo Cliente");
+////		String tipoPortal = "Pyme";
+//		String tipoPortal = "Empresarial";
 		ControllerGeneralDivisas.PortalType portalType = (tipoPortal != null&& tipoPortal.equalsIgnoreCase("Empresarial")) ? ControllerGeneralDivisas.PortalType.EMPRESARIAL: ControllerGeneralDivisas.PortalType.PYME;
 
 		Reporter.reportEvent(Reporter.MIC_HEADER,"*** Ingreso al Portal: [" + tipoPortal + "]");
@@ -79,10 +79,13 @@ public class Launch_Divisas_TransferenciasInternacionales extends BaseTestNG {
 		
 		// Lógica principal del test: ejecuta el flujo de Divisas
 		controllerGeneralDivisas.transar();
+		controllerGeneralDivisas.cerrarSesionDependiemdoPortal();
 		//Lógica Consulat de Informes de Divisas
 		String informe = SettingsRun.getTestData().getParameter("Informes").trim();
+		
 		if (informe.equalsIgnoreCase("SI")) {			
 			controllerGeneralDivisas.ValidacionInformeInicial();
+			controllerGeneralDivisas.cierreSesionMiddle();
 		}
 	}
 	

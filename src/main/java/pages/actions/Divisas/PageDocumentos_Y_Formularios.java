@@ -174,7 +174,7 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 	String strPseudoElemento = "return window.getComputedStyle(arguments[0],'::after').getPropertyValue('background-color')";
 // =======================================================================================================================
 
-	By CerrSesion = By.xpath("//*[@id='CerrarSesion']");
+//	By CerrSesion = By.xpath("//*[@id='CerrarSesion']");
 	By sesionEx = By.xpath("//b[contains(text(), 'Sesión no existe o ha expirado por inactividad.')]");
 
 // =======================================================================================================================
@@ -349,7 +349,6 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 			if (contador >= 30) {
 				this.getDriver().switchTo().defaultContent();
 				Evidence.save("No se encuentra el Titulo Documentos y formularios",this);
-				this.click(CerrSesion);
 				Reporter.reportEvent(Reporter.MIC_FAIL, "No se encuentra el Titulo: Documentos y formularios");
 				return "No se encuentra el Titulo: Documentos y formularios";
 			}
@@ -393,7 +392,6 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 			if (contador >= 30) {
 				this.getDriver().switchTo().defaultContent();
 				Evidence.save("No se encuentra el modulo: Documentos y Formularios",this);
-				this.click(CerrSesion);
 				Reporter.reportEvent(Reporter.MIC_FAIL, "No se encuentra el modulo: Documentos y Formularios");
 				SettingsRun.exitTestIteration();
 			}
@@ -1575,11 +1573,11 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 		if (isElementInteractable(imputempresaReceptoraDigitoVerificacion)) {
 			this.write(imputempresaReceptoraDigitoVerificacion, digNo);
 		}
-
+		Util.wait(2);
 		if (isElementInteractable(imputempresaReceptoraNombreRazonSocial)) {
 			this.write(imputempresaReceptoraNombreRazonSocial, nomRaz);
 		}
-
+		Util.wait(2);
 		if (isElementInteractable(empresaReceptoraCodigoPais_NHidden)) {
 			// Dato predetivo
 			msg = this.selectPredictiveListItemLi(empresaReceptoraCodigoPais_NHidden, codigoPais);
@@ -1592,7 +1590,7 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 				}
 			}
 		}
-
+		Util.wait(2);
 		if (isElementInteractable(empresaReceptoraCodigoDepartamento_NHidden)) {
 
 			// Dato predetivo
@@ -1611,10 +1609,10 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 		Util.wait(2);
 
 		if (isElementInteractable(empresaReceptoraCodigoCiudad)) {
-
+			Util.wait(2);
 			msg = this.selectListItem2(empresaReceptoraCodigoCiudad, codigoCiudad);
 			String[] listapais = this.getListItems(empresaReceptoraCodigoCiudad);
-
+			Util.wait(2);
 //			for (String listapis : listapais) {
 //				System.out.println(listapis);
 //			}

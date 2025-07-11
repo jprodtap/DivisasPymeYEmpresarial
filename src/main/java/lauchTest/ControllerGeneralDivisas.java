@@ -36,9 +36,13 @@ import dav.transversal.MotorRiesgo;
 import dav.transversal.NotificacionSMS;
 import dav.transversal.Stratus;
 import dxc.util.DXCUtil;
-
+import pages.actions.MiddleEmpresarial.CommonMiddleEmpresarial;
 import pages.actions.MiddleEmpresarial.PageLoginMiddleEmpresarial;
+import pages.actions.MiddleEmpresarial.PageMiddleEmpresarial;
+import dav.Controllers.CommonMiddlesEmpresas;
+import dav.Controllers.ControllerGeneralMiddlesEmpresas;
 import dav.Controllers.ControllerMiddleEmpresarial;
+import dav.Controllers.ControllerMiddlePyme;
 
 /**
  * Controlador General de Divisas para los portales PYME y Portal Empresarial.
@@ -55,6 +59,12 @@ public class ControllerGeneralDivisas implements Controller {
 
 	private static ControllerGeneralDivisas instanciaUnicaControllerGeneralDivisas; // Variable en donde se Almacena la
 																					// Instancia Unica de la Clase.
+
+	ControllerGeneralMiddlesEmpresas controlMiddlesEmpresas = ControllerGeneralMiddlesEmpresas
+			.getInstanciaUnicaControllerMiddlesEmpresas();
+	ControllerMiddleEmpresarial controlMiddleEmpresarial = ControllerMiddleEmpresarial
+			.getInstanciaUnicaControllerMiddleEmpresarial();
+	ControllerMiddlePyme controlMiddlePyme = ControllerMiddlePyme.getInstanciaUnicaControllerMiddlePyme();
 
 	// ***********************************************************************************************************************
 	// * Instancias. *
@@ -86,7 +96,7 @@ public class ControllerGeneralDivisas implements Controller {
 	private PageFrontEmpresarial frontEmpresarial;
 
 	private PageLoginMiddleEmpresarial loginMiddleEmpresarial;
-	private ControllerMiddleEmpresarial controllerMiddleEmpresarial;
+	private PageMiddleEmpresarial middleEmpresarial;
 
 	// Instancias de páginas comunes a ambos portales (se inicializan según portal)
 	private PageDivisas pageDivisas;
@@ -270,6 +280,31 @@ public class ControllerGeneralDivisas implements Controller {
 		this.horaTx = SettingsRun.getTestData().getParameter("Hora tx");
 	}
 
+	public void setearNombreColumnasMiddlesEmpresa() {
+
+		// -----------------------------------------------------------------------------------------------------------------------
+		// Nombre Columnas Cliente Empresarial.
+
+		CommonMiddlesEmpresas.COL_TIPO_CLIENTE = "Tipo Cliente";
+		CommonMiddlesEmpresas.COL_CLIENTE_EMPRESARIAL = "Cliente Empresarial";
+		CommonMiddlesEmpresas.COL_TIPO_IDENTIFICACION_CLIENTE_EMPRESARIAL = "Tipo Identificación";
+		CommonMiddlesEmpresas.COL_NUMERO_IDENTIFICACION_CLIENTE_EMPRESARIAL = "Id usuario";
+		// -----------------------------------------------------------------------------------------------------------------------
+		// Nombre Columnas Empresa.
+
+		CommonMiddlesEmpresas.COL_NOMBRE_EMPRESA = "Nombre Empresa";
+		CommonMiddlesEmpresas.COL_TIPO_IDENTIFICACION_EMPRESA = "Tipo ID Empresa";
+		CommonMiddlesEmpresas.COL_NUMERO_IDENTIFICACION_EMPRESA = "Numero ID Empresa";
+		// -----------------------------------------------------------------------------------------------------------------------
+		// Nombre Columnas Escenario Prueba.
+
+		CommonMiddlesEmpresas.COL_ESCENERIO_PRUEBA = "Escenario de prueba";
+
+//	        // -----------------------------------------------------------------------------------------------------------------------
+//	        // Otros.
+		CommonMiddlesEmpresas.COL_NUMERO_PRODUCTO_ORIGEN = "Número producto origen";
+
+	}
 // ==========================================[inicializarSesion]=================================================================================================
 
 	/**
@@ -290,6 +325,7 @@ public class ControllerGeneralDivisas implements Controller {
 				msg = inicializarSesionPymeMiddle();
 
 				if (msg == null) {
+					setearNombreColumnasMiddlesEmpresa();
 					ContratacionMiddlePyme();
 				} else {
 					Reporter.reportEvent(Reporter.MIC_FAIL, "No se pudo Inicializar Middle");
@@ -302,12 +338,9 @@ public class ControllerGeneralDivisas implements Controller {
 			String contratacion = SettingsRun.getGlobalData("CONTRATACION");
 			String msg = null;
 			if (contratacion.equalsIgnoreCase("SI")) {
-				msg = inicializarSesionMiddleEmpresarial();
-				if (msg == null) {
-					ContratacionMiddleEmpresarial();
-				} else {
-					Reporter.reportEvent(Reporter.MIC_FAIL, "No se pudo Inicializar Middle Empresarial");
-				}
+				setearNombreColumnasMiddlesEmpresa();
+				ContratacionMiddleEmpresarial();
+
 			}
 			inicializarSesionEmpresarial();
 		}
@@ -634,6 +667,7 @@ public class ControllerGeneralDivisas implements Controller {
 	private String inicializarSesionMiddleEmpresarial() throws Exception {
 		// Crea los objetos necesarios
 		loginMiddleEmpresarial = new PageLoginMiddleEmpresarial(BasePageWeb.CHROME);
+		middleEmpresarial = new PageMiddleEmpresarial(loginMiddleEmpresarial);
 
 		// Obtén los datos del login
 		String tipoDocumento = SettingsRun.getGlobalData("data.tipoIdEmp").trim();
@@ -645,9 +679,24 @@ public class ControllerGeneralDivisas implements Controller {
 		// Realiza el login
 		String msgError = loginMiddleEmpresarial.realizarLoginMiddleEmpresarial(tipoDocumento, numeroDocumento,
 				numeroClienteEmpresarial, clavePersonal, token);
+
+//		String msgError = controlMiddleEmpresarial.realizarLoginMiddleEmpresarial();
 		return msgError;
 	}
 
+	public void cierreSesionMiddle() {
+
+		if (portalType == PortalType.PYME) {
+			if (loginFrontPyme != null) {
+				loginFrontPyme.closeSession();
+			}
+
+		} else {
+			middleEmpresarial.cierreSesion();
+			CommonMiddleEmpresarial.ESTA_LOGUEADO = false;
+		}
+
+	}
 // ====================================[ContratacionMiddleEmpresarial]==============================================================================		
 
 	/**
@@ -658,10 +707,11 @@ public class ControllerGeneralDivisas implements Controller {
 	 * @throws Exception
 	 */
 	public void ContratacionMiddleEmpresarial() throws Exception {
-		controllerMiddleEmpresarial = new ControllerMiddleEmpresarial();
-		// Aquí puedes ejecutar el flujo de contratación específico, por ejemplo:
-		controllerMiddleEmpresarial.flujoContratacion(); // Ajusta el nombre según lo que exponga el controller
-		loginMiddleEmpresarial.cerrarNavegador(); // Si necesitas cerrar la sesión luego
+
+		String[] datoDivisas = { "Internacionales" };
+		controlMiddleEmpresarial.realizarParametrizacionMiddleEmpresarial(datoDivisas,
+				SettingsRun.getCurrentIteration(), "Parametrizacion Contratar Servicio");
+		controlMiddleEmpresarial.cierreSesionMiddleEmpresarial();
 	}
 
 // ====================================[inicializarSesionEmpresarial]==============================================================================		
@@ -684,7 +734,7 @@ public class ControllerGeneralDivisas implements Controller {
 				SettingsRun.getTestData().getParameter("Id usuario").trim(), obtenerTipoAutenticacion(),
 				SettingsRun.getTestData().getParameter("Clave personal o CVE").trim(),
 				SettingsRun.getTestData().getParameter("Semilla / Valor Estático / Celular").trim());
-
+		CommonFrontEmpresarial.ESTA_LOGUEADO = true;
 		if (msgError != null) {
 			Reporter.reportEvent(Reporter.MIC_FAIL, msgError);
 		}
@@ -1760,7 +1810,7 @@ public class ControllerGeneralDivisas implements Controller {
 	 */
 	public void transar() throws Exception {
 		boolean primeroGuardar = this.tipoPrueba.equals("Tx Pend Aprobación");
-
+		String msg = null;
 		switch (this.servicio) {
 		case "Tx Internacionales Recibir desde el exterior":
 			this.Recibirdinerodelexterior(primeroGuardar);
@@ -1774,7 +1824,7 @@ public class ControllerGeneralDivisas implements Controller {
 			this.EnviarTransferenciasInternacionalesPendAprobacion();
 			break;
 		case "Divisas Documentos y Formularios":
-			String msg = null;
+
 			if (portalType == PortalType.PYME)
 				this.inicioCrearTx();
 
@@ -1948,9 +1998,14 @@ public class ControllerGeneralDivisas implements Controller {
 			if (portalType == PortalType.PYME)
 				this.inicioCrearTx();
 
-			this.pageConsultatxInternacional.ConsultaNumtx(this.tipoPrueba, this.nombreEmpre, this.servicio, usuario,
-					tipoConstaTxRealizadas, this.ordenanteBeneficiario, this.tipoTranferencia, this.estado,
+			msg = this.pageConsultatxInternacional.ConsultaNumtx(this.tipoPrueba, this.nombreEmpre, this.servicio,
+					usuario, tipoConstaTxRealizadas, this.ordenanteBeneficiario, this.tipoTranferencia, this.estado,
 					this.tipoMoneda, this.fechaTx, this.horaTx, this.fechaDesde, this.fechaHasta, this.valorTx);
+
+			if (msg != null) {
+				this.terminarIteracionXError(msg);
+			}
+
 			break;
 		default:
 			this.terminarIteracionXError("Servicio no soportado en flujo Divisas: " + this.servicio);
@@ -1976,11 +2031,13 @@ public class ControllerGeneralDivisas implements Controller {
 
 			this.estado = SettingsRun.getTestData().getParameter("Estado");
 
-			this.pageConsultatxInternacional.ConsultaNumtx(this.tipoPrueba, this.nombreEmpre, this.servicio,
+			msg = this.pageConsultatxInternacional.ConsultaNumtx(this.tipoPrueba, this.nombreEmpre, this.servicio,
 					this.usuario, tipoConstaTxRealizadas, this.ordenanteBeneficiario, this.tipoTranferencia,
 					this.estado, this.tipoMoneda, this.fechaTx, this.horaTx, this.fechaDesde, this.fechaHasta,
 					this.valorTx);
-
+			if (msg != null) {
+				this.terminarIteracionXError(msg);
+			}
 			if (DatosDavivienda.STRATUS != null)
 				this.pageConsultatxInternacional.ValidacionesStratusConsulta();
 
@@ -1995,9 +2052,14 @@ public class ControllerGeneralDivisas implements Controller {
 				this.horaTx = SettingsRun.getTestData().getParameter("Hora tx");
 			}
 			this.estado = SettingsRun.getTestData().getParameter("Estado");
-			this.pageConsultatxInternacional.ConsultaNumtx(this.tipoPrueba, this.nombreEmpre, this.servicio, usuario,
-					tipoConstaTxRealizadas, this.ordenanteBeneficiario, this.tipoTranferencia, this.estado,
+
+			msg = this.pageConsultatxInternacional.ConsultaNumtx(this.tipoPrueba, this.nombreEmpre, this.servicio,
+					usuario, tipoConstaTxRealizadas, this.ordenanteBeneficiario, this.tipoTranferencia, this.estado,
 					this.tipoMoneda, this.fechaTx, this.horaTx, this.fechaDesde, this.fechaHasta, this.valorTx);
+
+			if (msg != null) {
+				this.terminarIteracionXError(msg);
+			}
 		}
 	}
 
@@ -2036,6 +2098,21 @@ public class ControllerGeneralDivisas implements Controller {
 		} else if (loginFrontPyme != null) {
 			loginFrontPyme.terminarIteracion(); // Cerrar tanto en empresarial como Pyme
 		}
+	}
+
+	public void cerrarSesionDependiemdoPortal() throws Exception {
+		if (portalType == PortalType.PYME) {
+			if (loginFrontPyme != null) {
+				loginFrontPyme.closeSession();
+			}
+
+		} else {
+			if (frontEmpresarial != null) {
+				frontEmpresarial.cerrarSesionFrontEmpresarial();
+			}
+
+		}
+
 	}
 
 // ===========================================[getTransaccion]===========================================================================

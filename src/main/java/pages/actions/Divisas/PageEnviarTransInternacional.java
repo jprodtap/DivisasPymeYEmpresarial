@@ -25,8 +25,6 @@ public class PageEnviarTransInternacional extends PageDivisas {
 
 	public By submit = By.xpath("//*[contains(text(), 'Siguiente')]");
 
-	By CerrSesion = By.xpath("//*[@id='CerrarSesion']");
-	By sesionEx = By.xpath("//b[contains(text(), 'Sesión no existe o ha expirado por inactividad.')]");
 
 	By btnSiguiente = By.xpath("//button[@type='submit']");
 
@@ -154,8 +152,7 @@ public class PageEnviarTransInternacional extends PageDivisas {
 	 */
 	public String seleccionarCuenta(String servicio, String tipoIdEm, String nitEmpre, String tipoCuenta,
 			String numeroCuenta) throws Exception {
-//		numeroCuenta ="7777";
-//		numeroCuenta ="5743";
+
 		String tipoProdUpper = tipoCuenta;
 		String tipoProd = " "; // VALOR POR DEFECTO
 
@@ -196,9 +193,13 @@ public class PageEnviarTransInternacional extends PageDivisas {
 				return "No se encontro el elemento Boton siguiente";
 			}
 
-			this.ErrorSesionExpirada();
-
-			String msg = this.closeActiveIntAlertConfirma();
+			msg = this.ErrorSesionExpirada();
+			if (msg != null) {
+				this.getDriver().switchTo().defaultContent();
+				return msg;
+			}
+			
+			msg = this.closeActiveIntAlertConfirma();
 
 			if (msg != null) {
 				this.getDriver().switchTo().defaultContent();
@@ -226,7 +227,12 @@ public class PageEnviarTransInternacional extends PageDivisas {
 		Util.wait(1);
 		this.click(btnSiguiente);
 
-		this.ErrorSesionExpirada();
+		msg = this.ErrorSesionExpirada();
+		
+		if (msg != null) {
+			this.getDriver().switchTo().defaultContent();
+			return msg;
+		}
 		
 		msg = this.closeActiveIntAlertConfirma();
 		if (msg != null) {
@@ -781,8 +787,11 @@ public class PageEnviarTransInternacional extends PageDivisas {
 
 		this.click(submit);
 
-		this.ErrorSesionExpirada();
-
+		msg = this.ErrorSesionExpirada();
+		if (msg != null) {
+			this.getDriver().switchTo().defaultContent();
+			return msg;
+		}
 		msg = this.closeActiveIntAlertConfirma();
 
 		if (msg != null) {
@@ -889,8 +898,11 @@ public class PageEnviarTransInternacional extends PageDivisas {
 
 		this.click(submit);
 
-		this.ErrorSesionExpirada();
-
+		msg = this.ErrorSesionExpirada();
+		if (msg != null) {
+			this.getDriver().switchTo().defaultContent();
+			return msg;
+		}
 		msg = this.closeActiveIntAlertConfirma();
 
 		if (msg != null) {
@@ -985,8 +997,13 @@ public class PageEnviarTransInternacional extends PageDivisas {
 
 		this.click(submit);
 
-		this.ErrorSesionExpirada();
+		msg = this.ErrorSesionExpirada();
 
+		if (msg != null) {
+			this.getDriver().switchTo().defaultContent();
+			return msg;
+		}
+		
 		msg = this.closeActiveIntAlertConfirma();
 
 		if (msg != null) {
@@ -1150,8 +1167,13 @@ public class PageEnviarTransInternacional extends PageDivisas {
 
 		Evidence.save("InfoBancoDestino",this);
 
-		this.ErrorSesionExpirada();
+		msg = this.ErrorSesionExpirada();
 
+		if (msg != null) {
+			this.getDriver().switchTo().defaultContent();
+			return msg;
+		}
+		
 		do {
 			Util.wait(1);
 			contador++;
@@ -1321,8 +1343,14 @@ public class PageEnviarTransInternacional extends PageDivisas {
 
 		this.click(submit);
 
-		this.ErrorSesionExpirada();
+		msg = this.ErrorSesionExpirada();
 
+		
+		if (msg != null) {
+			this.getDriver().switchTo().defaultContent();
+			return msg;
+		}
+		
 		try {
 			msg = this.closeActiveIntAlertConfirma();
 
@@ -1377,7 +1405,11 @@ public class PageEnviarTransInternacional extends PageDivisas {
 		do {
 			Util.wait(1);
 			if (contador >= 30) {
-				this.ErrorSesionExpirada();
+				msg = this.ErrorSesionExpirada();
+				if (msg != null) {
+					this.getDriver().switchTo().defaultContent();
+					return msg;
+				}
 				Evidence.save("No se presento el Popup Mensaje 5 minutos",this);
 				this.getDriver().switchTo().defaultContent();
 				return "No se presento el Popup Mensaje";

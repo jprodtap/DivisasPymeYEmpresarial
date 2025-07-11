@@ -60,7 +60,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 	String filaLocatorCont;
 	String xpathfilaLocatorCont = "//*[@id='paginacion']/div[2]/div[3]/table/tbody/tr[I]/td[J]";
 
-	By CerrSesion = By.xpath("//*[@id='CerrarSesion']");
+//	By CerrSesion = By.xpath("//*[@id='CerrarSesion']");
 	ControllerCrearTx controller = null;
 	PageInformesTransInternacionales informes = null;
 
@@ -143,7 +143,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 	 * 
 	 * @throws Exception
 	 */
-	public void ConsultaNumtx(String tipoPrueba, String empresa, String servicio, String usuario,
+	public String ConsultaNumtx(String tipoPrueba, String empresa, String servicio, String usuario,
 			String tipoConstaTxRealizadas, String ordenanteBeneficiario, String tipoTranferencia, String estado,
 			String tipoMoneda, String fechaTx, String horaTx,String fechaDesde,String fechaHasta,String valor) throws Exception {
 
@@ -151,11 +151,18 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 		String filaArray[] = new String[8];
 
-		this.InicioConsulta(servicio, tipoConstaTxRealizadas, ordenanteBeneficiario, tipoTranferencia, estado,
+		String msg =this.InicioConsulta(servicio, tipoConstaTxRealizadas, ordenanteBeneficiario, tipoTranferencia, estado,
 				tipoMoneda,fechaDesde,fechaHasta);
-
-		this.ErrorSesionExpirada();
-
+		if (msg != null) {
+			this.getDriver().switchTo().defaultContent();
+			return msg;
+		}
+		 msg = this.ErrorSesionExpirada();
+	
+		if (msg != null) {
+			this.getDriver().switchTo().defaultContent();
+			return msg;
+		}
 		// Busca por el numero de aprobacion y guarda en un array los datos del
 		// registro, si lo encuentra
 
@@ -169,11 +176,9 @@ public class PageConsultatxInternacional extends PageDivisas {
 			DXCUtil.wait(1);
 			contador++;
 			if (!isValid(documentoTx)) {
-				Reporter.reportEvent(Reporter.MIC_FAIL,
-						"El campo Número Aprobación O Documento de la Transacción no tiene Información");
+				Reporter.reportEvent(Reporter.MIC_FAIL,"El campo Número Aprobación O Documento de la Transacción no tiene Información");
 			} else {
-				filaLocator = xpathdocumentoTx.replace("INUMERO", String.valueOf(contador)).replace("DocumentoTx",
-						documentoTx);
+				filaLocator = xpathdocumentoTx.replace("INUMERO", String.valueOf(contador)).replace("DocumentoTx",documentoTx);
 			}
 
 			// Valida la tabla de registros, hasta 25 registros, si no lo encuentra, cierra
@@ -182,12 +187,8 @@ public class PageConsultatxInternacional extends PageDivisas {
 				this.getDriver().switchTo().defaultContent();
 				Evidence.saveAllScreens("-----------RESGISTRO NO ENCONTRADO-------------", this);
 
-//				return "Registro no encontrado con numero de aprobacion:  " + documentoTx;
+				return "Registro no encontrado con numero de aprobacion:  " + documentoTx;
 
-				Reporter.reportEvent(Reporter.MIC_FAIL,
-						"Registro no encontrado con numero de aprobacion:  " + documentoTx);
-				this.click(CerrSesion);
-				SettingsRun.exitTestIteration();
 			}
 
 			// Si encuenta el regisro Guarda los datos de la fila en un array
@@ -221,6 +222,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 			this.informes = new PageInformesTransInternacionales(this);
 			this.informes.dataInformes(filaArray);
 		}
+		return null;
 
 	}
 
@@ -228,7 +230,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 	/**
 	 * Metodo inicial, valida los campos y que la tabla de registros exista
 	 */
-	public void InicioConsulta(String servicio, String tipoConstaTxRealizadas, String ordenanteBeneficiario,
+	public String InicioConsulta(String servicio, String tipoConstaTxRealizadas, String ordenanteBeneficiario,
 			String tipoTranferencia, String estado, String tipoMoneda, String fechaDesdeStr, String fechaHastaStr)
 			throws Exception {
 
@@ -236,8 +238,13 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 		this.switchToFrameDivisas();
 
-		this.ErrorSesionExpirada();
-
+		msg = this.ErrorSesionExpirada();
+		
+		if (msg != null) {
+			this.getDriver().switchTo().defaultContent();
+			return msg;
+		}
+		
 		msg = this.seleccionarTransferencia("Consulta");// Se en carga de selecionar el modulo de Divisas
 
 		if (isValid(msg))
@@ -473,6 +480,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 			Evidence.saveAllScreens("Parametros de búsqueda encontrados", this);
 		}
+		return null;
 
 	}
 
@@ -579,7 +587,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 	 * Almacena en un array los datos de la ventana "comprobante" dependiendo si la
 	 * transaccion es enviar o recibir
 	 */
-	public void ComparacionComprobante(String empresa, String servicio) throws Exception {
+	public String ComparacionComprobante(String empresa, String servicio) throws Exception {
 
 //		Reporter.initialize(4);
 
@@ -600,6 +608,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 			Evidence.saveAllScreens(msg, this);
 			Reporter.reportEvent(Reporter.MIC_FAIL, msg);
+			return msg;
 //			this.terminarIteracion();
 		}
 
@@ -614,7 +623,8 @@ public class PageConsultatxInternacional extends PageDivisas {
 			if (contador > 30) {
 
 				Evidence.saveAllScreens("TimeOut no se presento La fecha de la tx", this);
-				Reporter.reportEvent(Reporter.MIC_FAIL, "TimeOut no se presento La fecha de la tx");
+//				Reporter.reportEvent(Reporter.MIC_FAIL, "TimeOut no se presento La fecha de la tx");
+				return "TimeOut no se presento La fecha de la tx";
 //				this.terminarIteracion();
 
 			}
@@ -627,8 +637,13 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 		Evidence.saveAllScreens("Historial de registros encontrados", this);
 
-		this.ErrorSesionExpirada();
-
+		msg = this.ErrorSesionExpirada();
+		
+		if (msg != null) {
+			this.getDriver().switchTo().defaultContent();
+			return msg;
+		}
+		
 		Evidence.saveAllScreens("Comprobante", this);
 
 		String headerComprobante[] = new String[20];
@@ -644,10 +659,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 		// Extrae los campos de la transaccion, para comprara, los almacena en un array
 		String cuentaDestino;
 
-//		String empresa = SettingsRun.getTestData().getParameter("Nombre Empresa").trim();
-
-		String Ordenante = SettingsRun.getTestData().getParameter("Ordenante / Nombre del beneficiario en el exterior")
-				.trim();
+		String Ordenante = SettingsRun.getTestData().getParameter("Ordenante / Nombre del beneficiario en el exterior").trim();
 
 		String Numeral = SettingsRun.getTestData().getParameter("Numeral cambiario 1").trim();
 
@@ -715,6 +727,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 			this.ComparacionDataComprobanteDePago(servicio, dataComprobante, arrayExcelComprobante, headerComprobante);
 
 		}
+		return null;
 
 	}
 
@@ -722,7 +735,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 	/**
 	 * Comprobante dependiendo si la transaccion es enviar o recibir
 	 */
-	public void Comprobante() throws Exception {
+	public String Comprobante() throws Exception {
 
 //		Reporter.initialize(4);
 
@@ -741,6 +754,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 		if (isValid(msg)) {
 			Evidence.saveAllScreens(msg, this);
 			Reporter.reportEvent(Reporter.MIC_FAIL, msg);
+			return msg;
 //			this.terminarIteracion();
 		}
 
@@ -754,6 +768,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 			if (contador > 30) {
 				Evidence.saveAllScreens("TimeOut no se presento La fecha de la tx", this);
 				Reporter.reportEvent(Reporter.MIC_FAIL, "TimeOut no se presento La fecha de la tx");
+				return msg;
 //				this.terminarIteracion();
 			}
 
@@ -765,8 +780,12 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 		Evidence.saveAllScreens("Historial de registros encontrados", this);
 
-		this.ErrorSesionExpirada();
+		msg = this.ErrorSesionExpirada();
 
+		if (msg != null) {
+			this.getDriver().switchTo().defaultContent();
+			return msg;
+		}
 		// Comprobante Tx
 		WebElement comprobante = null;
 
@@ -866,6 +885,8 @@ public class PageConsultatxInternacional extends PageDivisas {
 		}
 
 		Evidence.saveAllScreens("Comprobante", this);
+		
+		return null;
 	}
 
 // ============================================[ComparacionDataComprobanteDePago]===========================================================================
@@ -1297,23 +1318,23 @@ public class PageConsultatxInternacional extends PageDivisas {
 	/**
 	 * Omite el mensaje por si no hay ningun registro disponible
 	 */
-	public void MsjSinRegistros() throws Exception {
-
-		int time = 0;
-
-		do {
-			DXCUtil.wait(1);
-			time++;
-			if (this.element(aler) != null) {
-				Evidence.saveAllScreens("No existen resultados para esta búsqueda", this);
-				this.getDriver().switchTo().defaultContent();
-				this.click(CerrSesion);
-				SettingsRun.exitTestIteration();
-			}
-
-		} while (time < 4);
-
-	}
+//	public void MsjSinRegistros() throws Exception {
+//
+//		int time = 0;
+//
+//		do {
+//			DXCUtil.wait(1);
+//			time++;
+//			if (this.element(aler) != null) {
+//				Evidence.saveAllScreens("No existen resultados para esta búsqueda", this);
+//				this.getDriver().switchTo().defaultContent();
+////				this.click(CerrSesion);
+//				SettingsRun.exitTestIteration();
+//			}
+//
+//		} while (time < 4);
+//
+//	}
 
 // ============================================[ValidacionesStratusConsulta]===========================================================================
 
